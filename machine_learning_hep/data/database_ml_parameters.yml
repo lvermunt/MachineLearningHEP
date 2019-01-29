@@ -108,7 +108,6 @@ Dzero: #!!DCA and others to be added when in skimmer!!
   #var_training: [d_len_ML, d_len_xy_ML, norm_dl_xy_ML, cos_p_ML, cos_p_xy_ML, imp_par_xy_ML, cos_t_star_ML, imp_par_prod_ML, pt_prong0_ML, pt_prong1_ML, imp_par_prong0_ML, imp_par_prong1_ML, max_norm_d0d0exp_ML]
   #var_training: [d_len_ML, d_len_xy_ML, norm_dl_xy_ML, cos_p_ML, cos_p_xy_ML, imp_par_xy_ML, cos_t_star_ML, imp_par_prod_ML, pt_prong0_ML, pt_prong1_ML, imp_par_prong0_ML, imp_par_prong1_ML, max_norm_d0d0exp_ML]
   var_training: [d_len_ML, d_len_xy_ML, norm_dl_xy_ML, cos_p_ML, cos_p_xy_ML, imp_par_xy_ML, pt_prong0_ML, pt_prong1_ML, imp_par_prong0_ML, imp_par_prong1_ML, max_norm_d0d0exp_ML]
-  #var_training: [d_len_ML, d_len_xy_ML, norm_dl_xy_ML, cos_p_ML, cos_p_xy_ML, imp_par_xy_ML, max_norm_d0d0exp_ML]
   var_cand_type: cand_type_ML # name where bitmap is stored
   var_cand_type_gen: cand_type_gen_ML # name where generated bitmap is stored
   sel_signal_map: 0b00000010 # BIT(1) is signal
