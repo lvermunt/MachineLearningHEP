@@ -14,7 +14,7 @@ mlsubtype:
 
 case:
   choices: ["Bplus", "Dplus", "Ds", "Dsnew", "Dzero", "Dstar", "Lc", "Lcnew", "PIDKaon", "PIDPion", "hypertritium", "lightquarkjet" ]
-  default: "Lc"
+  default: "Dzero"
 
 binmin:
   default: 2
@@ -117,6 +117,10 @@ dogridsearch:
   type_as: [True]
 
 dosignifopt:
+  default: False
+  type_as: [True]
+
+dosaveplotsinpickle:
   default: False
   type_as: [True]
 

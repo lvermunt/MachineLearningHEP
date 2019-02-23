@@ -17,7 +17,7 @@ activate_models:
 applytodatamc: true
 binmax: 4
 binmin: 2
-case: Lc
+case: Dzero
 doROC: true
 doboundary: true
 docorrelation: false
@@ -27,6 +27,7 @@ doimportance: true
 dolearningcurve: true
 dopca: false
 dopltregressionxy: false
+dosaveplotsinpickle: false
 dosignifopt: false
 dostandard: false
 dotesting: true
