@@ -86,9 +86,6 @@ def doclassification_regression(conf):  # pylint: disable=too-many-locals, too-m
     trename = data[case]["tree_name"]
     var_all = data[case]["var_all"]
     var_signal = data[case]["var_signal"]
-    var_cand_type = data[case]["var_cand_type"]
-    sel_signal_map = data[case]['sel_signal_map']
-    sel_signal_map_rej = data[case]['sel_signal_map_rej']
     sel_bkg = data[case]["sel_bkg"]
     var_training = data[case]["var_training"]
     var_target = data[case]["var_target"]
@@ -96,7 +93,12 @@ def doclassification_regression(conf):  # pylint: disable=too-many-locals, too-m
     var_boundaries = data[case]["var_boundaries"]
     var_binning = data[case]['var_binning']
     presel_reco = data[case]["presel_reco"]
-    presel_reco_bitmap = data[case]["presel_reco_bitmap"]
+    
+    var_cand_type = data[case]["var_cand_type"]
+    bitmap = data[case]["bitmap_cand"]
+    sel_signal_map = bitmap['signal']
+    sel_signal_map_rej = bitmap['reflections']
+    presel_reco_bitmap = bitmap['std_PID'] + bitmap['std_trk']
 
     summary_string = f"#sig events: {nevt_sig}\n#bkg events: {nevt_bkg}\nmltype: {mltype}\n" \
                      f"mlsubtype: {mlsubtype}\ncase: {case}"
