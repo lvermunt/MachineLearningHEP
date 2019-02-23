@@ -122,6 +122,18 @@ Dzero:
     std_topo: 0b001000000 # BIT(6) is when selected by Topo only
     std_PID: 0b010000000 # BIT(7) is when selected by PID only
     std_trk: 0b100000000 # BIT(8) is when selected by ESDTrackCuts only
+    std_D0topo = 0b00000000000100000000000 # BIT(11)
+    std_D0bartopo = 0b00000000001000000000000 # BIT(12)
+    std_D0pid = 0b00000000010000000000000 # BIT(13)
+    std_D0barpid = 0b00000000100000000000000 # BIT(14)
+    std_D0comb = 0b00000001000000000000000 # BIT(15)
+    std_D0barcomb = 0b00000010000000000000000 # BIT(16)
+    filt_D0topo = 0b00000100000000000000000 # BIT(17)
+    filt_D0bartopo = 0b00001000000000000000000 # BIT(18)
+    filt_D0pid = 0b00010000000000000000000 # BIT(19)
+    filt_D0barpid = 0b00100000000000000000000 # BIT(20)
+    filt_D0comb = 0b01000000000000000000000 # BIT(21)
+    filt_D0barcomb = 0b10000000000000000000000 # BIT(21)
   signif_opt:
     treename_event: fTreeEventChar # variables related to the event tree
     var_event: [is_ev_rej_ML]
@@ -198,6 +210,7 @@ Dsnew:
     std_topo: 0b001000000 # BIT(6) is when selected by Topo only
     std_PID: 0b010000000 # BIT(7) is when selected by PID only
     std_trk: 0b100000000 # BIT(8) is when selected by ESDTrackCuts only
+    DplustoKKpi = 0b00000000000100000000000 # BIT(11)
   signif_opt:
     treename_event: fTreeEventChar # variables related to the event tree
     var_event: [is_ev_rej_ML]
