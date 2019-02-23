@@ -61,8 +61,6 @@ def doclassification_regression(conf):  # pylint: disable=too-many-locals, too-m
     rnd_shuffle = run_config['rnd_shuffle']
     nevt_sig = run_config['nevt_sig']
     nevt_bkg = run_config['nevt_bkg']
-    test_frac = run_config['test_frac']
-    rnd_splt = run_config['rnd_splt']
     docorrelation = run_config['docorrelation']
     dostandard = run_config['dostandard']
     dopca = run_config['dopca']
@@ -93,7 +91,7 @@ def doclassification_regression(conf):  # pylint: disable=too-many-locals, too-m
     var_boundaries = data[case]["var_boundaries"]
     var_binning = data[case]['var_binning']
     presel_reco = data[case]["presel_reco"]
-    
+
     var_cand_type = data[case]["var_cand_type"]
     bitmap = data[case]["bitmap_cand"]
     sel_signal_map = bitmap['signal']
@@ -147,8 +145,7 @@ def doclassification_regression(conf):  # pylint: disable=too-many-locals, too-m
         _, df_ml_test, df_sig_train, df_bkg_train, _, _, \
         x_train, y_train, x_test, y_test = \
             create_mlsamples(df_sig, df_bkg, sel_signal_map, sel_signal_map_rej,
-                             var_cand_type, sel_bkg, rnd_shuffle, var_signal,
-                             var_training, nevt_sig, nevt_bkg, test_frac, rnd_splt)
+                             var_cand_type, sel_bkg, var_signal, var_training, run_config)
 
     if docorrelation == 1:
         do_correlation(df_sig_train, df_bkg_train, var_all, var_corr_x, var_corr_y, plotdir)

@@ -24,8 +24,14 @@ from machine_learning_hep.logger import get_logger
 
 
 def create_mlsamples(df_sig, df_bkg, sel_signal_map, sel_signal_map_rej, var_cand_type,
-                     sel_bkg, rnd_shuffle, var_signal, var_training, nevt_sig, nevt_bkg,
-                     test_frac, rnd_splt):
+                     sel_bkg, var_signal, var_training, run_config):
+
+    rnd_shuffle = run_config['rnd_shuffle']
+    nevt_sig = run_config['nevt_sig']
+    nevt_bkg = run_config['nevt_bkg']
+    test_frac = run_config['test_frac']
+    rnd_splt = run_config['rnd_splt']
+
     sel_map = sel_signal_map + sel_signal_map_rej
     df_sig = df_sig.loc[lambda df_sig: (df_sig[var_cand_type] & sel_map == sel_signal_map)]
     df_bkg = df_bkg.query(sel_bkg)

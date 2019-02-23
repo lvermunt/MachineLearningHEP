@@ -221,15 +221,7 @@ def study_signif(case, names, bin_lim, file_mc, file_data, df_mc_reco, df_ml_tes
     gROOT.ProcessLine("gErrorIgnoreLevel = kWarning;")
 
     gen_dict = get_database_ml_parameters()[case]
-    mass = gen_dict["mass"]
-
     sopt_dict = gen_dict['signif_opt']
-    mass_fit_lim = sopt_dict['mass_fit_lim']
-    bin_width = sopt_dict['bin_width']
-    bkg_fract = sopt_dict['bkg_data_fraction']
-
-    var_cand_type = gen_dict["var_cand_type"]
-    var_cand_type_gen = gen_dict["var_cand_type_gen"]
     bitmap = gen_dict["bitmap_cand"]
     sel_signal_map = bitmap['signal']
     sel_signal_map_rej = bitmap['reflections']
@@ -245,7 +237,7 @@ def study_signif(case, names, bin_lim, file_mc, file_data, df_mc_reco, df_ml_tes
     # The uncertainty on the pre-selection efficiency times acceptance is neglected as
     # that on the expected signal yield
     eff_acc = calc_eff_acc(df_mc_gen, df_mc_reco, sel_signal_map, sel_signal_map_rej,
-                           var_cand_type, var_cand_type_gen)
+                           gen_dict["var_cand_type"], gen_dict["var_cand_type_gen"])
     exp_signal = calc_sig_dmeson(sopt_dict['filename_fonll'], sopt_dict['fonll_pred'],
                                  sopt_dict['FF'], sopt_dict['BR'], sopt_dict['sigma_MB'],
                                  sopt_dict['f_prompt'], bin_lim[0], bin_lim[1], eff_acc, n_events)
@@ -262,17 +254,18 @@ def study_signif(case, names, bin_lim, file_mc, file_data, df_mc_reco, df_ml_tes
     plt.ylabel('Significance (A.U.)', fontsize=20)
     plt.title("Significance vs probability ", fontsize=20)
 
-    df_data_dec = df_data_dec.tail(round(len(df_data_dec) * bkg_fract))
+    df_data_dec = df_data_dec.tail(round(len(df_data_dec) * sopt_dict['bkg_data_fraction']))
     sigma = calc_peak_sigma(df_mc_reco, sel_signal_map, sel_signal_map_rej,
-                            var_cand_type, mass, mass_fit_lim, bin_width)
-    sig_region = [mass - 3 * sigma, mass + 3 * sigma]
+                            gen_dict["var_cand_type"], gen_dict["mass"],
+                            sopt_dict['mass_fit_lim'], sopt_dict['bin_width'])
+    sig_region = [gen_dict["mass"] - 3 * sigma, gen_dict["mass"] + 3 * sigma]
 
     for name in names:
 
         eff_array, eff_err_array, x_axis = calc_efficiency(df_ml_test,
                                                            sel_signal_map,
                                                            sel_signal_map_rej,
-                                                           var_cand_type,
+                                                           gen_dict["var_cand_type"],
                                                            name, sopt_dict['num_steps'])
         plt.figure(fig_eff.number)
         plt.errorbar(x_axis, eff_array, yerr=eff_err_array, alpha=0.3, label=f'{name}',
@@ -281,9 +274,10 @@ def study_signif(case, names, bin_lim, file_mc, file_data, df_mc_reco, df_ml_tes
         sig_array = [eff * exp_signal for eff in eff_array]
         sig_err_array = [eff_err * exp_signal for eff_err in eff_err_array]
         bkg_array, bkg_err_array, _ = calc_bkg(df_data_dec, name, sopt_dict['num_steps'],
-                                               mass_fit_lim, bin_width, sig_region)
-        bkg_array = [bkg / bkg_fract for bkg in bkg_array]
-        bkg_err_array = [bkg_err / bkg_fract for bkg_err in bkg_err_array]
+                                               sopt_dict['mass_fit_lim'], sopt_dict['bin_width'],
+                                               sig_region)
+        bkg_array = [bkg / sopt_dict['bkg_data_fraction'] for bkg in bkg_array]
+        bkg_err_array = [bkg_err / sopt_dict['bkg_data_fraction'] for bkg_err in bkg_err_array]
         signif_array, signif_err_array = calc_signif(sig_array, sig_err_array, bkg_array,
                                                      bkg_err_array)
         plt.figure(fig_signif.number)
@@ -293,7 +287,7 @@ def study_signif(case, names, bin_lim, file_mc, file_data, df_mc_reco, df_ml_tes
     eff_arr_std, eff_er_arr_std, x_axis_std = calc_efficiency(df_ml_test,
                                                               sel_signal_map,
                                                               sel_signal_map_rej,
-                                                              var_cand_type,
+                                                              gen_dict["var_cand_type"],
                                                               'ALICE Standard',
                                                               sopt_dict['num_steps'],
                                                               sel_signal_map_std)

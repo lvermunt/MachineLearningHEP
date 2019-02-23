@@ -118,6 +118,7 @@ def post_continue(req):  # pylint: disable=unused-argument
     var_all = data[case]["var_all"]
     var_all_str = ','.join(var_all)
     var_signal = data[case]["var_signal"]
+    var_cand_type = data[case]["var_cand_type"]
     sel_signal = data[case]["sel_signal"]
     sel_signal = sel_signal.replace(' ', ',')
     sel_bkg = data[case]["sel_bkg"]
@@ -164,6 +165,7 @@ def post_continue(req):  # pylint: disable=unused-argument
         filesig=filesig, filebkg=filebkg,
         trename=trename, var_all_str=var_all_str,
         var_signal=var_signal,
+        var_cand_type=var_cand_type,
         sel_signal=sel_signal,
         sel_bkg_str=sel_bkg_str,
         var_training_str=var_training_str,
@@ -189,6 +191,7 @@ def post_form(req):  # pylint: disable=too-many-locals, too-many-statements, too
     var_all_str = get_form(req, "var_all")
     var_all = var_all_str.split(',')
     var_signal = get_form(req, "var_signal")
+    var_cand_type = get_form(req, "var_cand_type")
     sel_signal = get_form(req, "sel_signal")
     sel_signal = sel_signal.replace(',', ' ')
     sel_bkg_str = get_form(req, "sel_bkg")
@@ -319,10 +322,16 @@ def post_form(req):  # pylint: disable=too-many-locals, too-many-statements, too
     img_import: BytesIO = None
     img_gridsearch: BytesIO = None
 
+    # One should get this from database_ml_parameters in bitmap_cand
+    # For now made them hardcoded, as webapp anyway doesn't work since recent updates
+    # This fix was needed for pylint, as number of argumentes for create_mlsampels changed
+    sel_signal_map = 0b000000010
+    sel_signal_map_rej = 0b000100000
+
     # pylint: disable=unused-variable
     _, _, df_sig_train, df_bkg_train, _, _, x_train, y_train, x_test, y_test = \
-        create_mlsamples(df_sig, df_bkg, sel_signal, sel_bkg, rnd_shuffle,
-                         var_signal, var_training, nevt_sig, nevt_bkg, test_frac, rnd_splt)
+        create_mlsamples(df_sig, df_bkg, sel_signal_map, sel_signal_map_rej,
+                         var_cand_type, sel_bkg, var_signal, var_training, run_config)
     if docorrelation:
         imageIO_vardist, imageIO_scatterplot, imageIO_corr_sig, imageIO_corr_bkg = \
             do_correlation(df_sig_train, df_bkg_train, var_all, var_corr_x, var_corr_y, plotdir)
