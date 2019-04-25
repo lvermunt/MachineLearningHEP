@@ -399,3 +399,214 @@ def extract_eff_histo(run_config, data_dict, case, sel_type='ml'):
     h_eff_model_fd.Write()
     h_effacc_prompt.Write()
     h_effacc_fd.Write()
+
+# pylint: disable=too-many-statements, too-many-locals
+def extract_eff_histo_cutvar(run_config, data_dict, case):
+    """Build a histogram with the ML model selection efficiency for the different transverse
+    momentum of the analysis.
+
+    A threshold on the model output is necessary for each p_t bin. The pre-selection efficiency
+    times acceptance is taken into account.
+
+    Args:
+        run_config: configuration dictionary loaded from 'default_complete.yml'
+        data_dict: dictionary of parameters loaded from 'database_ml_parameters.yml'
+        case: analysis particle
+        sel_type: string to differentiate between 'ml' and 'std' selections
+    """
+    logger = get_logger()
+    gROOT.SetBatch(True)
+    gROOT.ProcessLine('gErrorIgnoreLevel = kError;')
+
+    test_df_list = run_config['analysis']['test_df_list']
+
+    data_dict = data_dict[case]
+    var_bin = data_dict['variables']['var_binning']
+    folder_mc = data_dict['output_folders']['pkl_merged']['mc']
+    test_df_dir = data_dict['output_folders']['mlout']
+    out_dir = data_dict['output_folders']['histoanalysis']
+    file_mc_reco = data_dict['files_names']['namefile_reco_merged']
+    file_mc_gen = data_dict['files_names']['namefile_gen_merged']
+    usecustomsel = data_dict["custom_std_sel"]["use"]
+
+    cuts_config_filename = data_dict["custom_std_sel"]["cuts_config_file"]
+    with open(cuts_config_filename, 'r') as cuts_config:
+        cuts_map = yaml.load(cuts_config)
+    b_min = cuts_map["var_binning"]["min"][0]
+    b_max = cuts_map["var_binning"]["max"][0]
+
+    h_eff_model_prompt = TH1F('hEff_Prompt_Model', ';#it{p}_{T} (GeV/#it{c});Model Efficiency',1, b_min, b_max)
+    h_eff_model_fd = TH1F('hEff_FD_Model', ';#it{p}_{T} (GeV/#it{c});Model Efficiency', 1, b_min, b_max)
+    h_effacc_prompt = TH1F('hEffAcc_Prompt_Presel',';#it{p}_{T} (GeV/#it{c});Pre-Sel Efficiency x Acceptance', 1, b_min, b_max)
+    h_effacc_fd = TH1F('hEffAcc_Prompt_FD',';#it{p}_{T} (GeV/#it{c});Pre-Sel Efficiency x Acceptance', 1, b_min, b_max)
+
+    df_mc_reco = pd.read_pickle(os.path.join(folder_mc, file_mc_reco))
+    df_mc_reco = df_mc_reco.query(data_dict['presel_reco']) #probably not necessary any more
+    df_mc_gen = pd.read_pickle(os.path.join(folder_mc, file_mc_gen))
+    df_mc_gen = df_mc_gen.query(data_dict['presel_gen'])
+
+    #pre-sel eff x acc
+    df_reco_sel = filterdataframe_singlevar(df_mc_reco, var_bin, b_min, b_max)
+    df_gen_sel = filterdataframe_singlevar(df_mc_gen, var_bin, b_min, b_max)
+
+    df_gen_sel2 = filter_df_cand(df_gen_sel, data_dict, 'mc_signal_prompt')
+    df_reco_sel2 = filter_df_cand(df_reco_sel, data_dict, 'mc_signal_prompt')
+    ea_prompt = 0
+    ea_prompt_err = 0
+    if not df_gen_sel2.empty:
+        num_tot_cand = len(df_gen_sel2)
+        ea_prompt = len(df_reco_sel2) / num_tot_cand
+        ea_prompt_err = np.sqrt(ea_prompt * (1 - ea_prompt) / num_tot_cand)
+
+    df_gen_sel2 = filter_df_cand(df_gen_sel, data_dict, 'mc_signal_FD')
+    df_reco_sel2 = filter_df_cand(df_reco_sel, data_dict, 'mc_signal_FD')
+    ea_fd = 0
+    ea_fd_err = 0
+    if not df_gen_sel2.empty:
+        num_tot_cand = len(df_gen_sel2)
+        ea_fd = len(df_reco_sel2) / num_tot_cand
+        ea_fd_err = np.sqrt(ea_fd * (1 - ea_fd) / num_tot_cand)
+
+    h_effacc_prompt.SetBinContent(1, ea_prompt)
+    h_effacc_prompt.SetBinError(1, ea_prompt_err)
+    h_effacc_fd.SetBinContent(1, ea_fd)
+    h_effacc_fd.SetBinError(1, ea_fd_err)
+    h_effacc_prompt.Sumw2()
+    h_effacc_fd.Sumw2()
+
+    h_effacc_prompt.SetStats(kFALSE)
+    h_effacc_prompt.SetMarkerSize(1.)
+    h_effacc_prompt.SetMarkerStyle(20)
+    h_effacc_prompt.SetLineWidth(2)
+    h_effacc_prompt.SetMarkerColor(kRed+2)
+    h_effacc_prompt.SetLineColor(kRed+2)
+    h_effacc_fd.SetStats(kFALSE)
+    h_effacc_fd.SetMarkerSize(1.)
+    h_effacc_fd.SetMarkerStyle(20)
+    h_effacc_fd.SetLineWidth(2)
+    h_effacc_fd.SetMarkerColor(kBlue+2)
+    h_effacc_fd.SetLineColor(kBlue+2)
+
+
+
+    customcutvarname = run_config["analysis"]["customcutvarname"]
+    customcutvarmin = run_config["analysis"]["customcutvarmin"]
+    customscanbins = run_config["analysis"]["customscanbins"]
+    customdeltascan = run_config["analysis"]["customdeltascan"]
+    customcutvarmax = run_config["analysis"]["customcutvarmax"]
+
+
+
+    #std selection efficiency
+    df_reco_sel3 = filter_df_cand(df_reco_sel, data_dict, 'mc_signal_prompt')
+    num_tot_cand = len(df_reco_sel3)
+    df_reco_sel3 = filter_df_cand(df_reco_sel3, data_dict, 'presel_track_pid')
+    for icutvar in cuts_map:
+        if not df_reco_sel3.empty and icutvar != "var_binning":
+            array_var = df_reco_sel3.loc[:, cuts_map[icutvar]["name"]].values
+            is_selected = selectcand_lincut(array_var, \
+                    cuts_map[icutvar]["min"][0], \
+                    cuts_map[icutvar]["max"][0], \
+                    cuts_map[icutvar]["isabsval"])
+            df_reco_sel3 = df_reco_sel3[is_selected]
+
+    if not df_reco_sel3.empty:
+        for iscan in range(customscanbins):
+            customscanmin = customcutvarmin + iscan * customdeltascan
+            array_var = df_reco_sel3.loc[:, customcutvarname].values
+            is_selected = selectcand_lincut(array_var, customscanmin, \
+                customcutvarmax, False)
+            df_sel = df_reco_sel3[is_selected]
+
+            num_sel_cand = len(df_sel)
+            eff_prompt_std = 0
+            eff_prompt_std_err = 0
+            if not df_sel.empty:
+                eff_prompt_std = num_sel_cand / num_tot_cand
+                eff_prompt_std_err = np.sqrt(eff_prompt_std * (1 - eff_prompt_std) / num_tot_cand)
+
+            h_eff_model_prompt.SetBinContent(1, eff_prompt_std)
+            h_eff_model_prompt.SetBinError(1, eff_prompt_std_err)
+
+            h_tot_prompt = TH1F('hEffAccPrompt', ';#it{p}_{T} (GeV/#it{c});  Efficiency x Acceptance',1, b_min, b_max)
+            h_eff_model_prompt.Sumw2()
+            h_tot_prompt.Multiply(h_effacc_prompt, h_eff_model_prompt, 1., 1.)
+
+            h_tot_prompt.SetStats(kFALSE)
+            h_tot_prompt.SetMarkerSize(1.)
+            h_tot_prompt.SetMarkerStyle(20)
+            h_tot_prompt.SetLineWidth(2)
+            h_tot_prompt.SetMarkerColor(kRed)
+            h_tot_prompt.SetLineColor(kRed)
+            h_eff_model_prompt.SetStats(kFALSE)
+            h_eff_model_prompt.SetMarkerSize(1.)
+            h_eff_model_prompt.SetMarkerStyle(20)
+            h_eff_model_prompt.SetLineWidth(2)
+            h_eff_model_prompt.SetMarkerColor(kRed-7)
+            h_eff_model_prompt.SetLineColor(kRed-7)
+
+            namefile = "efficiencies_%s_%d_%d_%.4f_%.4f.root" % (case, b_min, b_max,
+                                                                 customscanmin, customcutvarmax)
+            out_file = TFile.Open(namefile, "recreate")
+            out_file.cd()
+            h_tot_prompt.Write()
+            h_eff_model_prompt.Write()
+            h_effacc_prompt.Write()
+            out_file.Close()
+
+
+
+    df_reco_sel3 = filter_df_cand(df_reco_sel, data_dict, 'mc_signal_FD')
+    num_tot_cand = len(df_reco_sel3)
+    df_reco_sel3 = filter_df_cand(df_reco_sel3, data_dict, 'presel_track_pid')
+    for icutvar in cuts_map:
+        if not df_reco_sel3.empty and icutvar != "var_binning":
+            array_var = df_reco_sel3.loc[:, cuts_map[icutvar]["name"]].values
+            is_selected = selectcand_lincut(array_var, \
+                    cuts_map[icutvar]["min"][0], \
+                    cuts_map[icutvar]["max"][0], \
+                    cuts_map[icutvar]["isabsval"])
+            df_reco_sel3 = df_reco_sel3[is_selected]
+
+    if not df_reco_sel3.empty:
+        for iscan in range(customscanbins):
+            customscanmin = customcutvarmin + iscan * customdeltascan
+            array_var = df_reco_sel3.loc[:, customcutvarname].values
+            is_selected = selectcand_lincut(array_var, customscanmin, \
+                customcutvarmax, False)
+            df_sel = df_reco_sel3[is_selected]
+
+            num_sel_cand = len(df_sel)
+            eff_fd_std = 0
+            eff_fd_std_err = 0
+            if not df_sel.empty:
+                eff_fd_std = num_sel_cand / num_tot_cand
+                eff_fd_std_err = np.sqrt(eff_fd_std * (1 - eff_fd_std) / num_tot_cand)
+
+            h_eff_model_fd.SetBinContent(1, eff_fd_std)
+            h_eff_model_fd.SetBinError(1, eff_fd_std_err)
+
+            h_tot_fd = TH1F('hEffAccFD', ';#it{p}_{T} (GeV/#it{c});  Efficiency x Acceptance',1, b_min, b_max)
+            h_eff_model_fd.Sumw2()
+            h_tot_fd.Multiply(h_effacc_fd, h_eff_model_fd, 1., 1.)
+
+            h_tot_fd.SetStats(kFALSE)
+            h_tot_fd.SetMarkerSize(1.)
+            h_tot_fd.SetMarkerStyle(20)
+            h_tot_fd.SetLineWidth(2)
+            h_tot_fd.SetMarkerColor(kBlue)
+            h_tot_fd.SetLineColor(kBlue)
+            h_eff_model_fd.SetStats(kFALSE)
+            h_eff_model_fd.SetMarkerSize(1.)
+            h_eff_model_fd.SetMarkerStyle(20)
+            h_eff_model_fd.SetLineWidth(2)
+            h_eff_model_fd.SetMarkerColor(kBlue-7)
+            h_eff_model_fd.SetLineColor(kBlue-7)
+            namefile = "efficiencies_%s_%d_%d_%.4f_%.4f.root" % (case, b_min, b_max,
+                                                                 customscanmin, customcutvarmax)
+            out_file = TFile.Open(namefile, "update")
+            out_file.cd()
+            h_tot_fd.Write()
+            h_eff_model_fd.Write()
+            h_effacc_fd.Write()
+            out_file.Close()
