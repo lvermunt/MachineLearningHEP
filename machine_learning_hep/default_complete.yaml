@@ -1,4 +1,4 @@
-case: LctopK0sPbPbCen010
+case: LctopK0sPbPbCen3050
 conversion:
   mc: 
     activate: false #never change this without thinking!
@@ -26,29 +26,29 @@ merging:
     maxfilestomerge: 500
 ml_study:   
   activate: false
-  applytodatamc: true
+  applytodatamc: false
   binmin: [6] 
   binmax: [12]
-  doROC: true
+  doROC: false
   doboundary: false
   docorrelation: false
-  docrossvalidation: true
+  docrossvalidation: false
   dogridsearch: false
-  doimportance: true
-  dolearningcurve: true
+  doimportance: false
+  dolearningcurve: false
   dopca: false
   dopltregressionxy: false
-  dosignifopt: true
-  doefficiency: true
+  dosignifopt: false
+  doefficiency: false
   dostandard: false
-  dotesting: true
-  dotraining: true
-  loadsampleoption: true
+  dotesting: false
+  dotraining: false
+  loadsampleoption: false
   mlsubtype: HFmeson
   mltype: BinaryClassification
   ncores: -1
-  nevt_bkg: 50000
-  nevt_sig: 50000
+  nevt_bkg: 500000
+  nevt_sig: 500000
   nkfolds: 5
   rnd_shuffle: 12
   rnd_splt: 12
@@ -58,10 +58,10 @@ ml_study:
 analysis:
   data:
     nmaxchunks: 1000
-    maxfiles: 500
+    maxfiles: -1
     std:
       doapply: false
-      domass: false
+      domass: true
     ml:
       doapply: false
       domass: false
@@ -79,17 +79,22 @@ analysis:
   modelname: xgboost
   binmin: [6]
   binmax: [12]
+  customcutvarname: signd0
+  customcutvarmin: -0.010
+  customcutvarmax: 9999.
+  customscanbins: 51
+  customdeltascan: 0.0004
   probcut: [0.4]
-  probcutoptimal: [0.80]
-  models: [xgboost_classifiernevt_sig50000_nevt_bkg50000_BinaryClassificationLctopK0sPbPbCen010_dfselection_pt_cand_6.0_12.0.sav] 
+  probcutoptimal: [0.88]
+  models: [/home/lvermunt/CutVar_signd0/trained_models/xgboost_classifiernevt_sig100000_nevt_bkg100000_BinaryClassificationLctopK0sPbPbCen3050_dfselection_pt_cand_6.0_12.0.sav]
   test_df_list: [xxxx]
   doinvmassspectra: true
   uselikelihood: 0
   sgnfunc: [kGaus]
-  bkgfunc: [kExpo]
-  masspeak: 2.2864
-  massmin: [2.14]
-  massmax: [2.48]
-  rebin: [2]
+  bkgfunc: [kPol2]
+  masspeak: 2.2864600
+  massmin: [2.0864600]
+  massmax: [2.4864600]
+  rebin: [1]
   includesecpeak: [0]
   masssecpeak: 1.869

@@ -23,6 +23,7 @@ from machine_learning_hep.doclassification_regression import doclassification_re
 from machine_learning_hep.doanalysis import doanalysis
 from machine_learning_hep.extractmasshisto import extractmasshisto
 from machine_learning_hep.efficiency import extract_eff_histo
+from machine_learning_hep.efficiency import extract_eff_histo_cutvar
 
 def do_entire_analysis(): # pylint: disable=too-many-locals, too-many-statements, too-many-branches
 
@@ -182,7 +183,13 @@ def do_entire_analysis(): # pylint: disable=too-many-locals, too-many-statements
         extract_eff_histo(data_config, data_param, case, 'ml')
 
     if doeffhiststd:
-        print("extracting eff x acc histo std")
-        extract_eff_histo(data_config, data_param, case, 'std')
+        customcut_use = data_param[case]["custom_std_sel"]["use"]
+        customcut_scan = data_param[case]["custom_std_sel"]["cut_var"]
+        if customcut_use and customcut_scan:
+            print("extracting eff x acc histo for cut scan")
+            extract_eff_histo_cutvar(data_config, data_param, case)
+        else:
+            print("extracting eff x acc histo std")
+            extract_eff_histo(data_config, data_param, case, 'std')
 
 do_entire_analysis()
