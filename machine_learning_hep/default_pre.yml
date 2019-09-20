@@ -51,7 +51,7 @@ mlapplication:
     domergeapplyperiods: false
 
 analysis:
-  type: SPDvspt
+  type: MBvspt
   data:
     histomass: false
   mc:
