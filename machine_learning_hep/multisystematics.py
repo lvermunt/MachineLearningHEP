@@ -104,8 +104,12 @@ class MultiSystematics:
                 if self.p_useperiodforlimits[indexp] == 1:
                     self.logger.info("Defining systematic cut variations for period: %s", \
                                      self.p_period[indexp])
-                    min_cv_cut, max_cv_cut = \
-                          self.process_listsample[indexp].define_cutvariation_limits()
+                    #min_cv_cut, max_cv_cut = \
+                    #      self.process_listsample[indexp].define_cutvariation_limits()
+                    #min_cv_cut = [0.998, 0.996, 0.98, 0.97, 0.9]
+                    #max_cv_cut = [0.9999, 0.9999, 0.9999, 0.999, 0.999]
+                    min_cv_cut = [0.99, 0.99, 0.94, 0.94, 0.94]
+                    max_cv_cut = [0.9999, 0.9999, 0.999, 0.999, 0.999]
 
         if domass is True:
             for indexp in range(self.prodnumber):
@@ -128,9 +132,9 @@ class MultiSystematics:
             for indexp in range(self.prodnumber):
                 if self.p_useperiod[indexp] == 1:
                     self.process_listsample[indexp].cutvariation_fitter(min_cv_cut, max_cv_cut)
-                    self.process_listsample[indexp].cutvariation_efficiency()
+                    #self.process_listsample[indexp].cutvariation_efficiency()
             self.myprocesstot.cutvariation_fitter(min_cv_cut, max_cv_cut)
-            self.myprocesstot.cutvariation_efficiency()
+            #self.myprocesstot.cutvariation_efficiency()
 
         if docross is True:
             for indexp in range(self.prodnumber):

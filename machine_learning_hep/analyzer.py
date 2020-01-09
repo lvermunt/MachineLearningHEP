@@ -350,7 +350,7 @@ class Analyzer:
                                                                   -1)
                 h_mc_init_rebin = TH1F()
                 h_mc_init_rebin_.Copy(h_mc_init_rebin)
-                h_mc_init_rebin.SetTitle("%.1f < #it{p}_{T} < %.1f (prob > %.2f)" \
+                h_mc_init_rebin.SetTitle("%.1f < #it{p}_{T} < %.1f (prob > %.4f)" \
                                          % (self.lpt_finbinmin[ipt], self.lpt_finbinmax[ipt], \
                                             self.lpt_probcutfin[bin_id]))
                 h_mc_init_rebin.GetXaxis().SetTitle("#it{M}_{inv} (GeV/#it{c}^{2})")
@@ -461,7 +461,7 @@ class Analyzer:
                                                                     -1)
                 h_data_init_rebin = TH1F()
                 h_data_init_rebin_.Copy(h_data_init_rebin)
-                h_data_init_rebin.SetTitle("%.1f < #it{p}_{T} < %.1f (prob > %.2f)" \
+                h_data_init_rebin.SetTitle("%.1f < #it{p}_{T} < %.1f (prob > %.4f)" \
                                            % (self.lpt_finbinmin[ipt], self.lpt_finbinmax[ipt], \
                                               self.lpt_probcutfin[bin_id]))
                 h_data_init_rebin.GetXaxis().SetTitle("#it{M}_{inv} (GeV/#it{c}^{2})")
@@ -571,7 +571,7 @@ class Analyzer:
                                                                   self.rebins[imult][ipt], -1)
                 h_invmass_rebin = TH1F()
                 h_invmass_rebin_.Copy(h_invmass_rebin)
-                h_invmass_rebin.SetTitle("%.1f < #it{p}_{T} < %.1f (prob > %.2f)" \
+                h_invmass_rebin.SetTitle("%.1f < #it{p}_{T} < %.1f (prob > %.4f)" \
                                          % (self.lpt_finbinmin[ipt], self.lpt_finbinmax[ipt], \
                                             self.lpt_probcutfin[bin_id]))
                 h_invmass_rebin.GetXaxis().SetTitle("#it{M}_{inv} (GeV/#it{c}^{2})")
@@ -612,8 +612,8 @@ class Analyzer:
                     mass_fitter[ifit].SetInitialGaussianSigma(sigma)
                     #if self.p_fixedmean:
                     #    mass_fitter[ifit].SetFixGaussianMean(mean_for_data)
-                    if fix:
-                        mass_fitter[ifit].SetFixGaussianSigma(sigma)
+                    #if fix:
+                    #    mass_fitter[ifit].SetFixGaussianSigma(sigma)
 
                     mass_fitter[ifit].SetNSigma4SideBands(self.p_exclude_nsigma_sideband)
 

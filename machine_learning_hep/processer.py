@@ -246,17 +246,7 @@ class Processer: # pylint: disable=too-many-instance-attributes
         dfreco = pd.merge(dfreco, dfevt, on=self.v_evtmatch)
         isselacc = selectfidacc(dfreco.pt_cand.values, dfreco.y_cand.values)
         dfreco = dfreco[np.array(isselacc, dtype=bool)]
-        arraysub = [0 for ival in range(len(dfreco))]
-        n_tracklets_corr = dfreco["n_tracklets_corr"].values
-        n_tracklets_corr_sub = None
-        for iprong in range(self.nprongs):
-            spdhits_thisprong = dfreco["spdhits_prong%s" % iprong].values
-            ntrackletsthisprong = [1 if spdhits_thisprong[index] == 3 else 0 \
-                                   for index in range(len(dfreco))]
-            arraysub = np.add(ntrackletsthisprong, arraysub)
-        n_tracklets_corr_sub = np.subtract(n_tracklets_corr, arraysub)
 
-        dfreco["n_tracklets_corr_sub"] = n_tracklets_corr_sub
         if self.b_trackcuts is not None:
             dfreco = filter_bit_df(dfreco, self.v_bitvar, self.b_trackcuts)
         dfreco[self.v_isstd] = np.array(tag_bit_df(dfreco, self.v_bitvar,
@@ -269,6 +259,9 @@ class Processer: # pylint: disable=too-many-instance-attributes
                                                             self.b_mcsigprompt), dtype=int)
             dfreco[self.v_ismcfd] = np.array(tag_bit_df(dfreco, self.v_bitvar,
                                                         self.b_mcsigfd), dtype=int)
+            dfreco[self.v_ismcbkg] = np.array(tag_bit_df(dfreco, self.v_bitvar,
+                                                         self.b_mcbkg), dtype=int)
+        if self.mcordata == "data" and self.case.startswith( 'Bs' ):
             dfreco[self.v_ismcbkg] = np.array(tag_bit_df(dfreco, self.v_bitvar,
                                                          self.b_mcbkg), dtype=int)
         pickle.dump(dfreco, openfile(self.l_reco[file_index], "wb"), protocol=4)
@@ -453,29 +446,29 @@ class Processer: # pylint: disable=too-many-instance-attributes
                 df_bin = selectdfrunlist(df_bin, \
                          self.run_param[self.runlistrigger[self.triggerbit]], "run_number")
                 fill_hist(h_invmass, df_bin.inv_mass)
-                if "INT7" not in self.triggerbit and self.mcordata == "data":
-                    fileweight_name = "%s/correctionsweights.root" % self.d_val
-                    fileweight = TFile.Open(fileweight_name, "read")
-                    namefunction = "funcnorm_%s_%s" % (self.triggerbit, self.v_var2_binning_gen)
-                    funcweighttrig = fileweight.Get(namefunction)
-                    if funcweighttrig:
-                        weights = evaluate(funcweighttrig, df_bin[self.v_var2_binning])
-                        weightsinv = [1./weight for weight in weights]
-                        fill_hist(h_invmass_weight, df_bin.inv_mass, weights=weightsinv)
+                #if "INT7" not in self.triggerbit and self.mcordata == "data":
+                #    fileweight_name = "%s/correctionsweights.root" % self.d_val
+                #    fileweight = TFile.Open(fileweight_name, "read")
+                #    namefunction = "funcnorm_%s_%s" % (self.triggerbit, self.v_var2_binning_gen)
+                #    funcweighttrig = fileweight.Get(namefunction)
+                #    if funcweighttrig:
+                #        weights = evaluate(funcweighttrig, df_bin[self.v_var2_binning])
+                #        weightsinv = [1./weight for weight in weights]
+                #        fill_hist(h_invmass_weight, df_bin.inv_mass, weights=weightsinv)
                 myfile.cd()
                 h_invmass.Write()
                 h_invmass_weight.Write()
-                histmult = TH1F("hmultpt%dmult%d" % (ipt, ibin2),
-                                "hmultpt%dmult%d"  % (ipt, ibin2), 1000, 0, 1000)
-                fill_hist(histmult, df_bin.n_tracklets_corr)
-                histmult.Write()
-                h_v0m_ntrackletsD = TH2F("h_v0m_ntrackletsD%d%d" % (ibin2, ipt),
-                                         "h_v0m_ntrackletsD%d%d" % (ibin2, ipt),
-                                         200, 0, 200, 200, -0.5, 1999.5)
-                v_v0m_ntrackletsD = np.vstack((df_bin.n_tracklets_corr,
-                                               df_bin.v0m_corr)).T
-                fill_hist(h_v0m_ntrackletsD, v_v0m_ntrackletsD)
-                h_v0m_ntrackletsD.Write()
+                #histmult = TH1F("hmultpt%dmult%d" % (ipt, ibin2),
+                #                "hmultpt%dmult%d"  % (ipt, ibin2), 1000, 0, 1000)
+                #fill_hist(histmult, df_bin.n_tracklets_corr)
+                #histmult.Write()
+                #h_v0m_ntrackletsD = TH2F("h_v0m_ntrackletsD%d%d" % (ibin2, ipt),
+                #                         "h_v0m_ntrackletsD%d%d" % (ibin2, ipt),
+                #                         200, 0, 200, 200, -0.5, 1999.5)
+                #v_v0m_ntrackletsD = np.vstack((df_bin.n_tracklets_corr,
+                #                               df_bin.v0m_corr)).T
+                #fill_hist(h_v0m_ntrackletsD, v_v0m_ntrackletsD)
+                #h_v0m_ntrackletsD.Write()
                 if "pt_jet" in df_bin.columns:
                     zarray = z_calc(df_bin.pt_jet, df_bin.phi_jet, df_bin.eta_jet,
                                     df_bin.pt_cand, df_bin.phi_cand, df_bin.eta_cand)
@@ -483,6 +476,19 @@ class Processer: # pylint: disable=too-many-instance-attributes
                     zvsinvmass = np.vstack((df_bin.inv_mass, zarray)).T
                     fill_hist(h_zvsinvmass, zvsinvmass)
                     h_zvsinvmass.Write()
+
+                if self.mcordata == "data":
+                    df_bin_sig = df_bin[df_bin[self.v_ismcbkg] == 0]
+                    df_bin_bkg = df_bin[df_bin[self.v_ismcbkg] == 1]
+                    h_invmass_sig = TH1F("hmass_sig" + suffix, "", self.p_num_bins,
+                                         self.p_mass_fit_lim[0], self.p_mass_fit_lim[1])
+                    h_invmass_bkg = TH1F("hmass_bkg" + suffix, "", self.p_num_bins,
+                                         self.p_mass_fit_lim[0], self.p_mass_fit_lim[1])
+                    fill_hist(h_invmass_sig, df_bin_sig.inv_mass)
+                    fill_hist(h_invmass_bkg, df_bin_bkg.inv_mass)
+                    myfile.cd()
+                    h_invmass_sig.Write()
+                    h_invmass_bkg.Write()
 
                 if self.mcordata == "mc":
                     df_bin[self.v_ismcrefl] = np.array(tag_bit_df(df_bin, self.v_bitvar,

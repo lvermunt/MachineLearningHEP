@@ -337,15 +337,15 @@ class Systematics:
 
                     fill_hist(h_invmass, df_bin.inv_mass)
 
-                    if "INT7" not in self.triggerbit:
-                        fileweight_name = "%s/correctionsweights.root" % self.d_val
-                        fileweight = TFile.Open(fileweight_name, "read")
-                        namefunction = "funcnorm_%s_%s" % (self.triggerbit, self.v_var2_binning)
-                        funcweighttrig = fileweight.Get(namefunction)
-                        if funcweighttrig:
-                            weights = evaluate(funcweighttrig, df_bin[self.v_var2_binning])
-                            weightsinv = [1./weight for weight in weights]
-                            fill_hist(h_invmass_weight, df_bin.inv_mass, weights=weightsinv)
+                    #if "INT7" not in self.triggerbit:
+                    #    fileweight_name = "%s/correctionsweights.root" % self.d_val
+                    #    fileweight = TFile.Open(fileweight_name, "read")
+                    #    namefunction = "funcnorm_%s_%s" % (self.triggerbit, self.v_var2_binning)
+                    #    funcweighttrig = fileweight.Get(namefunction)
+                    #    if funcweighttrig:
+                    #        weights = evaluate(funcweighttrig, df_bin[self.v_var2_binning])
+                    #        weightsinv = [1./weight for weight in weights]
+                    #        fill_hist(h_invmass_weight, df_bin.inv_mass, weights=weightsinv)
                     myfile.cd()
                     h_invmass.Write()
                     h_invmass_weight.Write()
@@ -517,7 +517,10 @@ class Systematics:
 
             for imult in range(len(self.lvar2_binmin)):
 
-                mean_for_data, sigma_for_data = self.load_central_meansigma(imult)
+                mean_for_data = []
+                sigma_for_data = []
+                if self.p_fixedmean or self.p_fixedsigma:
+                    mean_for_data, sigma_for_data = self.load_central_meansigma(imult)
 
                 for ipt in range(self.p_nptfinbins):
                     bin_id = self.bin_matching[ipt]
