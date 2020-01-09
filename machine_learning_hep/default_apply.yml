@@ -46,14 +46,14 @@ mlapplication:
   data:
     doapply: true
     domergeapply: true
-    docontinueafterstop: false
+    docontinueafterstop: true
   mc:
     doapply: true
     domergeapply: true
-    docontinueafterstop: false
+    docontinueafterstop: true
 
 analysis:
-  type: SPDvspt
+  type: MBvspt
   # Do each period separately including merged (true)
   # Do only merged (false)
   doperperiod: true

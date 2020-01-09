@@ -34,6 +34,7 @@ ml_study:
   dolearningcurve: false
   doroc: false
   doroctraintest: false
+  doplotdistr: false
   doimportance: false
   dogridsearch: false
   doboundary: false
@@ -53,23 +54,23 @@ mlapplication:
     docontinueafterstop: false
 
 analysis:
-  type: MBvspt_ntrkl
+  type: MBvspt
   # Do each period separately including merged (true)
   # Do only merged (false)
-  doperperiod: true
+  doperperiod: false
   data:
-    histomass: false
+    histomass: true
   mc:
-    histomass: false
-    efficiency: false
+    histomass: true
+    efficiency: true
     feeddown: false
   dofit: true
   # Control the yield systemaitc uncertainty
   dosyst: false
   dojetstudies: false
   doeff: true
-  docross: true
-  doplots: true
+  docross: false
+  doplots: false
 
 systematics:
   cutvar:
