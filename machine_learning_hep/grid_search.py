@@ -17,6 +17,7 @@ Methods to do hyper-parameters optimization
 """
 from io import BytesIO
 import itertools
+import pickle as pl
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -114,6 +115,9 @@ def perform_plot_gridsearch(names, scores, par_grid, keys, changeparameter, outp
         pad.legend(fontsize=10)
     plotname = output_ + "/GridSearchResults" + suffix_ + ".png"
     plt.savefig(plotname)
+    plotnamepickle = output_ + "/GridSearchResults" + suffix_ + ".pickle"
+    with open(plotnamepickle, 'wb') as fid:
+        pl.dump(fig, fid)
     img_gridsearch = BytesIO()
     plt.savefig(img_gridsearch, format='png')
     img_gridsearch.seek(0)
