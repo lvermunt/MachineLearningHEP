@@ -35,6 +35,8 @@ dist/*
 machine_learning_hep/data/**/*.root
 machine_learning_hep/D0kINT7HighMultwithJets
 machine_learning_hep/LckINT7HighMultwithJets
+machine_learning_hep/FactorisePID
+machine_learning_hep/GridSearch
 
 dataframes_*
 plots_*
