@@ -23,11 +23,11 @@ import random as rd
 import uproot
 import pandas as pd
 import numpy as np
-from machine_learning_hep.selectionutils import selectfidacc
+from machine_learning_hep.utilities_selection import selectfidacc, selectdfquery, seldf_singlevar
 from machine_learning_hep.bitwise import filter_bit_df, tag_bit_df
-from machine_learning_hep.utilities import selectdfquery, merge_method
+from machine_learning_hep.utilities import merge_method
 from machine_learning_hep.utilities import list_folders, createlist, appendmainfoldertolist
-from machine_learning_hep.utilities import create_folder_struc, seldf_singlevar, openfile
+from machine_learning_hep.utilities import create_folder_struc, openfile
 from machine_learning_hep.utilities import mergerootfiles
 from machine_learning_hep.utilities import get_timestamp_string
 from machine_learning_hep.models import apply # pylint: disable=import-error

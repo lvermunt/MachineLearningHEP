@@ -28,8 +28,9 @@ from array import array
 import numpy as np
 import pandas as pd
 import lz4
-from machine_learning_hep.selectionutils import select_runs
+from machine_learning_hep.utilities_selection import select_runs
 from ROOT import TGraphAsymmErrors  # pylint: disable=import-error, no-name-in-module
+from ROOT import TNtuple, TFile # pylint: disable=import-error,no-name-in-module
 
 def openfile(filename, attr):
     """
@@ -45,24 +46,35 @@ def openfile(filename, attr):
         return lz4.frame.open(filename, attr)
     return open(filename, attr)
 
-def selectdfquery(dfr, selection):
+def fill_ntuple(tupname, data, names):
     """
-    Query on dataframe
+    Create and fill ROOT NTuple with the data sample.
+      tupname : name of the NTuple
+      data : data sample
+      names : names of the NTuple variables
     """
-    if selection is not None:
-        dfr = dfr.query(selection)
-    return dfr
+    variables = ""
+    for n in names:
+        variables += "%s:" % n
+    variables = variables[:-1]
+    values = len(names)*[0.]
+    avalues = array('f', values)
+    nt = TNtuple(tupname, "", variables)
+    for d in data:
+        for i in range(len(names)):
+            avalues[i] = d[i]
+        nt.Fill(avalues)
+    nt.Write()
 
-def selectdfrunlist(dfr, runlist, runvar):
+def write_tree(filename, treename, dataframe):
     """
-    Select smaller runlist on dataframe
+    Write TTree from dataframe with in filanem
     """
-    if runlist is not None:
-        runlist_np = np.asarray(runlist)
-        array_run_np = np.asarray(dfr[runvar].values)
-        issel = select_runs(runlist_np, array_run_np)
-        dfr = dfr[issel]
-    return dfr
+    listvar = list(dataframe)
+    values = dataframe.values
+    fout = TFile.Open(filename, "recreate")
+    fout.cd()
+    fill_ntuple(treename, values, listvar)
 
 def merge_method(listfiles, namemerged):
     """
@@ -171,28 +183,6 @@ def createlist(prefolder, mylistfolder, namefile):
     listfiles = appendfiletolist(mylistfolder, namefile)
     listfiles = appendmainfoldertolist(prefolder, listfiles)
     return listfiles
-
-def seldf_singlevar(dataframe, var, minval, maxval):
-    """
-    Make projection on variable using [X,Y), e.g. pT or multiplicity
-    """
-    dataframe = dataframe.loc[(dataframe[var] >= minval) & (dataframe[var] < maxval)]
-    return dataframe
-
-def seldf_singlevar_inclusive(dataframe, var, minval, maxval):
-    """
-    Make projection on variable using [X,Y), e.g. pT or multiplicity
-    """
-    dataframe = dataframe.loc[(dataframe[var] >= minval) & (dataframe[var] <= maxval)]
-    return dataframe
-
-def split_df_sigbkg(dataframe_, var_signal_):
-    """
-    Split dataframe in signal and background dataframes
-    """
-    dataframe_sig_ = dataframe_.loc[dataframe_[var_signal_] == 1]
-    dataframe_bkg_ = dataframe_.loc[dataframe_[var_signal_] == 0]
-    return dataframe_sig_, dataframe_bkg_
 
 def createstringselection(var, low, high):
     """
@@ -309,7 +299,6 @@ def make_message_notfound(name, location=None):
     if location is not None:
         return "Error: Failed to get %s in %s" % (name, location)
     return "Error: Failed to get %s" % name
-
 # Jet related functions, to comment
 
 def z_calc(pt_1, phi_1, eta_1, pt_2, phi_2, eta_2):

@@ -30,7 +30,6 @@ from machine_learning_hep.utilities import openfile, selectdfquery
 from machine_learning_hep.correlations import vardistplot, scatterplot, correlationmatrix
 from machine_learning_hep.models import getclf_scikit, getclf_xgboost, getclf_keras
 from machine_learning_hep.models import fit, savemodels, test, apply, decisionboundaries
-from machine_learning_hep.root import write_tree
 from machine_learning_hep.mlperformance import cross_validation_mse, plot_cross_validation_mse
 from machine_learning_hep.mlperformance import plot_learning_curves, precision_recall
 from machine_learning_hep.mlperformance import roc_train_test, plot_overtraining
@@ -39,7 +38,7 @@ from machine_learning_hep.models import importanceplotall
 from machine_learning_hep.logger import get_logger
 from machine_learning_hep.optimization import calc_bkg, calc_signif, calc_eff, calc_sigeff_steps
 from machine_learning_hep.correlations import vardistplot_probscan, efficiency_cutscan
-from machine_learning_hep.utilities import checkdirlist, checkmakedirlist
+from machine_learning_hep.utilities import checkdirlist, checkmakedirlist, write_tree
 
 # pylint: disable=too-many-instance-attributes, too-many-statements
 class Optimiser:

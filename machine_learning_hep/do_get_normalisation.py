@@ -17,7 +17,7 @@ import yaml
 import pandas as pd
 
 from ROOT import TFile, TH1F # pylint: disable=import-error, no-name-in-module
-from machine_learning_hep.selectionutils import getnormforselevt
+from machine_learning_hep.utilities_selection import getnormforselevt
 
 # pylint: disable=invalid-name
 case = "Dspp5TeV"
