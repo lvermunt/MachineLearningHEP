@@ -16,39 +16,37 @@
 main script for doing data processing, machine learning and analysis
 """
 
-#import os
-import sys
-import subprocess
 import argparse
+import subprocess
+# import os
+import sys
 from os.path import exists
+
 import yaml
+# To set batch mode immediately
+from ROOT import gROOT  # pylint: disable=import-error, no-name-in-module
+from machine_learning_hep.processerdhadrons_jet import ProcesserDhadrons_jet
 from pkg_resources import resource_stream
 
-# To set batch mode immediately
-from ROOT import gROOT # pylint: disable=import-error, no-name-in-module
-
+from machine_learning_hep.analysis.analyzer import Analyzer
+from machine_learning_hep.analysis.analyzer_Dhadrons import AnalyzerDhadrons
+from machine_learning_hep.analysis.analyzer_jet import AnalyzerJet
+from machine_learning_hep.analysis.analyzer_manager import AnalyzerManager
+from machine_learning_hep.analysis.analyzerdhadrons_mult import AnalyzerDhadrons_mult
+from machine_learning_hep.analysis.systematics import Systematics
+from machine_learning_hep.logger import configure_logger, get_logger
 from machine_learning_hep.multiprocesser import MultiProcesser
+from machine_learning_hep.optimiser import Optimiser
 from machine_learning_hep.processer import Processer
 from machine_learning_hep.processerdhadrons import ProcesserDhadrons
 from machine_learning_hep.processerdhadrons_mult import ProcesserDhadrons_mult
-from machine_learning_hep.processerdhadrons_jet import ProcesserDhadrons_jet
-#from machine_learning_hep.doskimming import conversion, merging, merging_period, skim
-#from machine_learning_hep.doclassification_regression import doclassification_regression
-#from machine_learning_hep.doanalysis import doanalysis
-#from machine_learning_hep.extractmasshisto import extractmasshisto
-#from machine_learning_hep.efficiencyan import analysis_eff
-from  machine_learning_hep.utilities import checkmakedirlist, checkmakedir
-from  machine_learning_hep.utilities import checkdirlist, checkdir
-from  machine_learning_hep.logger import configure_logger, get_logger
-from machine_learning_hep.optimiser import Optimiser
-
-from machine_learning_hep.analysis.analyzer_manager import AnalyzerManager
-from machine_learning_hep.analysis.analyzer import Analyzer
-from machine_learning_hep.analysis.analyzer_Dhadrons import AnalyzerDhadrons
-from machine_learning_hep.analysis.analyzerdhadrons_mult import AnalyzerDhadrons_mult
-from machine_learning_hep.analysis.analyzer_jet import AnalyzerJet
-
-from machine_learning_hep.analysis.systematics import Systematics
+from machine_learning_hep.utilities import checkdirlist, checkdir
+# from machine_learning_hep.doskimming import conversion, merging, merging_period, skim
+# from machine_learning_hep.doclassification_regression import doclassification_regression
+# from machine_learning_hep.doanalysis import doanalysis
+# from machine_learning_hep.extractmasshisto import extractmasshisto
+# from machine_learning_hep.efficiencyan import analysis_eff
+from machine_learning_hep.utilities import checkmakedirlist, checkmakedir
 
 try:
 # FIXME(https://github.com/abseil/abseil-py/issues/99) # pylint: disable=fixme

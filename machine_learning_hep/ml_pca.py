@@ -13,14 +13,11 @@
 #############################################################################
 
 """
-Methods to: apply Principal Component Analysis (PCA) and to standardize features
+Methods to: perform PCA analysis
 """
-from io import BytesIO
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
 
 
 def get_pcadataframe_pca(dataframe, n_pca):
@@ -40,18 +37,3 @@ def getdataframe_standardised(dataframe):
     data_values_std = StandardScaler().fit_transform(data_values)
     dataframe_std = pd.DataFrame(data=data_values_std, columns=listheaders)
     return dataframe_std
-
-
-def plotvariance_pca(pca_object, output_):
-    figure = plt.figure(figsize=(15, 10)) # pylint: disable=unused-variable
-    plt.plot(np.cumsum(pca_object.explained_variance_ratio_))
-    plt.plot([0, 10], [0.95, 0.95])
-    plt.xlabel('number of components', fontsize=16)
-    plt.ylabel('cumulative explained variance', fontsize=16)
-    plt.title('Explained variance', fontsize=16)
-    plt.ylim([0, 1])
-    plotname = output_+'/PCAvariance.png'
-    plt.savefig(plotname, bbox_inches='tight')
-    img_pca = BytesIO()
-    plt.savefig(img_pca, format='png')
-    img_pca.seek(0)

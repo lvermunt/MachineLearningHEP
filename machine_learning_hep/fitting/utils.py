@@ -20,14 +20,15 @@ Interfacing with
     2. user configuration database
 Providing and storing fitters
 """
-from os.path import join
 import inspect
+from os.path import join
 
 # pylint: disable=import-error, no-name-in-module, unused-import
 from ROOT import TFile
 
-from machine_learning_hep.io import parse_yaml, dump_yaml_from_dict, checkdir
+from machine_learning_hep.utilities import parse_yaml, dump_yaml_from_dict, checkdir
 from machine_learning_hep.logger import get_logger
+
 
 def save_fit(fit, save_dir, annotations=None):
 
@@ -35,7 +36,8 @@ def save_fit(fit, save_dir, annotations=None):
         get_logger().warning("Fit has not been done and will hence not be saved")
         return
 
-    checkdir(save_dir)
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
 
     root_file_name = join(save_dir, "root_objects.root")
     root_file = TFile.Open(root_file_name, "RECREATE")

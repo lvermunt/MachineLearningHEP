@@ -17,7 +17,9 @@ Methods to: utility methods to conpute efficiency and study expected significanc
 """
 import numpy as np
 from ROOT import TH1F, TFile  # pylint: disable=import-error,no-name-in-module
+
 from machine_learning_hep.logger import get_logger
+
 
 def calc_bkg(df_bkg, name, num_steps, fit_region, bkg_func, bin_width, sig_region, save_fit,
              out_dir, pt_lims):
@@ -70,9 +72,10 @@ def calc_bkg(df_bkg, name, num_steps, fit_region, bkg_func, bin_width, sig_regio
         bkg_err_array.append(bkg_err)
         del hmass
 
-    out_file.Close()
-    return bkg_array, bkg_err_array, x_axis
+    if save_fit:
+        out_file.Close()
 
+    return bkg_array, bkg_err_array, x_axis
 
 
 def calc_signif(sig_array, sig_err_array, bkg_array, bkg_err_array):
@@ -97,11 +100,13 @@ def calc_signif(sig_array, sig_err_array, bkg_array, bkg_err_array):
 
     return signif_array, signif_err_array
 
+
 def calc_eff(num, den):
     eff = num / den
     eff_err = np.sqrt(eff * (1 - eff) / den)
 
     return eff, eff_err
+
 
 def calc_sigeff_steps(num_steps, df_sig, name):
     logger = get_logger()
@@ -125,4 +130,3 @@ def calc_sigeff_steps(num_steps, df_sig, name):
         eff_err_array.append(err_eff)
 
     return eff_array, eff_err_array, x_axis
-    

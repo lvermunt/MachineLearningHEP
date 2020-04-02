@@ -16,10 +16,12 @@
 main script for doing final stage analysis
 """
 import os
+
 # pylint: disable=import-error, no-name-in-module, unused-import
 import yaml
 from ROOT import gROOT, TFile
-from machine_learning_hep.utilities_plot import plot_histograms
+
+from machine_learning_hep.utilities_plot_root import plot_histograms
 
 FILES_NOT_FOUND = []
 

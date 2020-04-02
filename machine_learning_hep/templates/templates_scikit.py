@@ -12,33 +12,32 @@
 ##   along with this program. if not, see <https://www.gnu.org/licenses/>. ##
 #############################################################################
 
-import os
-import yaml
-import pandas as pd
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LinearRegression, Ridge, Lasso
 
-from ROOT import TFile, TH1F # pylint: disable=import-error, no-name-in-module
-from machine_learning_hep.utilities_selection import getnormforselevt
 
-# pylint: disable=invalid-name
-case = "Dspp5TeV"
+def scikit_random_forest_classifier(model_config):
+    return RandomForestClassifier(max_depth=model_config["max_depth"],
+                                  n_estimators=model_config["n_estimators"],
+                                  max_features=model_config["max_features"])
 
-with open("data/database_ml_parameters.yml", 'r') as param_config:
-    data_param = yaml.load(param_config)
 
-namefile_evt = data_param[case]["files_names"]["namefile_evt_skim_tot"]
-folder = data_param[case]["output_folders"]["pkl_merged"]["mc"]
+def scikit_adaboost_classifier(model_config): # pylint: disable=W0613
+    return AdaBoostClassifier()
 
-df_evt_all = pd.read_pickle(os.path.join(folder, namefile_evt))
 
-nselevt = len(df_evt_all.query("is_ev_rej==0"))
-norm = getnormforselevt(df_evt_all)
+def scikit_decision_tree_classifier(model_config):
+    return DecisionTreeClassifier(max_depth=model_config["max_depth"])
 
-hNorm = TH1F("hEvForNorm", ";;Normalisation", 2, 0.5, 2.5)
-hNorm.GetXaxis().SetBinLabel(1, "normsalisation factor")
-hNorm.GetXaxis().SetBinLabel(2, "selected events")
-hNorm.SetBinContent(1, norm)
-hNorm.SetBinContent(2, nselevt)
 
-outfile = TFile("Normalisation_%s.root" % case, "recreate")
-hNorm.Write()
-outfile.Close()
+def scikit_linear_regression(model_config): # pylint: disable=W0613
+    return LinearRegression()
+
+
+def scikit_ridge_regression(model_config):
+    return Ridge(alpha=model_config["alpha"], solver=model_config["solver"])
+
+
+def scikit_lasso_regression(model_config):
+    return Lasso(alpha=model_config["alpha"])

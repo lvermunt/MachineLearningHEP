@@ -15,17 +15,21 @@
 """
 main script for doing data processing, machine learning and analysis
 """
-import math
 import array
+import math
 import pickle
+
 import numpy as np
+from ROOT import TFile, TH1F  # pylint: disable=import-error, no-name-in-module
 from root_numpy import fill_hist  # pylint: disable=import-error, no-name-in-module
-from ROOT import TFile, TH1F # pylint: disable=import-error, no-name-in-module
-from machine_learning_hep.bitwise import tag_bit_df
-from machine_learning_hep.utilities import selectdfrunlist
-from machine_learning_hep.utilities import seldf_singlevar, openfile
-from machine_learning_hep.utilities_selection import getnormforselevt
+
 from machine_learning_hep.processer import Processer
+from machine_learning_hep.utilities import openfile
+from machine_learning_hep.utilities_bit import tag_bit_df
+from machine_learning_hep.utilities_selection import getnormforselevt
+from machine_learning_hep.utilities_selection import seldf_singlevar
+from machine_learning_hep.utilities_selection import selectdfrunlist
+
 
 class ProcesserDhadrons(Processer): # pylint: disable=too-many-instance-attributes
     # Class Attribute

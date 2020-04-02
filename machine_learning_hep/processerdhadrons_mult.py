@@ -15,22 +15,24 @@
 """
 main script for doing data processing, machine learning and analysis
 """
-import math
 import array
-import pickle
+import math
 import os
+import pickle
+
 import numpy as np
 import pandas as pd
-from root_numpy import fill_hist, evaluate # pylint: disable=import-error, no-name-in-module
-from ROOT import TFile, TH1F # pylint: disable=import-error, no-name-in-module
-from machine_learning_hep.utilities import selectdfrunlist
-from machine_learning_hep.utilities import create_folder_struc, seldf_singlevar, \
-        seldf_singlevar_inclusive, openfile
-from machine_learning_hep.utilities import mergerootfiles
-from machine_learning_hep.utilities import get_timestamp_string
-#from machine_learning_hep.globalfitter import fitter
+from ROOT import TFile, TH1F  # pylint: disable=import-error, no-name-in-module
+from root_numpy import fill_hist, evaluate  # pylint: disable=import-error, no-name-in-module
+
 from machine_learning_hep.processer import Processer
-from machine_learning_hep.bitwise import filter_bit_df, tag_bit_df
+from machine_learning_hep.utilities import create_folder_struc, openfile
+from machine_learning_hep.utilities import get_timestamp_string
+from machine_learning_hep.utilities import mergerootfiles
+from machine_learning_hep.utilities_selection import filter_bit_df, tag_bit_df
+from machine_learning_hep.utilities_selection import seldf_singlevar_inclusive
+from machine_learning_hep.utilities_selection import selectdfrunlist, seldf_singlevar
+
 
 class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-attributes, invalid-name
     # Class Attribute

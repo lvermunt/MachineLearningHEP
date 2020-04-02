@@ -18,24 +18,28 @@ Main script for doing the systematic studies. Standalone, so some parts similar 
 At the moment includes: Cut variation and MC pT shape
 The raw yield systematic is done within analyzer.py
 """
+import math
+import pickle
+from array import *
+from os import makedirs
 # pylint: disable=unused-wildcard-import, wildcard-import
 # pylint: disable=no-name-in-module
 # pylint: disable=import-error
 from os.path import join, exists
-from os import makedirs
-import math
-from array import *
-import pickle
-from root_numpy import fill_hist, evaluate
-from ROOT import gROOT, gPad
-from ROOT import TFile, TH1F, TCanvas, TLegend
-from ROOT import kRed, kGreen, kBlack, kBlue, kOrange, kViolet, kAzure, kYellow
+
 from ROOT import Double
-from machine_learning_hep.utilities import selectdfrunlist
-from machine_learning_hep.utilities import seldf_singlevar, openfile, make_file_path
-from machine_learning_hep.utilities_plot import load_root_style_simple, load_root_style
-from machine_learning_hep.utilities import mergerootfiles, get_timestamp_string
+from ROOT import TFile, TH1F, TCanvas, TLegend
+from ROOT import gROOT, gPad
+from ROOT import kRed, kGreen, kBlack, kBlue, kOrange, kViolet, kAzure, kYellow
+from root_numpy import fill_hist, evaluate
+
 from machine_learning_hep.analysis.analyzer import Analyzer, AnalyzerAfterBurner
+from machine_learning_hep.utilities import mergerootfiles, get_timestamp_string
+from machine_learning_hep.utilities import openfile, make_file_path
+from machine_learning_hep.utilities_plot_root import load_root_style_simple, load_root_style
+from machine_learning_hep.utilities_selection import seldf_singlevar
+from machine_learning_hep.utilities_selection import selectdfrunlist
+
 
 class SystematicsAfterBurner(AnalyzerAfterBurner):
     # pylint: disable=useless-super-delegation
@@ -809,7 +813,7 @@ class Systematics(Analyzer):
         """
         gROOT.SetBatch(True)
         load_root_style_simple()
-        gROOT.LoadMacro("HFPtSpectrum.C")
+        gROOT.LoadMacro("analysis/HFPtSpectrum.C")
         from ROOT import HFPtSpectrum, HFPtSpectrum2
 
         ntrials = 2 * self.p_ncutvar + 1

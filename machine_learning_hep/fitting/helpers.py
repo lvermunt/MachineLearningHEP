@@ -13,20 +13,22 @@
 #############################################################################
 
 
-from os.path import join
 import os
-from glob import glob
 from array import array
+from glob import glob
+from os.path import join
 
-#pylint: disable=no-name-in-module, too-many-lines
-from ROOT import TFile, TH1F, TCanvas, gStyle  #pylint: disable=import-error
-#pylint: enable=no-name-in-module
+# pylint: disable=no-name-in-module, too-many-lines
+from ROOT import TFile, TH1F, TCanvas, gStyle  # pylint: disable=import-error
 
+from machine_learning_hep.fitting.fitters import FitAliHF, FitROOTGauss, FitSystAliHF
+from machine_learning_hep.fitting.utils import save_fit, load_fit
 from machine_learning_hep.logger import get_logger
 from machine_learning_hep.utilities import make_file_path
-from machine_learning_hep.utilities_plot import plot_histograms
-from machine_learning_hep.fitting.utils import save_fit, load_fit
-from machine_learning_hep.fitting.fitters import FitAliHF, FitROOTGauss, FitSystAliHF
+from machine_learning_hep.utilities_plot_root import plot_histograms
+
+
+# pylint: enable=no-name-in-module
 
 # pylint: disable=too-many-instance-attributes, too-many-statements
 class MLFitParsFactory:

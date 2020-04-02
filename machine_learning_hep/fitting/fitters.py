@@ -19,8 +19,8 @@ Definition of FitBase, FitAliHF, FitROOT classes
 
 # pylint: disable=too-many-lines
 
-from copy import deepcopy
 from array import array
+from copy import deepcopy
 from math import sqrt
 
 # pylint: disable=import-error, no-name-in-module, unused-import
@@ -29,6 +29,7 @@ from ROOT import TFile, TH1F, TH1D, TF1, TPaveText, TLine, TLegend, Double, TLat
 from ROOT import kBlue, kRed, kGreen, kMagenta, kOrange, kPink, kCyan, kYellow, kBlack
 
 from machine_learning_hep.logger import get_logger
+
 
 # pylint: disable=too-many-instance-attributes
 class FitBase:

@@ -19,21 +19,18 @@ main script for doing final stage analysis
 import os
 # pylint: disable=unused-wildcard-import, wildcard-import
 from array import array
+
 # pylint: disable=import-error, no-name-in-module, unused-import
-from root_numpy import hist2array, array2hist
-from ROOT import TFile, TH1F, TH2F, TCanvas, TPad, TF1, TH1D
-from ROOT import gStyle, TLegend, TLine, TText, TPaveText, TArrow
-from ROOT import gROOT, TDirectory, TPaveLabel
-from ROOT import TStyle, kBlue, kGreen, kBlack, kRed, kOrange
-from ROOT import TLatex
-from ROOT import gInterpreter, gPad
+from ROOT import TFile, TH1F, TCanvas
+from ROOT import TLegend
+from ROOT import gROOT
+
+from machine_learning_hep.analysis.analyzer import Analyzer
 # HF specific imports
 from machine_learning_hep.fitting.helpers import MLFitter
 from machine_learning_hep.logger import get_logger
-from machine_learning_hep.io import dump_yaml_from_dict
-from machine_learning_hep.utilities import folding, get_bins, make_latex_table, parallelizer
-from machine_learning_hep.utilities_plot import plot_histograms
-from machine_learning_hep.analysis.analyzer import Analyzer
+
+
 # pylint: disable=too-few-public-methods, too-many-instance-attributes, too-many-statements, fixme
 class AnalyzerDhadrons_mult(Analyzer): # pylint: disable=invalid-name
     species = "analyzer"
@@ -433,7 +430,7 @@ class AnalyzerDhadrons_mult(Analyzer): # pylint: disable=invalid-name
                       (self.d_resultsallpmc, self.case, self.typean)
         yield_filename = self.make_file_path(self.d_resultsallpdata, self.yields_filename, "root",
                                              None, [self.case, self.typean])
-        gROOT.LoadMacro("HFPtSpectrum.C")
+        gROOT.LoadMacro("analysis/HFPtSpectrum.C")
         from ROOT import HFPtSpectrum, HFPtSpectrum2, HFPtSpectrumRescaled
         for imult in range(self.p_nbin2):
             bineff = -1
@@ -518,7 +515,7 @@ class AnalyzerDhadrons_mult(Analyzer): # pylint: disable=invalid-name
         fileoutcrosstot.Close()
 
         if self.p_nbx2:
-            gROOT.LoadMacro("CombineFeedDownMCSubtractionMethodsUncertainties.C")
+            gROOT.LoadMacro("analysis/CombineFeedDownMCSubtractionMethodsUncertainties.C")
             from ROOT import CombineFeedDownMCSubtractionMethodsUncertainties
             fileoutcrossmult0 = "%s/finalcross%s%smult0.root" % \
                 (self.d_resultsallpdata, self.case, self.typean)

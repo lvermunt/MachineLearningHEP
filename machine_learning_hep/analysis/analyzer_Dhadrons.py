@@ -16,23 +16,14 @@
 main script for doing final stage analysis
 """
 # pylint: disable=too-many-lines
-import os
 # pylint: disable=unused-wildcard-import, wildcard-import
 #from array import *
-import numpy as np
 # pylint: disable=import-error, no-name-in-module, unused-import
-from root_numpy import hist2array, array2hist
-from ROOT import TFile, TH1F, TH2F, TCanvas, TPad, TF1, TH1D
-from ROOT import AliHFInvMassFitter, AliVertexingHFUtils, AliHFInvMassMultiTrialFit
-from ROOT import gStyle, TLegend, TLine, TText, TPaveText, TArrow
-from ROOT import gROOT, TDirectory, TPaveLabel
-from ROOT import TStyle, kBlue, kGreen, kBlack, kRed, kOrange
-from ROOT import TLatex
-from ROOT import gInterpreter, gPad
+from ROOT import TFile, TH1F, TCanvas
+from ROOT import AliHFInvMassFitter, AliVertexingHFUtils
+from ROOT import TLegend
+from ROOT import gROOT
 # HF specific imports
-from machine_learning_hep.io import dump_yaml_from_dict
-from machine_learning_hep.utilities import folding, get_bins, make_latex_table, parallelizer
-from machine_learning_hep.utilities_plot import plot_histograms
 from machine_learning_hep.analysis.analyzer import Analyzer
 
 # pylint: disable=too-few-public-methods, too-many-instance-attributes, too-many-statements, fixme
@@ -170,8 +161,8 @@ class AnalyzerDhadrons(Analyzer):
                       (self.d_resultsallpmc, self.case, self.typean)
         yield_filename = self.make_file_path(self.d_resultsallpdata, self.yields_filename, "root",
                                              None, [self.case, self.typean])
-        gROOT.LoadMacro("HFPtSpectrum.C")
-        from ROOT import HFPtSpectrum, HFPtSpectrum2
+        gROOT.LoadMacro("analysis/HFPtSpectrum.C")
+        from ROOT import HFPtSpectrum
         namehistoeffprompt = "eff"
         namehistoefffeed = "eff_fd"
         nameyield = "hyields"

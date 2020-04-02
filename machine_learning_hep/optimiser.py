@@ -16,29 +16,36 @@
 main script for doing ml optisation
 """
 import os
+import pickle
 import time
 from math import sqrt
-import pickle
-import pandas as pd
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from ROOT import TFile, TCanvas, TH1F, TF1, gROOT  # pylint: disable=import-error,no-name-in-module
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
-from ROOT import TFile, TCanvas, TH1F, TF1, gROOT  # pylint: disable=import-error,no-name-in-module
-from machine_learning_hep.utilities import seldf_singlevar, split_df_sigbkg, createstringselection
-from machine_learning_hep.utilities import openfile, selectdfquery
-from machine_learning_hep.correlations import vardistplot, scatterplot, correlationmatrix
-from machine_learning_hep.models import getclf_scikit, getclf_xgboost, getclf_keras
-from machine_learning_hep.models import fit, savemodels, test, apply, decisionboundaries
-from machine_learning_hep.mlperformance import cross_validation_mse, plot_cross_validation_mse
-from machine_learning_hep.mlperformance import plot_learning_curves, precision_recall
-from machine_learning_hep.mlperformance import roc_train_test, plot_overtraining
-from machine_learning_hep.grid_search import do_gridsearch, perform_plot_gridsearch
-from machine_learning_hep.models import importanceplotall
+
 from machine_learning_hep.logger import get_logger
-from machine_learning_hep.optimization import calc_bkg, calc_signif, calc_eff, calc_sigeff_steps
-from machine_learning_hep.correlations import vardistplot_probscan, efficiency_cutscan
+from machine_learning_hep.ml_gridsearch import do_gridsearch
+from machine_learning_hep.ml_functions import fit, savemodels, test, apply
+from machine_learning_hep.ml_functions import getclf_scikit, getclf_xgboost, getclf_keras
+from machine_learning_hep.ml_significance import calc_bkg, calc_signif, calc_eff, calc_sigeff_steps
 from machine_learning_hep.utilities import checkdirlist, checkmakedirlist, write_tree
+from machine_learning_hep.utilities import createstringselection
+from machine_learning_hep.utilities import openfile
+from machine_learning_hep.utilities_plot_ml import importanceplotall, decisionboundaries
+from machine_learning_hep.utilities_plot_ml import perform_plot_gridsearch
+from machine_learning_hep.utilities_plot_ml import plot_cross_validation_mse
+from machine_learning_hep.utilities_plot_ml import plot_learning_curves, precision_recall
+from machine_learning_hep.utilities_plot_ml import roc_train_test, plot_overtraining
+from machine_learning_hep.utilities_plot_ml import vardistplot, scatterplot, correlationmatrix
+from machine_learning_hep.utilities_plot_ml import vardistplot_probscan, efficiency_cutscan
+from machine_learning_hep.utilities_selection import seldf_singlevar
+from machine_learning_hep.utilities_selection import selectdfquery
+from machine_learning_hep.utilities_selection import split_df_sigbkg
+
 
 # pylint: disable=too-many-instance-attributes, too-many-statements
 class Optimiser:
@@ -304,10 +311,10 @@ class Optimiser:
         pickle.dump(df_mc, openfile(self.f_reco_appliedmc, "wb"), protocol=4)
 
     def do_crossval(self):
-        df_scores = cross_validation_mse(self.p_classname, self.p_class,
-                                         self.df_xtrain, self.df_ytrain,
-                                         self.p_nkfolds, self.p_ncorescross)
-        plot_cross_validation_mse(self.p_classname, df_scores, self.s_suffix, self.dirmlplot)
+        df_scores = plot_cross_validation_mse(self.p_classname, self.p_class,
+                                              self.df_xtrain, self.df_ytrain,
+                                              self.p_nkfolds, self.p_ncorescross,
+                                              self.s_suffix, self.dirmlplot)
 
     def do_learningcurve(self):
         npoints = 10
@@ -391,7 +398,7 @@ class Optimiser:
 
     #pylint: disable=too-many-locals
     def do_significance(self):
-        self.logger.info("Doing significance optimization")
+        self.logger.info("Doing significance optimisation")
         gROOT.SetBatch(True)
         gROOT.ProcessLine("gErrorIgnoreLevel = kWarning;")
         #first extract the number of data events in the ml sample

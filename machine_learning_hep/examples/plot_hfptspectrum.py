@@ -18,15 +18,16 @@ main script for doing final stage analysis
 import os
 from math import sqrt
 from shutil import copyfile
+
 # pylint: disable=unused-wildcard-import, wildcard-import
-from array import *
 # pylint: disable=import-error, no-name-in-module, unused-import
 import yaml
 from ROOT import TFile, TH1F, TCanvas
-from ROOT import gStyle, TLegend, TLatex
+from ROOT import TLegend, TLatex
+from ROOT import gPad
 from ROOT import gROOT, kRed, kGreen, kBlack, kBlue, kOrange, kViolet, kAzure
-from ROOT import TStyle, gPad
-from machine_learning_hep.utilities_plot import plot_histograms, load_root_style
+
+from machine_learning_hep.utilities_plot_root import plot_histograms, load_root_style
 
 FILES_NOT_FOUND = []
 # One single particle ratio

@@ -16,7 +16,6 @@
 main script for doing final stage analysis
 """
 # pylint: disable=import-error, no-name-in-module, unused-import
-import yaml
 from ROOT import gROOT, TFile, TCanvas, TF1, TH1F
 
 def reweight_hm():

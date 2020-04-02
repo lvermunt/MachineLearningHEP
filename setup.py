@@ -118,8 +118,7 @@ setup(
   # pip to create the appropriate form of executable for the target platform.
   # See: https://chriswarrick.com/blog/2014/09/15/python-apps-the-right-way-entry_points-and-scripts/
   entry_points={
-      "console_scripts": [ "ml-get-data = machine_learning_hep.ml_get_data:main",
-                           "ml-analysis = " \
+      "console_scripts": [ "ml-analysis = " \
                            "machine_learning_hep.steer_analysis:main" ]
   }
 )

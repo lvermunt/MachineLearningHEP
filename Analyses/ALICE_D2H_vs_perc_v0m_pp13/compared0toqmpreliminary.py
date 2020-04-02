@@ -15,15 +15,8 @@
 """
 main script for doing final stage analysis
 """
-# pylint: disable=unused-wildcard-import, wildcard-import
-from array import *
 # pylint: disable=import-error, no-name-in-module, unused-import
-import yaml
 from ROOT import TFile, TH1F, TCanvas
-from ROOT import gStyle, TLegend, TLatex
-from ROOT import gROOT, kRed, kGreen, kBlack, kBlue, kOrange, kViolet, kAzure
-from ROOT import TStyle, gPad
-from machine_learning_hep.utilities_plot import plot_histograms, load_root_style
 
 def compared0toqmpreliminary():
      # pylint: disable=line-too-long

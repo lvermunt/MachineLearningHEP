@@ -26,7 +26,7 @@ from ROOT import Double
 from ROOT import gROOT, kRed, kGreen, kBlack, kBlue, kOrange, kViolet, kAzure
 from ROOT import TStyle, gPad
 from machine_learning_hep.utilities import make_file_path
-from machine_learning_hep.utilities_plot import load_root_style
+from machine_learning_hep.utilities_plot_root import load_root_style
 
 # pylint: disable=import-error, no-name-in-module, unused-import
 # pylint: disable=too-many-statements

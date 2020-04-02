@@ -15,23 +15,25 @@
 """
 main script for doing data processing, machine learning and analysis
 """
-import sys
 import multiprocessing as mp
-import pickle
 import os
+import pickle
 import random as rd
-import uproot
-import pandas as pd
+import sys
+
 import numpy as np
-from machine_learning_hep.utilities_selection import selectfidacc, selectdfquery, seldf_singlevar
-from machine_learning_hep.bitwise import filter_bit_df, tag_bit_df
-from machine_learning_hep.utilities import merge_method
-from machine_learning_hep.utilities import list_folders, createlist, appendmainfoldertolist
+import pandas as pd
+import uproot
+
+from machine_learning_hep.ml_functions import apply  # pylint: disable=import-error
 from machine_learning_hep.utilities import create_folder_struc, openfile
-from machine_learning_hep.utilities import mergerootfiles
 from machine_learning_hep.utilities import get_timestamp_string
-from machine_learning_hep.models import apply # pylint: disable=import-error
-#from machine_learning_hep.logger import get_logger
+from machine_learning_hep.utilities import list_folders, createlist, appendmainfoldertolist
+from machine_learning_hep.utilities import merge_method
+from machine_learning_hep.utilities import mergerootfiles
+from machine_learning_hep.utilities_selection import filter_bit_df, tag_bit_df
+from machine_learning_hep.utilities_selection import selectfidacc, selectdfquery, seldf_singlevar
+
 
 class Processer: # pylint: disable=too-many-instance-attributes
     # Class Attribute
@@ -44,7 +46,6 @@ class Processer: # pylint: disable=too-many-instance-attributes
                  p_chunksizeunp, p_chunksizeskim, p_maxprocess,
                  p_frac_merge, p_rd_merge, d_pkl_dec, d_pkl_decmerged,
                  d_results, typean, runlisttrigger, d_mcreweights):
-        #self.logger = get_logger()
         self.nprongs = datap["nprongs"]
         self.doml = datap["doml"]
         self.case = case
@@ -198,9 +199,6 @@ class Processer: # pylint: disable=too-many-instance-attributes
                                      for ipt in range(self.p_nptbins)]
         self.triggerbit = datap["analysis"][self.typean]["triggerbit"]
         self.runlistrigger = runlisttrigger
-
- #       if os.path.exists(self.d_root) is False:
- #           self.logger.warning("ROOT tree folder is not there. Is it intentional?")
 
     def unpack(self, file_index):
         treeevtorig = uproot.open(self.l_root[file_index])[self.n_treeevt]

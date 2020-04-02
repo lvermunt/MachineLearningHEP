@@ -17,10 +17,12 @@ Methods to: configure parameters
 """
 
 import os.path
-from pkg_resources import resource_stream
+
 import yaml
+from pkg_resources import resource_stream
+
+from machine_learning_hep.utilities import dump_yaml_from_dict, parse_yaml, print_dict
 from machine_learning_hep.logger import get_logger
-from machine_learning_hep.io import dump_yaml_from_dict, parse_yaml, print_dict
 
 
 class Configuration:
