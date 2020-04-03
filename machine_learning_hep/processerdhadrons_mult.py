@@ -22,8 +22,8 @@ import pickle
 
 import numpy as np
 import pandas as pd
-from ROOT import TFile, TH1F  # pylint: disable=import-error, no-name-in-module
 from root_numpy import fill_hist, evaluate  # pylint: disable=import-error, no-name-in-module
+from ROOT import TFile, TH1F  # pylint: disable=import-error, no-name-in-module
 
 from machine_learning_hep.processer import Processer
 from machine_learning_hep.utilities import create_folder_struc, openfile

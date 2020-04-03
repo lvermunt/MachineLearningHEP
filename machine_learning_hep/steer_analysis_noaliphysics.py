@@ -15,14 +15,12 @@
 """
 main script for doing data processing, machine learning and analysis
 """
-import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
-
 import argparse
 import subprocess
 import sys
 from os.path import exists
 
+import warnings
 import yaml
 from pkg_resources import resource_stream
 # To set batch mode immediately
@@ -36,6 +34,8 @@ from machine_learning_hep.processerdhadrons import ProcesserDhadrons
 from machine_learning_hep.processerdhadrons_mult import ProcesserDhadrons_mult
 from machine_learning_hep.utilities import checkdirlist, checkdir
 from machine_learning_hep.utilities import checkmakedirlist, checkmakedir
+
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 try:
     import logging
@@ -95,24 +95,8 @@ def do_entire_analysis(data_config: dict, data_param: dict, data_model: dict, ru
     dohistomassmc = data_config["analysis"]["mc"]["histomass"]
     dohistomassdata = data_config["analysis"]["data"]["histomass"]
     doefficiency = data_config["analysis"]["mc"]["efficiency"]
-    dofeeddown = data_config["analysis"]["mc"]["feeddown"]
-    dounfolding = data_config["analysis"]["mc"]["dounfolding"]
-    dojetsystematics = data_config["analysis"]["data"]["dojetsystematics"]
-    dofit = data_config["analysis"]["dofit"]
-    doeff = data_config["analysis"]["doeff"]
-    docross = data_config["analysis"]["docross"]
-    doplots = data_config["analysis"]["doplots"]
-    dosyst = data_config["analysis"]["dosyst"]
-    dosystprob = data_config["systematics"]["cutvar"]["activate"]
-    do_syst_prob_mass = data_config["systematics"]["cutvar"]["probvariationmass"]
-    do_syst_prob_eff = data_config["systematics"]["cutvar"]["probvariationeff"]
-    do_syst_prob_fit = data_config["systematics"]["cutvar"]["probvariationfit"]
-    do_syst_prob_cross = data_config["systematics"]["cutvar"]["probvariationcross"]
-    dosystptshape = data_config["systematics"]["mcptshape"]["activate"]
-    doanaperperiod = data_config["analysis"]["doperperiod"]
 
     typean = data_config["analysis"]["type"]
-    dojetstudies = data_config["analysis"]["dojetstudies"]
 
     dirpklmc = data_param[case]["multi"]["mc"]["pkl"]
     dirpklevtcounter_allmc = data_param[case]["multi"]["mc"]["pkl_evtcounter_all"]

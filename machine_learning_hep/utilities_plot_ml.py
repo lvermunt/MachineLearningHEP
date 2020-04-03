@@ -37,7 +37,6 @@ from machine_learning_hep.utilities import parse_yaml
 from machine_learning_hep.logger import get_logger
 from machine_learning_hep.utilities import openfile
 
-
 def importanceplotall(mylistvariables_, names_, trainedmodels_, suffix_, folder):
 
     if len(names_) == 1:
@@ -445,7 +444,7 @@ def vardistplot(dataframe_sig_, dataframe_bkg_, mylistvariables_, output_,
     imagebytesIO.seek(0)
     return imagebytesIO
 
-
+# pylint: disable=too-many-branches
 def vardistplot_probscan(dataframe_, mylistvariables_, modelname_, thresharray_, # pylint: disable=too-many-statements
                          output_, suffix_, opt=1, plot_options_=None):
 
@@ -476,7 +475,7 @@ def vardistplot_probscan(dataframe_, mylistvariables_, modelname_, thresharray_,
             df_skimmed = df_skimmed.query(selml)
 
         if thresh_index == 0 and len(df_skimmed[mylistvariables_[0]]) == 0:
-            logger.warning("Dataframe is empty, skipping probscan")
+            get_logger().warning("Dataframe is empty, skipping probscan")
             break
 
         for i, var in enumerate(mylistvariables_):

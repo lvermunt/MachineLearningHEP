@@ -15,7 +15,6 @@
 """
 main script for doing data processing, machine learning and analysis
 """
-
 import argparse
 import subprocess
 import sys
@@ -27,7 +26,7 @@ from pkg_resources import resource_stream
 from ROOT import gROOT  # pylint: disable=import-error, no-name-in-module
 
 from machine_learning_hep.analysis.analyzer import Analyzer
-#from machine_learning_hep.analysis.analyzerdhadrons import AnalyzerDhadrons
+from machine_learning_hep.analysis.analyzerdhadrons import AnalyzerDhadrons
 from machine_learning_hep.analysis.analyzer_manager import AnalyzerManager
 from machine_learning_hep.analysis.analyzerdhadrons_mult import AnalyzerDhadrons_mult
 from machine_learning_hep.analysis.systematics import Systematics
