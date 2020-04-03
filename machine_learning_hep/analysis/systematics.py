@@ -20,18 +20,17 @@ The raw yield systematic is done within analyzer.py
 """
 import math
 import pickle
+# pylint: disable=unused-wildcard-import, wildcard-import
 from array import *
 from os import makedirs
-# pylint: disable=unused-wildcard-import, wildcard-import
+from os.path import join, exists
 # pylint: disable=no-name-in-module
 # pylint: disable=import-error
-from os.path import join, exists
-
+from root_numpy import fill_hist, evaluate
 from ROOT import Double
 from ROOT import TFile, TH1F, TCanvas, TLegend
 from ROOT import gROOT, gPad
 from ROOT import kRed, kGreen, kBlack, kBlue, kOrange, kViolet, kAzure, kYellow
-from root_numpy import fill_hist, evaluate
 
 from machine_learning_hep.analysis.analyzer import Analyzer, AnalyzerAfterBurner
 from machine_learning_hep.utilities import mergerootfiles, get_timestamp_string

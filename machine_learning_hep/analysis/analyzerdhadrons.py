@@ -15,9 +15,6 @@
 """
 main script for doing final stage analysis
 """
-# pylint: disable=too-many-lines
-# pylint: disable=unused-wildcard-import, wildcard-import
-#from array import *
 # pylint: disable=import-error, no-name-in-module, unused-import
 from ROOT import TFile, TH1F, TCanvas
 from ROOT import AliHFInvMassFitter, AliVertexingHFUtils
@@ -25,6 +22,8 @@ from ROOT import TLegend
 from ROOT import gROOT
 # HF specific imports
 from machine_learning_hep.analysis.analyzer import Analyzer
+
+#TODO, fix this class. analyzerdhadrons_mult is most recent
 
 # pylint: disable=too-few-public-methods, too-many-instance-attributes, too-many-statements, fixme
 class AnalyzerDhadrons(Analyzer):
@@ -63,20 +62,21 @@ class AnalyzerDhadrons(Analyzer):
         hyields = TH1F("hyields", "hyields", self.p_nptbins, self.analysis_bin_lims)
         for ipt in range(self.p_nptfinbins):
             print(self.p_sgnfunc[ipt])
-            suffix = "%s%d_%d" % (self.v_var_binning, self.lpt_finbinmin[ipt], self.lpt_finbinmax[ipt])
+            suffix = "%s%d_%d" % (self.v_var_binning, self.lpt_finbinmin[ipt], \
+                                  self.lpt_finbinmax[ipt])
             print(self.n_filemass)
             myfilemc = TFile(self.n_filemass_mc, "read")
-            histomassmc= myfilemc.Get("hmass_sig" + suffix)
+            histomassmc = myfilemc.Get("hmass_sig" + suffix)
             histomassmc_reb = AliVertexingHFUtils.RebinHisto(histomassmc, \
                                         self.p_rebin[ipt], -1)
             histomassmc_reb = TH1F()
             fittermc = AliHFInvMassFitter(histomassmc_reb, self.p_massmin[ipt], self.p_massmax[ipt],
-                                        self.p_bkgfunc[ipt], 1)
+                                          self.p_bkgfunc[ipt], 1)
             fittermc.SetInitialGaussianMean(self.p_masspeak)
-            out=fittermc.MassFitter(0)
+            out = fittermc.MassFitter(0)
             print("I have made MC fit for sigma initialization")
             myfile = TFile(self.n_filemass, "read")
-            histomass= myfile.Get("hmass" + suffix)
+            histomass = myfile.Get("hmass" + suffix)
             histomass_reb = AliVertexingHFUtils.RebinHisto(histomass, \
                                         self.p_rebin[ipt], -1)
             histomass_reb = TH1F()
@@ -89,9 +89,9 @@ class AnalyzerDhadrons(Analyzer):
                 if self.p_fix_sigmasec[ipt] is True:
                     fitter.SetFixSecondGaussianSigma(self.p_sigmaarraysec[ipt])
 
-            out=fitter.MassFitter(0)
-            ry=fitter.GetRawYield()
-            ery=fitter.GetRawYieldError()
+            out = fitter.MassFitter(0)
+            ry = fitter.GetRawYield()
+            ery = fitter.GetRawYieldError()
             hyields.SetBinContent(ipt+1, ry)
             hyields.SetBinError(ipt+1, ery)
 
@@ -148,7 +148,7 @@ class AnalyzerDhadrons(Analyzer):
         h_sel_pr.Draw("same")
         legeff.Draw()
         cEff.SaveAs("%s/Eff%s%s.eps" % (self.d_resultsallpmc,
-                                            self.case, self.typean))
+                                        self.case, self.typean))
         print("Efficiency finished")
         fileouteff.Close()
 

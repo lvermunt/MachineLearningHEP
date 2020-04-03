@@ -15,6 +15,8 @@
 """
 main script for doing data processing, machine learning and analysis
 """
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 import argparse
 import subprocess
@@ -26,11 +28,6 @@ from pkg_resources import resource_stream
 # To set batch mode immediately
 from ROOT import gROOT  # pylint: disable=import-error, no-name-in-module
 
-from machine_learning_hep.analysis.analyzer import Analyzer
-#from machine_learning_hep.analysis.analyzerdhadrons import AnalyzerDhadrons
-from machine_learning_hep.analysis.analyzer_manager import AnalyzerManager
-from machine_learning_hep.analysis.analyzerdhadrons_mult import AnalyzerDhadrons_mult
-from machine_learning_hep.analysis.systematics import Systematics
 from machine_learning_hep.logger import configure_logger, get_logger
 from machine_learning_hep.multiprocesser import MultiProcesser
 from machine_learning_hep.optimiser import Optimiser
@@ -259,23 +256,16 @@ def do_entire_analysis(data_config: dict, data_param: dict, data_model: dict, ru
         checkmakedir(dirresultsdatatot)
 
     proc_class = Processer
-    ana_class = Analyzer
-    syst_class = Systematics
     if proc_type == "Dhadrons":
         print("Using new feature for Dhadrons")
         proc_class = ProcesserDhadrons
-        ana_class = AnalyzerDhadrons
     if proc_type == "Dhadrons_mult":
         print("Using new feature for Dhadrons_mult")
         proc_class = ProcesserDhadrons_mult
-        ana_class = AnalyzerDhadrons_mult
 
     mymultiprocessmc = MultiProcesser(case, proc_class, data_param[case], typean, run_param, "mc")
     mymultiprocessdata = MultiProcesser(case, proc_class, data_param[case], typean, run_param,\
                                         "data")
-    ana_mgr = AnalyzerManager(ana_class, data_param[case], case, typean, doanaperperiod)
-    # Has to be done always period-by-period
-    syst_mgr = AnalyzerManager(syst_class, data_param[case], case, typean, True, run_param)
 
     #perform the analysis flow
     if dodownloadalice == 1:
@@ -357,49 +347,6 @@ def do_entire_analysis(data_config: dict, data_param: dict, data_model: dict, ru
         mymultiprocessdata.multi_histomass()
     if doefficiency is True:
         mymultiprocessmc.multi_efficiency()
-
-    # Collect all desired analysis steps
-    analyze_steps = []
-    if dofit is True:
-        analyze_steps.append("fit")
-    if dosyst is True:
-        analyze_steps.append("yield_syst")
-    if doeff is True:
-        analyze_steps.append("efficiency")
-    if dojetstudies is True:
-        if dofit is False:
-            analyze_steps.append("fit")
-        if doeff is False:
-            analyze_steps.append("efficiency")
-        analyze_steps.append("side_band_sub")
-    if dofeeddown is True:
-        analyze_steps.append("feeddown")
-    if dounfolding is True:
-        analyze_steps.append("unfolding")
-        analyze_steps.append("unfolding_closure")
-    if dojetsystematics is True:
-        analyze_steps.append("jetsystematics")
-    if docross is True:
-        analyze_steps.append("makenormyields")
-    if doplots is True:
-        analyze_steps.append("plotternormyields")
-
-    # Now do the analysis
-    ana_mgr.analyze(*analyze_steps)
-
-    ml_syst_steps = []
-    if dosystprob is True:
-        if do_syst_prob_mass:
-            ml_syst_steps.append("ml_cutvar_mass")
-        if do_syst_prob_eff:
-            ml_syst_steps.append("ml_cutvar_eff")
-        if do_syst_prob_fit:
-            ml_syst_steps.append("ml_cutvar_fit")
-        if do_syst_prob_cross:
-            ml_syst_steps.append("ml_cutvar_cross")
-    if dosystptshape is True:
-        ml_syst_steps.append("mcptshape")
-    syst_mgr.analyze(*ml_syst_steps)
 
 
 def load_config(user_path: str, default_path: tuple) -> dict:

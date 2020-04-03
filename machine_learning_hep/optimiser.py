@@ -23,9 +23,9 @@ from math import sqrt
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from ROOT import TFile, TCanvas, TH1F, TF1, gROOT  # pylint: disable=import-error,no-name-in-module
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
+from ROOT import TFile, TCanvas, TH1F, TF1, gROOT  # pylint: disable=import-error,no-name-in-module
 
 from machine_learning_hep.logger import get_logger
 from machine_learning_hep.ml_gridsearch import do_gridsearch
@@ -311,10 +311,10 @@ class Optimiser:
         pickle.dump(df_mc, openfile(self.f_reco_appliedmc, "wb"), protocol=4)
 
     def do_crossval(self):
-        df_scores = plot_cross_validation_mse(self.p_classname, self.p_class,
-                                              self.df_xtrain, self.df_ytrain,
-                                              self.p_nkfolds, self.p_ncorescross,
-                                              self.s_suffix, self.dirmlplot)
+        plot_cross_validation_mse(self.p_classname, self.p_class,
+                                  self.df_xtrain, self.df_ytrain,
+                                  self.p_nkfolds, self.p_ncorescross,
+                                  self.s_suffix, self.dirmlplot)
 
     def do_learningcurve(self):
         npoints = 10
@@ -368,8 +368,8 @@ class Optimiser:
         perform_plot_gridsearch(clfs_names_all, out_dirs)
 
     def do_boundary(self):
-        classifiers_scikit_2var, names_2var = getclf_scikit(self.db_model)
-        classifiers_keras_2var, names_keras_2var = getclf_keras(self.db_model, 2)
+        classifiers_scikit_2var, names_2var, _ = getclf_scikit(self.db_model)
+        classifiers_keras_2var, names_keras_2var, _ = getclf_keras(self.db_model, 2)
         classifiers_2var = classifiers_scikit_2var+classifiers_keras_2var
         names_2var = names_2var+names_keras_2var
         x_test_boundary = self.df_xtest[self.v_bound]

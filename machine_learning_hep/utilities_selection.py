@@ -13,7 +13,8 @@
 #############################################################################
 
 """
-utilities for bit selection, fiducial acceptance, pid, single topological variable selections and normalization
+utilities for bit selection, fiducial acceptance, pid,
+          single topological variable selections and normalisation
 """
 
 import operator

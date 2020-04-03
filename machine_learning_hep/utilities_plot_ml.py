@@ -475,6 +475,10 @@ def vardistplot_probscan(dataframe_, mylistvariables_, modelname_, thresharray_,
         else:
             df_skimmed = df_skimmed.query(selml)
 
+        if thresh_index == 0 and len(df_skimmed[mylistvariables_[0]]) == 0:
+            logger.warning("Dataframe is empty, skipping probscan")
+            break
+
         for i, var in enumerate(mylistvariables_):
 
             # Extract minimum and maximum for x-axis, this is only done once
@@ -509,8 +513,10 @@ def vardistplot_probscan(dataframe_, mylistvariables_, modelname_, thresharray_,
             elif opt == 1:
                 his = np.divide(his, ref_hists[i])
                 axes[i].set_ylim(0.001, 1.1)
-            axes[i].bar(center, his, align='center', width=width, facecolor=clr, label=lbl)
-            axes[i].legend(fontsize=10)
+
+            if np.any(his):
+                axes[i].bar(center, his, align='center', width=width, facecolor=clr, label=lbl)
+                axes[i].legend(fontsize=10)
     plotname = osjoin(output_, f"variables_distribution_{suffix_}_ratio{opt}.png")
     plt.savefig(plotname, bbox_inches='tight')
 

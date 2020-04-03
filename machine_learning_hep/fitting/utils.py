@@ -20,8 +20,8 @@ Interfacing with
     2. user configuration database
 Providing and storing fitters
 """
+import os
 import inspect
-from os.path import join
 
 # pylint: disable=import-error, no-name-in-module, unused-import
 from ROOT import TFile
@@ -39,7 +39,7 @@ def save_fit(fit, save_dir, annotations=None):
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
-    root_file_name = join(save_dir, "root_objects.root")
+    root_file_name = os.path.join(save_dir, "root_objects.root")
     root_file = TFile.Open(root_file_name, "RECREATE")
     root_file.cd()
 
@@ -48,10 +48,10 @@ def save_fit(fit, save_dir, annotations=None):
             root_object.Write(name)
     fit.kernel.Write("kernel")
 
-    yaml_path = join(save_dir, "init_pars.yaml")
+    yaml_path = os.path.join(save_dir, "init_pars.yaml")
     dump_yaml_from_dict(fit.init_pars, yaml_path)
 
-    yaml_path = join(save_dir, "fit_pars.yaml")
+    yaml_path = os.path.join(save_dir, "fit_pars.yaml")
     dump_yaml_from_dict(fit.fit_pars, yaml_path)
 
     class_name = fit.__class__.__name__
@@ -60,15 +60,15 @@ def save_fit(fit, save_dir, annotations=None):
     if annotations:
         meta_info["annotations"] = annotations
 
-    yaml_path = join(save_dir, "meta.yaml")
+    yaml_path = os.path.join(save_dir, "meta.yaml")
     dump_yaml_from_dict(meta_info, yaml_path)
 
 
 def load_fit(save_dir):
-    yaml_path = join(save_dir, "meta.yaml")
+    yaml_path = os.path.join(save_dir, "meta.yaml")
     meta_info = parse_yaml(yaml_path)
 
-    yaml_path = join(save_dir, "init_pars.yaml")
+    yaml_path = os.path.join(save_dir, "init_pars.yaml")
 
     #pylint: disable=import-outside-toplevel
     import machine_learning_hep.fitting.fitters as search_module
@@ -82,10 +82,10 @@ def load_fit(save_dir):
     else:
         get_logger().fatal("Fit class %s is invalid")
 
-    yaml_path = join(save_dir, "fit_pars.yaml")
+    yaml_path = os.path.join(save_dir, "fit_pars.yaml")
     fit.fit_pars = parse_yaml(yaml_path)
 
-    root_file_name = join(save_dir, "root_objects.root")
+    root_file_name = os.path.join(save_dir, "root_objects.root")
     root_file = TFile.Open(root_file_name, "READ")
 
     keys = root_file.GetListOfKeys()

@@ -1,3 +1,5 @@
+.idea
+
 # If python build in source tree
 build/*
 dist/*
