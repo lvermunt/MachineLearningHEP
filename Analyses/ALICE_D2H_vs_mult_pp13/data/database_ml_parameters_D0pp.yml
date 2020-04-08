@@ -317,7 +317,7 @@ D0pp:
       sigmaarray: [0.01,0.01,0.01,0.01,0.01,0.01]
       FixedSigma: true
       fitcase: D0
-      latexnamemeson: "D^{0}"
+      latexnamehadron: "D^{0}"
       latexbin2var: "n_{trkl}"
       nevents: null
       dodoublecross: false
@@ -401,7 +401,7 @@ D0pp:
       sigmaarray: [0.01,0.01,0.01,0.01,0.01,0.01]
       FixedSigma: true
       fitcase: D0
-      latexnamemeson: "D^{0}"
+      latexnamehadron: "D^{0}"
       latexbin2var: "V0M ampl."
       nevents: null
       dodoublecross: false
@@ -476,7 +476,7 @@ D0pp:
       sigmaarray: [0.01,0.01,0.01,0.01,0.01,0.01]
       FixedSigma: true
       fitcase: D0
-      latexnamemeson: "D^{0}"
+      latexnamehadron: "D^{0}"
       latexbin2var: "V0M perc."
       nevents: null
       dodoublecross: false
@@ -548,7 +548,7 @@ D0pp:
       sigmaarray: [0.01,0.01,0.01,0.01,0.01]
       FixedSigma: true
       fitcase: D0
-      latexnamemeson: "D^{0}"
+      latexnamehadron: "D^{0}"
       latexbin2var: "p_{T,jet}"
       nevents: 1700000000.
       dodoublecross: false
@@ -620,7 +620,7 @@ D0pp:
       sigmaarray: [0.01,0.01,0.01,0.01,0.01,0.01]
       FixedSigma: true
       fitcase: D0
-      latexnamemeson: "D^{0}"
+      latexnamehadron: "D^{0}"
       latexbin2var: "n_{trkl}"
       nevents: null
       dodoublecross: false
@@ -693,7 +693,7 @@ D0pp:
       sigmaarray: [0.01,0.01,0.01,0.01,0.01,0.01]
       FixedSigma: true
       fitcase: D0
-      latexnamemeson: "D^{0}"
+      latexnamehadron: "D^{0}"
       latexbin2var: "V0M ampl."
       nevents: null
       dodoublecross: false
@@ -765,7 +765,7 @@ D0pp:
       sigmaarray: [0.01,0.01,0.01,0.01,0.01,0.01]
       FixedSigma: true
       fitcase: D0
-      latexnamemeson: "D^{0}"
+      latexnamehadron: "D^{0}"
       latexbin2var: "V0M perc."
       nevents: null
       dodoublecross: false

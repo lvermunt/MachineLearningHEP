@@ -124,8 +124,8 @@ def compare_ml_std_ratio(case_ml_1, case_ml_2, ana_type_ml, period_number, filep
         filepath_ml_2 = \
                 data_param_2[case_ml_2]["analysis"][ana_type_ml]["data"]["results"][period_number]
 
-    name_1 = data_param_1[case_ml_1]["analysis"][ana_type_ml]["latexnamemeson"]
-    name_2 = data_param_2[case_ml_2]["analysis"][ana_type_ml]["latexnamemeson"]
+    name_1 = data_param_1[case_ml_1]["analysis"][ana_type_ml]["latexnamehadron"]
+    name_2 = data_param_2[case_ml_2]["analysis"][ana_type_ml]["latexnamehadron"]
     # Get pt spectrum files
     if mult_bin is None:
         mult_bin = 0

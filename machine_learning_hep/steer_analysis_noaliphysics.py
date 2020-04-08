@@ -35,6 +35,8 @@ from machine_learning_hep.processerdhadrons_mult import ProcesserDhadrons_mult
 from machine_learning_hep.utilities import checkdirlist, checkdir
 from machine_learning_hep.utilities import checkmakedirlist, checkmakedir
 
+from machine_learning_hep.optimiser_hipe4ml import Optimiserhipe4ml
+
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 try:
@@ -128,6 +130,10 @@ def do_entire_analysis(data_config: dict, data_param: dict, data_model: dict, ru
     mlplot = data_param[case]["ml"]["mlplot"]
 
     proc_type = data_param[case]["analysis"][typean]["proc_type"]
+
+    domloption = 2 #1 default MLHEP, 2 is hipe4ml
+    opti_hyperpar_hipe4ml = data_param[case]["hipe4ml"]["hyper_par_opt"]["do_hyp_opt"]
+    hipe4ml_hyper_pars = data_param[case]["hipe4ml"]["hipe4ml_hyper_pars"]
 
     #creating folder if not present
     counter = 0
@@ -279,7 +285,7 @@ def do_entire_analysis(data_config: dict, data_param: dict, data_model: dict, ru
     if domergingperiodsdata == 1:
         mymultiprocessdata.multi_mergeml_allinone()
 
-    if doml is True:
+    if doml is True and domloption == 1:
         index = 0
         for binmin, binmax in zip(binminarray, binmaxarray):
             myopt = Optimiser(data_param[case], case, typean,
@@ -332,6 +338,22 @@ def do_entire_analysis(data_config: dict, data_param: dict, data_model: dict, ru
     if doefficiency is True:
         mymultiprocessmc.multi_efficiency()
 
+    if doml is True and domloption == 2:
+        index = 0
+        for binmin, binmax in zip(binminarray, binmaxarray):
+            myopthipe4ml = Optimiserhipe4ml(data_param[case], binmin, binmax,
+                                            training_vars[index],
+                                            hipe4ml_hyper_pars[index])
+
+            if opti_hyperpar_hipe4ml is True:
+                myopthipe4ml.do_hipe4mlhyperparopti()
+            else:
+                myopthipe4ml.set_hipe4ml_modelpar()
+
+            myopthipe4ml.do_hipe4mltrain()
+            myopthipe4ml.do_hipe4mlplot()
+            index = index + 1
+
 
 def load_config(user_path: str, default_path: tuple) -> dict:
     """
@@ -352,7 +374,8 @@ def load_config(user_path: str, default_path: tuple) -> dict:
             logger_string = f"The file {user_path} does not exist."
             logger.fatal(logger_string)
         stream = open(user_path)
-    return yaml.safe_load(stream)
+    return yaml.load(stream, yaml.FullLoader)
+    #return yaml.safe_load(stream)
 
 def main():
     """
