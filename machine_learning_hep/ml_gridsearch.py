@@ -85,7 +85,7 @@ def do_gridsearch(names, classifiers, grid_params, x_train, y_train, nkfolds, ou
         cvres = grid_search.cv_results_
 
         # Save the results as soon as we have them in case something goes wrong later
-        # (would be quite unfortunate to loose grid search reults...)
+        # (would be quite unfortunate to loose grid search results...)
         out_file = osjoin(out_dir, "results.pkl")
         pickle.dump(pd.DataFrame(cvres), openfile(out_file, "wb"), protocol=4)
         # Parameters

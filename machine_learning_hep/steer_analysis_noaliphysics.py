@@ -131,7 +131,7 @@ def do_entire_analysis(data_config: dict, data_param: dict, data_model: dict, ru
 
     proc_type = data_param[case]["analysis"][typean]["proc_type"]
 
-    domloption = 2 #1 default MLHEP, 2 is hipe4ml
+    domloption = data_param[case]["hipe4ml"]["dohipe4ml"]
     opti_hyperpar_hipe4ml = data_param[case]["hipe4ml"]["hyper_par_opt"]["do_hyp_opt"]
     hipe4ml_hyper_pars = data_param[case]["hipe4ml"]["hipe4ml_hyper_pars"]
 

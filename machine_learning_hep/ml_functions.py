@@ -20,6 +20,7 @@ import pickle
 
 import pandas as pd
 from keras.wrappers.scikit_learn import KerasClassifier
+import xgboost as xgb
 
 import machine_learning_hep.templates.templates_keras as templates_keras
 import machine_learning_hep.templates.templates_scikit as templates_scikit
@@ -108,6 +109,62 @@ def getclf_keras(model_config, length_input):
                 logger.critical("Could not load keras model %s", c)
 
     return classifiers, names, []
+
+
+def set_num_trees(classifiers_, x_train_, y_train_, nfold_, num_early_stopping_, seed_):
+    logger = get_logger()
+    logger.info("Estimating number of trees")
+    new_models = []
+
+    for clf in classifiers_:
+        params = clf.get_params(deep=True)
+        num_trees = params["n_estimators"]
+        xgb_params = clf.get_xgb_params()
+        train_data = xgb.DMatrix(x_train_, label=y_train_, silent=True, nthread=4)
+
+        cv_results = xgb.cv(xgb_params, train_data, num_boost_round=num_trees, nfold=nfold_,
+                            stratified=True, metrics='auc', seed=seed_,
+                            early_stopping_rounds=num_early_stopping_)
+
+        mean_auc = cv_results['test-auc-mean'].max()
+        boost_rounds = cv_results['test-auc-mean'].idxmax()
+        mean_std = cv_results['test-auc-std'][boost_rounds]
+        logger.info("ROC_AUC %.5f +/- %.5f for %d rounds", mean_auc, mean_std, boost_rounds)
+
+        #cv_results_err = xgb.cv(xgb_params, train_data, num_boost_round=num_trees, nfold=nfold_,
+        #                        stratified=True, metrics='error', seed=seed_,
+        #                        early_stopping_rounds=num_early_stopping_)
+
+        #mean_err = cv_results_err['test-error-mean'].min()
+        #boost_rounds_err = cv_results_err['test-error-mean'].idxmin()
+        #mean_std_err = cv_results_err['test-error-std'][boost_rounds_err]
+        #logger.info("ERROR %.5f +/- %.5f for %d rounds", mean_err, mean_std_err, boost_rounds_err)
+
+        #cv_results_rmse = xgb.cv(xgb_params, train_data, num_boost_round=num_trees, nfold=nfold_,
+        #                         stratified=True, metrics='rmse', seed=seed_,
+        #                         early_stopping_rounds=num_early_stopping_)
+
+        #mean_rmse = cv_results_rmse['test-rmse-mean'].min()
+        #boost_rounds_rmse = cv_results_rmse['test-rmse-mean'].idxmin()
+        #mean_std_rmse = cv_results_rmse['test-rmse-std'][boost_rounds_rmse]
+        #logger.info("RMSE %.5f +/- %.5f for %d rounds", mean_rmse,
+        #             mean_std_rmse, boost_rounds_rmse)
+
+        #NB: Doesn't seem to work properly
+        #cv_results_mae = xgb.cv(xgb_params, train_data, num_boost_round=num_trees, nfold=nfold_,
+        #                        stratified=True, metrics='mae', seed=seed_,
+        #                        early_stopping_rounds=num_early_stopping_)
+
+        #mean_mae = cv_results_mae['test-mae-mean'].min()
+        #boost_rounds_mae = cv_results_mae['test-mae-mean'].idxmin()
+        #mean_std_mae = cv_results_mae['test-mae-std'][boost_rounds_mae]
+        #logger.info("MAE %.5f +/- %.5f for %d rounds", mean_mae, mean_std_mae, boost_rounds_mae)
+
+        params["n_estimators"] = boost_rounds
+        clf.set_params(**params)
+        new_models.append(clf)
+
+    return new_models
 
 
 def fit(names_, classifiers_, x_train_, y_train_):

@@ -258,6 +258,9 @@ class Processer: # pylint: disable=too-many-instance-attributes
                                                         self.b_mcsigfd), dtype=int)
             dfreco[self.v_ismcbkg] = np.array(tag_bit_df(dfreco, self.v_bitvar,
                                                          self.b_mcbkg), dtype=int)
+        if self.mcordata == "data" and self.case.startswith('Bs'):
+            dfreco[self.v_ismcbkg] = np.array(tag_bit_df(dfreco, self.v_bitvar,
+                                                         self.b_mcbkg), dtype=int)
         pickle.dump(dfreco, openfile(self.l_reco[file_index], "wb"), protocol=4)
 
         if self.mcordata == "mc":

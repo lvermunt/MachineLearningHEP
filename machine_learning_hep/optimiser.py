@@ -29,7 +29,7 @@ from ROOT import TFile, TCanvas, TH1F, TF1, gROOT  # pylint: disable=import-erro
 
 from machine_learning_hep.logger import get_logger
 from machine_learning_hep.ml_gridsearch import do_gridsearch
-from machine_learning_hep.ml_functions import fit, savemodels, test, apply
+from machine_learning_hep.ml_functions import set_num_trees, fit, savemodels, test, apply
 from machine_learning_hep.ml_functions import getclf_scikit, getclf_xgboost, getclf_keras
 from machine_learning_hep.ml_significance import calc_bkg, calc_signif, calc_eff, calc_sigeff_steps
 from machine_learning_hep.utilities import checkdirlist, checkmakedirlist, write_tree
@@ -107,6 +107,8 @@ class Optimiser:
         self.p_binmax = binmax
         self.p_npca = None
         self.p_mltype = data_param["ml"]["mltype"]
+        self.p_earlystop = data_param["ml"]["doearlystopping"]
+        self.p_num_es_rounds = data_param["ml"]["num_early_stopping_rounds"]
         self.p_nkfolds = data_param["ml"]["nkfolds"]
         self.p_ncorescross = data_param["ml"]["ncorescrossval"]
         self.rnd_shuffle = data_param["ml"]["rnd_shuffle"]
@@ -172,9 +174,9 @@ class Optimiser:
                                      self.p_bin_width))
         self.p_mass = data_param["mass"]
         self.p_raahp = raahp
+        self.create_suffix()
         self.preparesample()
         self.loadmodels()
-        self.create_suffix()
         self.df_evt_data = None
         self.df_evttotsample_data = None
 
@@ -257,6 +259,11 @@ class Optimiser:
         self.df_xtest = self.df_mltest[self.v_train]
         self.df_ytest = self.df_mltest[self.v_sig]
 
+        filename_xtrain = self.dirmlout+"/xtrain_%s.pkl" % (self.s_suffix)
+        filename_ytrain = self.dirmlout+"/ytrain_%s.pkl" % (self.s_suffix)
+        pickle.dump(self.df_xtrain, openfile(filename_xtrain, "wb"), protocol=4)
+        pickle.dump(self.df_ytrain, openfile(filename_ytrain, "wb"), protocol=4)
+
     def do_corr(self):
         imageIO_vardist_all = vardistplot(self.df_sigtrain, self.df_bkgtrain,
                                           self.v_all, self.dirmlplot,
@@ -289,6 +296,10 @@ class Optimiser:
     def do_train(self):
         self.logger.info("Training")
         t0 = time.time()
+        if self.p_earlystop:
+            self.logger.info("Using early stopping")
+            self.p_class = set_num_trees(self.p_class, self.df_xtrain, self.df_ytrain,
+                                         self.p_nkfolds, self.p_num_es_rounds, self.rnd_shuffle)
         self.p_trainedmod = fit(self.p_classname, self.p_class, self.df_xtrain, self.df_ytrain)
         savemodels(self.p_classname, self.p_trainedmod, self.dirmlout, self.s_suffix)
         self.logger.info("Training over")

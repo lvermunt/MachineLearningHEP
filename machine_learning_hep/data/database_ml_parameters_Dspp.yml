@@ -183,6 +183,8 @@ Dspp:
     binmin: [1,8] #list of nbins
     binmax: [8,24] #list of nbins
     mltype: BinaryClassification
+    doearlystopping: True #available for XGBoost only
+    num_early_stopping_rounds: 50 #available for XGBoost only
     ncorescrossval: 10
     mlplot: /Users/lvermunt/cernbox/Analyses/ML/input/Derived/test_data/mlplot # to be removed
     mlout: /Users/lvermunt/cernbox/Analyses/ML/input/Derived/test_data/mlout    # to be removed
@@ -204,10 +206,11 @@ Dspp:
       presel_gen_eff: "abs(y_cand) < 0.5 and abs(z_vtx_gen) < 10"
 
   hipe4ml:
-    raw_output: False # use raw_output (True) of probability (False) as output of the model
+    dohipe4ml: 2             #1 default MLHEP, 2 is hipe4ml (when doml = true)
+    raw_output: False        # use raw_output (True) of probability (False) as output of the model
     roc_auc_average: 'macro' # 'macro' or 'weighted'
     roc_auc_approach: 'ovo'  # 'ovo' or 'ovr'
-    train_test_log: True # use log scale for plots of train and test distributions
+    train_test_log: True     # use log scale for plots of train and test distributions
     hipe4ml_hyper_pars: [{'max_depth':3, 'learning_rate':0.0238, 'n_estimators':1028, 'min_child_weight':5, 'colsample':0.9, 'n_jobs':4, 'tree_method':hist},
                          {'max_depth':4, 'learning_rate':0.0210, 'n_estimators':1282, 'min_child_weight':5, 'colsample':0.9, 'n_jobs':4, 'tree_method':hist}]
     #hipe4ml_hyper_pars: [{'max_depth': 4, 'learning_rate': 0.1, 'n_estimators': 800, 'min_child_weight': 2, 'subsample': 1., 'colsample_bytree': 0.9, n_jobs':1, 'tree_method':hist},
@@ -215,10 +218,10 @@ Dspp:
     #                     # list of dicts of hyperparameters (one for each pT bin)
     hyper_par_opt:
       do_hyp_opt: True # whether to do the parameter optimization
-      njobs: 2 # number of parallel jobs used in hyper-parameter optimization, -1. to use all
-      nfolds: 5 # number of folds used in cross validation
-      initpoints: 5 # steps of random exploration you want to perform
-      niter: 5 # steps for bayesian optimization
+      njobs: 2         # number of parallel jobs used in hyper-parameter optimization, -1. to use all
+      nfolds: 5        # number of folds used in cross validation
+      initpoints: 5    # steps of random exploration you want to perform
+      niter: 5         # steps for bayesian optimization
       bayes_opt_config: {'max_depth': !!python/tuple [3, 8],
                          'learning_rate': !!python/tuple [0.01, 0.1],
                          'n_estimators': !!python/tuple [300, 1500],
