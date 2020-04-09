@@ -106,10 +106,14 @@ class MultiSystematics:
                                      self.p_period[indexp])
                     #min_cv_cut, max_cv_cut = \
                     #      self.process_listsample[indexp].define_cutvariation_limits()
-                    #min_cv_cut = [0.998, 0.996, 0.98, 0.97, 0.9]
-                    #max_cv_cut = [0.9999, 0.9999, 0.9999, 0.999, 0.999]
-                    min_cv_cut = [0.99, 0.99, 0.94, 0.94, 0.94]
-                    max_cv_cut = [0.9999, 0.9999, 0.999, 0.999, 0.999]
+                    #ITS2
+                    #min_cv_cut = [0.996,   0.9995,  0.9995,  0.999,   0.999,   0.998,   0.996]
+                    #max_cv_cut = [0.99997, 0.99999, 0.99999, 0.99999, 0.99999, 0.99999, 0.99999]
+                    #ITS3 (new w.r.t opti, change in bin 4-6)
+                    #min_cv_cut = [0.995,   0.995,   0.995,    0.99,    0.99,    0.9,    0.9]
+                    #max_cv_cut = [0.99999, 0.99999, 0.999999, 0.99999, 0.99999, 0.9999, 0.9999]
+                    min_cv_cut = [0.95, 0.95, 0.95, 0.95, 0.95, 0.95, 0.95]
+                    max_cv_cut = [1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00]
 
         if domass is True:
             for indexp in range(self.prodnumber):

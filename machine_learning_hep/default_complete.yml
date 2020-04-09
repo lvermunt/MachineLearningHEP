@@ -27,7 +27,7 @@ ml_study:
   activate: true
   dopca: false
   docorrelation: false
-  dotraining: true
+  dotraining: false
   dotesting: false
   doapplytodatamc: false
   docrossvalidation: false

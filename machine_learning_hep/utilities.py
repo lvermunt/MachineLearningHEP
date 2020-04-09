@@ -72,6 +72,22 @@ def merge_method(listfiles, namemerged):
     dftot = pd.concat(dflist)
     pickle.dump(dftot, openfile(namemerged, "wb"), protocol=4)
 
+def merge_method_max(listfiles, namemerged, maxlength):
+    """
+    Merge list of dataframes into one
+    """
+    dflist = []
+    for myfilename in listfiles:
+        myfile = openfile(myfilename, "rb")
+        df = pickle.load(myfile)
+        dflist.append(df)
+        if len(dflist) > maxlength:
+            print("Max length of", maxlength, "reached for", namemerged)
+            print("Total length is", len(dflist), "so stopping merging")
+            break
+    dftot = pd.concat(dflist)
+    pickle.dump(dftot, openfile(namemerged, "wb"), protocol=4)
+
 # pylint: disable=too-many-nested-blocks
 def list_folders(main_dir, filenameinput, maxfiles):
     """

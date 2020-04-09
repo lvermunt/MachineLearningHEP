@@ -27,7 +27,7 @@ ml_study:
   activate: false
   dopca: false
   docorrelation: false
-  dotraining: true
+  dotraining: false
   dotesting: false
   doapplytodatamc: false
   docrossvalidation: false
@@ -59,24 +59,24 @@ analysis:
   # Do only merged (false)
   doperperiod: false
   data:
-    histomass: true
+    histomass: false
   mc:
-    histomass: true
-    efficiency: true
+    histomass: false
+    efficiency: false
     feeddown: false
-  dofit: true
+  dofit: false
   # Control the yield systemaitc uncertainty
   dosyst: false
   dojetstudies: false
-  doeff: true
+  doeff: false
   docross: false
   doplots: false
 
 systematics:
   cutvar:
-    activate: false
-    probvariationmass: false
-    probvariationeff: false
+    activate: true
+    probvariationmass: true
+    probvariationeff: true
     probvariationfit: false
     probvariationcross: false
   mcptshape:

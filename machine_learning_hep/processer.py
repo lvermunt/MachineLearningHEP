@@ -28,7 +28,7 @@ from root_numpy import fill_hist, evaluate # pylint: disable=import-error, no-na
 from ROOT import TFile, TH1F, TH2F, TH3F, RooUnfoldResponse # pylint: disable=import-error, no-name-in-module
 from machine_learning_hep.selectionutils import selectfidacc
 from machine_learning_hep.bitwise import filter_bit_df, tag_bit_df
-from machine_learning_hep.utilities import selectdfquery, selectdfrunlist, merge_method
+from machine_learning_hep.utilities import selectdfquery, selectdfrunlist, merge_method, merge_method_max
 from machine_learning_hep.utilities import list_folders, createlist, appendmainfoldertolist
 from machine_learning_hep.utilities import create_folder_struc, seldf_singlevar, openfile
 from machine_learning_hep.utilities import mergerootfiles, z_calc, z_gen_calc
@@ -370,10 +370,10 @@ class Processer: # pylint: disable=too-many-instance-attributes
         filesel = rd.sample(range(0, nfiles), ntomerge)
         for ipt in range(self.p_nptbins):
             list_sel_recosk = [self.mptfiles_recosk[ipt][j] for j in filesel]
-            merge_method(list_sel_recosk, self.lpt_reco_ml[ipt])
+            merge_method_max(list_sel_recosk, self.lpt_reco_ml[ipt], 3000000)
             if self.mcordata == "mc":
                 list_sel_gensk = [self.mptfiles_gensk[ipt][j] for j in filesel]
-                merge_method(list_sel_gensk, self.lpt_gen_ml[ipt])
+                merge_method_max(list_sel_gensk, self.lpt_gen_ml[ipt], 3000000)
 
         list_sel_evt = [self.l_evt[j] for j in filesel]
         list_sel_evtorig = [self.l_evtorig[j] for j in filesel]

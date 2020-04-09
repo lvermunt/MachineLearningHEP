@@ -12,7 +12,7 @@
 ##   along with this program. if not, see <https://www.gnu.org/licenses/>. ##
 #############################################################################
 
-BsITS2:
+BsITS3_new:
   nprongs: 4
   doml: true
   mass: 5.366
@@ -23,7 +23,7 @@ BsITS2:
   #sel_good_evt_unp: "is_ev_rej == 0"
   sel_good_evt_unp: null
   sel_reco_skim: [null, null, null, null, null, null, null]
-  sel_gen_skim: [null, null, null, null, null, null, null]
+  sel_gen_skim: [null,null,null,null,null,null,null]
   sel_skim_binmin: [0,2,4,6,8,12,16] #list of nbins
   sel_skim_binmax: [2,4,6,8,12,16,24] #list of nbins
   var_binning: pt_cand
@@ -45,13 +45,13 @@ BsITS2:
     ismcrefl: [[5],[]]
 
   variables:
-    var_all: [d_len, d_len_xy, norm_dl_xy, cos_p, cos_p_xy, imp_par_xy, dca, cos_t_star, imp_par_prod, 
+    var_all: [d_len, d_len_xy, norm_dl_xy, cos_p, cos_p_xy, imp_par_xy, dca, cos_t_star, imp_par_prod,
               pt_prong0, pt_prong1, pt_prong2, pt_prong3, imp_par_prong0, imp_par_prong1, imp_par_prong2, imp_par_prong3,
               max_norm_d0d0exp, inv_mass_Ds, pt_Ds, y_Ds, d_len_Ds, d_len_xy_Ds, norm_dl_xy_Ds, cos_p_Ds, cos_p_xy_Ds,
               imp_par_xy_Ds, dca_Ds, sig_vert_Ds, delta_mass_KK_Ds, cos_PiDs_Ds, cos_PiKPhi_3_Ds, max_norm_d0d0exp_Ds,
-              inv_mass, pt_cand, phi_cand, cand_type, y_cand, eta_prong0, eta_prong1, eta_prong2, eta_prong3, run_number, ev_id]
-              #nsigTPC_Pi_0, nsigTPC_K_0, nsigTOF_Pi_0, nsigTOF_K_0, nsigTPC_Pi_1, nsigTPC_K_1, nsigTOF_Pi_1, nsigTOF_K_1,
-              #nsigTPC_Pi_2, nsigTPC_K_2, nsigTOF_Pi_2, nsigTOF_K_2, nsigTPC_Pi_3, nsigTPC_K_3, nsigTOF_Pi_3, nsigTOF_K_3]
+              inv_mass, pt_cand, phi_cand, cand_type, y_cand, eta_prong0, eta_prong1, eta_prong2, eta_prong3, run_number, ev_id,
+              nsigTPC_Pi_0, nsigTPC_K_0, nsigTOF_Pi_0, nsigTOF_K_0, nsigTPC_Pi_1, nsigTPC_K_1, nsigTOF_Pi_1, nsigTOF_K_1,
+              nsigTPC_Pi_2, nsigTPC_K_2, nsigTOF_Pi_2, nsigTOF_K_2, nsigTPC_Pi_3, nsigTPC_K_3, nsigTOF_Pi_3, nsigTOF_K_3]
     var_evt:
        data: [centrality, z_vtx_reco, n_vtx_contributors, n_tracks, is_ev_rej, run_number,
               ev_id, n_tracklets]
@@ -114,9 +114,9 @@ BsITS2:
     namefile_reco_applieddata: AnalysisResultsRecoAppliedData.pkl
     namefile_reco_appliedmc: AnalysisResultsRecoAppliedMC.pkl
     namefile_mcweights: mcweights.root
-    treeoriginreco: 'PWGHF_TreeCreatorITS2/tree_Bs'
-    treeorigingen: 'PWGHF_TreeCreatorITS2/tree_Bs_gen'
-    treeoriginevt: 'PWGHF_TreeCreatorITS2/tree_event_char'
+    treeoriginreco: 'PWGHF_TreeCreatorITS3/tree_Bs'
+    treeorigingen: 'PWGHF_TreeCreatorITS3/tree_Bs_gen'
+    treeoriginevt: 'PWGHF_TreeCreatorITS3/tree_event_char'
     namefile_reco_ml_applied: AnalysisResultsRecoML.pkl
     treeoutput: "Bstree"
     histofilename: "masshisto.root"
@@ -130,15 +130,15 @@ BsITS2:
       maxfiles : [-1] #list of periods
       chunksizeunp : [100] #list of periods
       chunksizeskim: [100] #list of periods
-      fracmerge : [0.1] #list of periods    #0.1  #used before 0.01, 0.05, 0.10, 0.10, 0.10
+      fracmerge : [0.5] #list of periods
       seedmerge: [12] #list of periods
       period: [LHC19h1b2] #list of periods
-      unmerged_tree_dir: [/data/TTree/BskAnyITS2ITS3Improver/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/335_20200116-2347/merged] #list of periods
-      pkl: [/data/Derived/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/335_20200116-2347/pkl] #list of periods
-      pkl_skimmed: [/data/Derived/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/335_20200116-2347/pklsk] #list of periods
-      pkl_skimmed_merge_for_ml: [/data/Derived/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/335_20200116-2347/pklskml] #list of periods
-      pkl_skimmed_merge_for_ml_all: /data/Derived/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/335_20200116-2347/ITS2Upgr_19_bkg_mltot
-      pkl_evtcounter_all: /data/Derived/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/335_20200116-2347/ITS2Upgr_19_bkg_evttot
+      unmerged_tree_dir: [/data/TTree/BskAnyITS2ITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606/merged] #list of periods
+      pkl: [/data/Derived/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606/pkl] #list of periods
+      pkl_skimmed: [/data/Derived/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606/pklsk] #list of periods
+      pkl_skimmed_merge_for_ml: [/data/Derived/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606/pklskml] #list of periods
+      pkl_skimmed_merge_for_ml_all: /data/Derived/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606/ITS2Upgr_19_bkg_mltot
+      pkl_evtcounter_all: /data/Derived/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606/ITS2Upgr_19_bkg_evttot
     mc:
       nperiods: 1
       nprocessesparallel: 50
@@ -148,12 +148,12 @@ BsITS2:
       fracmerge : [1.0] #list of periods
       seedmerge: [12] #list of periods
       period: [LHC19h1b2] #list of periods
-      unmerged_tree_dir: [/data/TTree/BskAnyITS2ITS3Improver/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/337_20200116-2345/merged] #list of periods
-      pkl: [/data/Derived/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/337_20200116-2345/pkl] #list of periods
-      pkl_skimmed: [/data/Derived/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/337_20200116-2345/pklsk] #list of periods
-      pkl_skimmed_merge_for_ml: [/data/Derived/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/337_20200116-2345/pklskml] #list of periods
-      pkl_skimmed_merge_for_ml_all: /data/Derived/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/337_20200116-2345/ITS2Upgr_19_sig_mltot
-      pkl_evtcounter_all: /data/Derived/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/337_20200116-2345/ITS2Upgr_19_sig_evttot
+      unmerged_tree_dir: [/data/TTree/BskAnyITS2ITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606/merged] #list of periods
+      pkl: [/data/Derived/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606_MC/pkl] #list of periods
+      pkl_skimmed: [/data/Derived/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606_MC/pklsk] #list of periods
+      pkl_skimmed_merge_for_ml: [/data/Derived/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606_MC/pklskml] #list of periods
+      pkl_skimmed_merge_for_ml_all: /data/Derived/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606_MC/ITS2Upgr_19_sig_mltot
+      pkl_evtcounter_all: /data/Derived/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606_MC/ITS2Upgr_19_sig_evttot
       mcreweights: [mcreweights]
   ml:
     evtsel: null
@@ -165,7 +165,7 @@ BsITS2:
     sampletagforsignal: 1
     sampletagforbkg: 0
     sel_sigml: ismcprompt == 1
-    sel_bkgml: ismcbkg == 1 #inv_mass<5.266 or inv_mass>5.466 
+    sel_bkgml: ismcbkg == 1 #inv_mass<5.266 or inv_mass>5.466
     nkfolds: 5
     rnd_shuffle: 12
     rnd_splt: 12
@@ -175,9 +175,9 @@ BsITS2:
     mltype: BinaryClassification
     doearlystopping: True #available for XGBoost only
     num_early_stopping_rounds: 50 #available for XGBoost only
-    ncorescrossval: 10 
-    mlplot: /data/Derived/BskAnyITS2/vAN-20200116_ROOT6-1/mlplot # to be removed
-    mlout: /data/Derived/BskAnyITS2/vAN-20200116_ROOT6-1/mlout # to be removed
+    ncorescrossval: 10
+    mlplot: /data/Derived/BskAnyITS3Improver/vAN-20200116_ROOT6-1/mlplot # to be removed
+    mlout: /data/Derived/BskAnyITS3Improver/vAN-20200116_ROOT6-1/mlout # to be removed
 
     opt:
       filename_fonll: 'data/fonll/fo_pp_d0meson_5TeV_y0p5.csv' # file with FONLL predictions
@@ -196,25 +196,25 @@ BsITS2:
   
   mlapplication:
     data:
-      pkl_skimmed_dec: [/data/Derived/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/335_20200116-2347/skpkldec] #list of periods
-      pkl_skimmed_decmerged: [/data/Derived/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/335_20200116-2347/skpkldecmerged] #list of periods
+      pkl_skimmed_dec: [/data/Derived/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606/skpkldec] #list of periods
+      pkl_skimmed_decmerged: [/data/Derived/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606/skpkldecmerged] #list of periods
     mc:
-      pkl_skimmed_dec: [/data/Derived/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/337_20200116-2345/skpkldec] #list of periods
-      pkl_skimmed_decmerged: [/data/Derived/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/337_20200116-2345/skpkldecmerged] #list of periods
+      pkl_skimmed_dec: [/data/Derived/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606_MC/skpkldec] #list of periods
+      pkl_skimmed_decmerged: [/data/Derived/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606_MC/skpkldecmerged] #list of periods
     modelname: xgboost
-    modelsperptbin: [xgboost_classifierBsITS2_dfselection_pt_cand_0.0_2.0.sav,
-                     xgboost_classifierBsITS2_dfselection_pt_cand_2.0_4.0.sav,
-                     xgboost_classifierBsITS2_dfselection_pt_cand_4.0_6.0.sav,
-                     xgboost_classifierBsITS2_dfselection_pt_cand_6.0_8.0.sav,
-                     xgboost_classifierBsITS2_dfselection_pt_cand_8.0_12.0.sav,
-                     xgboost_classifierBsITS2_dfselection_pt_cand_12.0_16.0.sav,
-                     xgboost_classifierBsITS2_dfselection_pt_cand_16.0_24.0.sav]
-    probcutpresel: 
+    modelsperptbin: [xgboost_classifierBsITS3_dfselection_pt_cand_0.0_2.0.sav,
+                     xgboost_classifierBsITS3_dfselection_pt_cand_2.0_4.0.sav,
+                     xgboost_classifierBsITS3_dfselection_pt_cand_4.0_6.0.sav,
+                     xgboost_classifierBsITS3_dfselection_pt_cand_6.0_8.0.sav,
+                     xgboost_classifierBsITS3_dfselection_pt_cand_8.0_12.0.sav,
+                     xgboost_classifierBsITS3_dfselection_pt_cand_12.0_16.0.sav,
+                     xgboost_classifierBsITS3_dfselection_pt_cand_16.0_24.0.sav]
+    probcutpresel:
       data: [0.5,0.5,0.5,0.5,0.3,0.3,0.3] #list of nbins
       mc: [0.5,0.5,0.5,0.5,0.3,0.3,0.3] #list of nbins
-    #probcutoptimal: [0.9995,0.9994,0.999,0.999,0.999,0.996,0.989] #list of nbins
-    #probcutoptimal: [0.99,0.99,0.99,0.99,0.99,0.99,0.99] #list of nbins
-    probcutoptimal: [0.9995,0.9995,0.9995,0.9995,0.9995,0.9995,0.9995] #list of nbins
+    #probcutoptimal: [0.9986,0.9988,0.998,0.998,0.9941,0.9843,0.9843] #list of nbins
+    probcutoptimal: [0.98,0.98,0.98,0.98,0.98,0.98,0.98] #list of nbins
+    #probcutoptimal: [0.9995,0.9995,0.9995,0.9995,0.9995,0.9995,0.9995] #list of nbins
 
   analysis:
     indexhptspectrum: -1
@@ -222,7 +222,7 @@ BsITS2:
     cctype: -1
     sigmav0: -1
     inputfonllpred: null
-    dir_general_plots: /data/DerivedResults/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/335_20200116-2347/analysis_plots
+    dir_general_plots: /data/DerivedResults/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606/analysis_plots
 
     MBvspt:
       useperiod: [1]
@@ -233,7 +233,7 @@ BsITS2:
       corresp_mb_typean: null
       corrEffMult: [null]
       sel_binmin2: [-999999] #list of nbins
-      sel_binmax2: [999999] #list of nbins  
+      sel_binmax2: [999999] #list of nbins
       var_binning2: n_tracklets
       var_binning2_gen: n_tracklets
       triggereff: [1]
@@ -245,17 +245,17 @@ BsITS2:
       binning_matching: [0,1,2,3,4,5,6]
       presel_gen_eff: "abs(y_cand) < 0.5 and abs(z_vtx_gen) < 10"
       evtsel: null
-      triggersel: 
+      triggersel:
         data: null
         mc: null
         weighttrig: false
 
       data:
-        results: [/data/DerivedResults/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/335_20200116-2347/resultsMBvspt_final] #list of periods
-        resultsallp: /data/DerivedResults/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/335_20200116-2347/resultstotMBvspt_final
+        results: [/data/DerivedResults/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606/resultsMBvspt_final] #list of periods
+        resultsallp: /data/DerivedResults/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606/resultstotMBvspt_final
       mc:
-        results: [/data/DerivedResults/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/337_20200116-2345/resultsMBvspt_final] #list of periods
-        resultsallp: /data/DerivedResults/BskAnyITS2/vAN-20200116_ROOT6-1/ITS2_19h1b2_full/337_20200116-2345/resultstotMBvspt_final
+        results: [/data/DerivedResults/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606_MC/resultsMBvspt_final] #list of periods
+        resultsallp: /data/DerivedResults/BskAnyITS3Improver/vAN-20200206_ROOT6-1/ITS2_19h1b2_full/358_20200207-1606_MC/resultstotMBvspt_final
 
       mass_fit_lim: [5.066, 5.666] # region for the fit of the invariant mass distribution [GeV/c^2]
       bin_width: 0.001 # bin width of the invariant mass histogram
@@ -297,16 +297,14 @@ BsITS2:
       latexbin2var: "p_{T}"
       nevents: 1600000.
       dodoublecross: false
-      
+
   systematics:
     probvariation:
       useperiod: [1] #period from where to define prob cuts
-      ncutvar: 2500 #number of looser and tighter variations
+      ncutvar: 50 #number of looser and tighter variations
       maxperccutvar: 0.25 #max diff in efficiency for loosest/tightest var
-      #cutvarminrange: [0.95, 0.95, 0.8, 0.7, 0.6] #Min starting point for scan
-      #cutvarmaxrange: [0.9999, 0.9999, 0.95, 0.95, 0.95] #Max starting point for scan
-      cutvarminrange: [0.998, 0.998, 0.998, 0.998, 0.998, 0.998, 0.998] #Min starting point for scan
-      cutvarmaxrange: [0.9999, 0.9999, 0.9999, 0.9999, 0.9999, 0.9999, 0.9999] #Max starting point for scan
+      cutvarminrange: [0.99, 0.99, 0.99, 0.94, 0.94, 0.94, 0.94] #Min starting point for scan
+      cutvarmaxrange: [0.9999, 0.9999, 0.999, 0.999, 0.999, 0.999, 0.999] #Max starting point for scan
       fixedmean: False #Fix mean cutvar histo to central fit
       fixedsigma: False #Fix sigma cutvar histo to central fit
     mcptshape:
@@ -316,13 +314,12 @@ BsITS2:
       weights_bins: 400
 
   validation:
-    runlisttrigger: 
+    runlisttrigger:
       LHC19h1b2:
         NOTRIG: nosel
     data:
-      dir: [dataval/335_20200116-2347] #list of periods
+      dir: [dataval/358_20200207-1606] #list of periods
       dirmerged: datavaltot
     mc:
-      dir: [mcval/337_20200116-2345] #list of periods
+      dir: [mcval/358_20200207-1606] #list of periods
       dirmerged: mcvaltot
-

@@ -25,6 +25,7 @@ import os
 import math
 from array import *
 import pickle
+import numpy as np
 from root_numpy import fill_hist, evaluate
 from ROOT import gROOT, gPad
 from ROOT import TFile, TH1F, TCanvas, TLegend
@@ -33,6 +34,7 @@ from machine_learning_hep.utilities import selectdfrunlist
 from machine_learning_hep.utilities import seldf_singlevar, openfile, make_file_path
 from machine_learning_hep.utilities_plot import load_root_style_simple, load_root_style
 from machine_learning_hep.logger import get_logger
+from machine_learning_hep.selectionutils import selectpid_lctov0bachelor
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-instance-attributes, too-many-statements, too-many-arguments
@@ -102,6 +104,14 @@ class Systematics:
                           for i in range(self.p_nptbins)]
         self.lpt_gendecmerged = [os.path.join(self.d_pkl_decmerged_mc, self.lpt_gensk[ipt]) \
                                  for ipt in range(self.p_nptbins)]
+
+        #Names for bitmap selections
+        self.v_isstd = datap["bitmap_sel"]["var_isstd"]
+        self.v_ismcsignal = datap["bitmap_sel"]["var_ismcsignal"]
+        self.v_ismcprompt = datap["bitmap_sel"]["var_ismcprompt"]
+        self.v_ismcfd = datap["bitmap_sel"]["var_ismcfd"]
+        self.v_ismcbkg = datap["bitmap_sel"]["var_ismcbkg"]
+        self.v_ismcrefl = datap["bitmap_sel"]["var_ismcrefl"]
 
         #Build names for intermediate output ROOT files
         self.n_filemass = datap["files_names"]["histofilename"]
@@ -293,6 +303,7 @@ class Systematics:
             bin_id = self.bin_matching[ipt]
             df = pickle.load(openfile(self.lpt_recodecmerged_data[bin_id], "rb"))
 
+            self.lpt_probcutfin[bin_id] = min_cv_cut[ipt] + 0.5 * (max_cv_cut[ipt] - min_cv_cut[ipt])
             stepsmin = (self.lpt_probcutfin[bin_id] - min_cv_cut[ipt]) / self.p_ncutvar
             stepsmax = (max_cv_cut[ipt] - self.lpt_probcutfin[bin_id]) / self.p_ncutvar
             ntrials = 2 * self.p_ncutvar + 1
@@ -322,21 +333,46 @@ class Systematics:
                 df = df.query(selml_cv)
 
                 for ibin2 in range(len(self.lvar2_binmin)):
-                    suffix = "%s%d_%d_%d_%s%.2f_%.2f" % \
+                    #suffix = "%s%d_%d_%d_%s%.2f_%.2f" % \
+                    #         (self.v_var_binning, self.lpt_finbinmin[ipt],
+                    #          self.lpt_finbinmax[ipt], icv,
+                    #          self.v_var2_binning, self.lvar2_binmin[ibin2],
+                    #          self.lvar2_binmax[ibin2])
+                    suffix = "%s%d_%d_%d" % \
                              (self.v_var_binning, self.lpt_finbinmin[ipt],
-                              self.lpt_finbinmax[ipt], icv,
-                              self.v_var2_binning, self.lvar2_binmin[ibin2],
-                              self.lvar2_binmax[ibin2])
+                              self.lpt_finbinmax[ipt], icv)
                     h_invmass = TH1F("hmass" + suffix, "", self.p_num_bins,
                                      self.p_mass_fit_lim[0], self.p_mass_fit_lim[1])
-                    h_invmass_weight = TH1F("h_invmass_weight" + suffix, "", self.p_num_bins,
-                                            self.p_mass_fit_lim[0], self.p_mass_fit_lim[1])
+                    h_invmass_sig = TH1F("hmass_sig" + suffix, "", self.p_num_bins,
+                                         self.p_mass_fit_lim[0], self.p_mass_fit_lim[1])
+                    h_invmass_bkg = TH1F("hmass_bkg" + suffix, "", self.p_num_bins,
+                                         self.p_mass_fit_lim[0], self.p_mass_fit_lim[1])
+                    #h_invmasspid_sig = TH1F("hmass_pid_sig" + suffix, "", self.p_num_bins,
+                    #                     self.p_mass_fit_lim[0], self.p_mass_fit_lim[1])
+                    #h_invmasspid_bkg = TH1F("hmass_pid_bkg" + suffix, "", self.p_num_bins,
+                    #                     self.p_mass_fit_lim[0], self.p_mass_fit_lim[1])
+                    #h_invmass_weight = TH1F("h_invmass_weight" + suffix, "", self.p_num_bins,
+                    #                        self.p_mass_fit_lim[0], self.p_mass_fit_lim[1])
 
-                    df_bin = seldf_singlevar(df, self.v_var2_binning,
-                                             self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2])
+                    #df_bin = seldf_singlevar(df, self.v_var2_binning,
+                    #                         self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2])
+                    df_bin = df
+                    df_bin_sig = df_bin[df_bin[self.v_ismcbkg] == 0]
+                    df_bin_bkg = df_bin[df_bin[self.v_ismcbkg] == 1]
+
+                    #df_bin_pid = df_bin.query("isstd == 1")
+                    #array_nsigma_tpc_pi_3 = np.abs(df_bin_pid['nsigTPC_Pi_3'].to_numpy())
+                    #array_nsigma_tof_pi_3 = np.abs(df_bin_pid['nsigTOF_Pi_3'].to_numpy())
+                    #isBsPiSel = selectpid_lctov0bachelor(array_nsigma_tpc_pi_3, array_nsigma_tof_pi_3, 3)
+                    #df_bin_pid = df_bin_pid[isBsPiSel]
+                    #df_bin_pid_sig = df_bin_pid[df_bin_pid[self.v_ismcbkg] == 0]
+                    #df_bin_pid_bkg = df_bin_pid[df_bin_pid[self.v_ismcbkg] == 1]
 
                     fill_hist(h_invmass, df_bin.inv_mass)
-
+                    fill_hist(h_invmass_sig, df_bin_sig.inv_mass)
+                    fill_hist(h_invmass_bkg, df_bin_bkg.inv_mass)
+                    #fill_hist(h_invmasspid_sig, df_bin_pid_sig.inv_mass)
+                    #fill_hist(h_invmasspid_bkg, df_bin_pid_bkg.inv_mass)
                     #if "INT7" not in self.triggerbit:
                     #    fileweight_name = "%s/correctionsweights.root" % self.d_val
                     #    fileweight = TFile.Open(fileweight_name, "read")
@@ -348,7 +384,11 @@ class Systematics:
                     #        fill_hist(h_invmass_weight, df_bin.inv_mass, weights=weightsinv)
                     myfile.cd()
                     h_invmass.Write()
-                    h_invmass_weight.Write()
+                    h_invmass_sig.Write()
+                    h_invmass_bkg.Write()
+                    #h_invmasspid_sig.Write()
+                    #h_invmasspid_bkg.Write()
+                    #h_invmass_weight.Write()
 
             print(" Selection variations for [", self.lpt_finbinmin[ipt], "-", \
                   self.lpt_finbinmax[ipt], "]:  \n   ", arr_selml_cv)
@@ -364,8 +404,10 @@ class Systematics:
 
         h_gen_pr = []
         h_sel_pr = []
+        h_sel_pr_pid = []
         h_gen_fd = []
         h_sel_fd = []
+        h_sel_fd_pid = []
 
         print("Using run selection for eff histo", self.runlistrigger[self.triggerbit], \
               "for period", self.period)
@@ -411,10 +453,11 @@ class Systematics:
                 df = df.query(selml_cv)
 
                 for ibin2 in range(len(self.lvar2_binmin)):
-                    stringbin2 = "_%d_%s_%.2f_%.2f" % (icv, \
-                                                self.v_var2_binning_gen, \
-                                                self.lvar2_binmin[ibin2], \
-                                                self.lvar2_binmax[ibin2])
+                    #stringbin2 = "_%d_%s_%.2f_%.2f" % (icv, \
+                    #                            self.v_var2_binning_gen, \
+                    #                            self.lvar2_binmin[ibin2], \
+                    #                            self.lvar2_binmax[ibin2])
+                    stringbin2 = "_%d" % (icv)
 
                     if ipt == 0:
                         n_bins = len(self.lpt_finbinmin)
@@ -427,32 +470,56 @@ class Systematics:
                         h_sel_pr.append(TH1F("h_sel_pr" + stringbin2, \
                                              "Prompt Reco and sel in acc |#eta|<0.8 and sel", \
                                              n_bins, analysis_bin_lims))
+                        #h_sel_pr_pid.append(TH1F("h_sel_pr_pid" + stringbin2, \
+                        #                         "Prompt Reco and sel in acc |#eta|<0.8 and sel", \
+                        #                         n_bins, analysis_bin_lims))
                         h_gen_fd.append(TH1F("h_gen_fd" + stringbin2, \
                                              "FD Generated in acceptance |y|<0.5", \
                                              n_bins, analysis_bin_lims))
                         h_sel_fd.append(TH1F("h_sel_fd" + stringbin2, \
                                              "FD Reco and sel in acc |#eta|<0.8 and sel", \
                                              n_bins, analysis_bin_lims))
+                        #h_sel_fd_pid.append(TH1F("h_sel_fd_pid" + stringbin2, \
+                        #                         "FD Reco and sel in acc |#eta|<0.8 and sel", \
+                        #                         n_bins, analysis_bin_lims))
 
-                    df_bin = seldf_singlevar(df, self.v_var2_binning_gen, \
-                                             self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2])
-                    df_gen_bin = seldf_singlevar(df_gen, self.v_var2_binning_gen, \
-                                                 self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2])
+                    #df_bin = seldf_singlevar(df, self.v_var2_binning_gen, \
+                    #                         self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2])
+                    #df_gen_bin = seldf_singlevar(df_gen, self.v_var2_binning_gen, \
+                    #                             self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2])
+                    df_bin = df
+                    df_gen_bin = df_gen
 
                     df_sel_pr = df_bin[df_bin.ismcprompt == 1]
                     df_gen_pr = df_gen_bin[df_gen_bin.ismcprompt == 1]
                     df_sel_fd = df_bin[df_bin.ismcfd == 1]
                     df_gen_fd = df_gen_bin[df_gen_bin.ismcfd == 1]
 
+                    #df_sel_pr_pid = df_sel_pr.query("isstd == 1")
+                    #array_nsigma_tpc_pi_3 = np.abs(df_sel_pr_pid['nsigTPC_Pi_3'].to_numpy())
+                    #array_nsigma_tof_pi_3 = np.abs(df_sel_pr_pid['nsigTOF_Pi_3'].to_numpy())
+                    #isBsPiSel = selectpid_lctov0bachelor(array_nsigma_tpc_pi_3, array_nsigma_tof_pi_3, 3)
+                    #df_sel_pr_pid = df_sel_pr_pid[isBsPiSel]
+
+                    #df_sel_fd_pid = df_sel_fd.query("isstd == 1")
+                    #array_nsigma_tpc_pi_fd_3 = np.abs(df_sel_fd_pid['nsigTPC_Pi_3'].to_numpy())
+                    #array_nsigma_tof_pi_fd_3 = np.abs(df_sel_fd_pid['nsigTOF_Pi_3'].to_numpy())
+                    #isBsPiSelfd = selectpid_lctov0bachelor(array_nsigma_tpc_pi_fd_3, array_nsigma_tof_pi_fd_3, 3)
+                    #df_sel_fd_pid = df_sel_fd_pid[isBsPiSelfd]
+
                     h_gen_pr[idx].SetBinContent(ipt + 1, len(df_gen_pr))
                     h_gen_pr[idx].SetBinError(ipt + 1, math.sqrt(len(df_gen_pr)))
                     h_sel_pr[idx].SetBinContent(ipt + 1, len(df_sel_pr))
                     h_sel_pr[idx].SetBinError(ipt + 1, math.sqrt(len(df_sel_pr)))
+                    #h_sel_pr_pid[idx].SetBinContent(ipt + 1, len(df_sel_pr_pid))
+                    #h_sel_pr_pid[idx].SetBinError(ipt + 1, math.sqrt(len(df_sel_pr_pid)))
 
                     h_gen_fd[idx].SetBinContent(ipt + 1, len(df_gen_fd))
                     h_gen_fd[idx].SetBinError(ipt + 1, math.sqrt(len(df_gen_fd)))
                     h_sel_fd[idx].SetBinContent(ipt + 1, len(df_sel_fd))
                     h_sel_fd[idx].SetBinError(ipt + 1, math.sqrt(len(df_sel_fd)))
+                    #h_sel_fd_pid[idx].SetBinContent(ipt + 1, len(df_sel_fd_pid))
+                    #h_sel_fd_pid[idx].SetBinError(ipt + 1, math.sqrt(len(df_sel_fd_pid)))
                     idx = idx + 1
 
             print(" Selection variations for [", self.lpt_finbinmin[ipt], "-", \
@@ -462,8 +529,10 @@ class Systematics:
         for i in range(idx):
             h_gen_pr[i].Write()
             h_sel_pr[i].Write()
+            #h_sel_pr_pid[i].Write()
             h_gen_fd[i].Write()
             h_sel_fd[i].Write()
+            #h_sel_fd_pid[i].Write()
 
     # pylint: disable=import-outside-toplevel
     def cutvariation_fitter(self, min_cv_cut, max_cv_cut):
@@ -525,11 +594,14 @@ class Systematics:
                 for ipt in range(self.p_nptfinbins):
                     bin_id = self.bin_matching[ipt]
 
-                    suffix = "%s%d_%d_%d_%s%.2f_%.2f" % \
+                    #suffix = "%s%d_%d_%d_%s%.2f_%.2f" % \
+                    #         (self.v_var_binning, self.lpt_finbinmin[ipt],
+                    #          self.lpt_finbinmax[ipt], icv,
+                    #          self.v_var2_binning, self.lvar2_binmin[imult],
+                    #          self.lvar2_binmax[imult])
+                    suffix = "%s%d_%d_%d" % \
                              (self.v_var_binning, self.lpt_finbinmin[ipt],
-                              self.lpt_finbinmax[ipt], icv,
-                              self.v_var2_binning, self.lvar2_binmin[imult],
-                              self.lvar2_binmax[imult])
+                              self.lpt_finbinmax[ipt], icv)
 
                     stepsmin = (self.lpt_probcutfin[bin_id] - min_cv_cut[ipt]) / self.p_ncutvar
                     stepsmax = (max_cv_cut[ipt] - self.lpt_probcutfin[bin_id]) / self.p_ncutvar
@@ -645,9 +717,10 @@ class Systematics:
 
             for imult in range(len(self.lvar2_binmin)):
 
-                stringbin2 = "_%d_%s_%.2f_%.2f" % (icv, self.v_var2_binning_gen, \
-                                                self.lvar2_binmin[imult], \
-                                                self.lvar2_binmax[imult])
+                #stringbin2 = "_%d_%s_%.2f_%.2f" % (icv, self.v_var2_binning_gen, \
+                #                                self.lvar2_binmin[imult], \
+                #                                self.lvar2_binmax[imult])
+                stringbin2 = "_%d" % (icv)
 
                 h_gen_pr = lfileeff.Get("h_gen_pr" + stringbin2)
                 h_sel_pr = lfileeff.Get("h_sel_pr" + stringbin2)

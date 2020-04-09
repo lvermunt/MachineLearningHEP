@@ -46,11 +46,11 @@ mlapplication:
   data:
     doapply: true
     domergeapply: true
-    docontinueafterstop: true
+    docontinueafterstop: false
   mc:
     doapply: true
     domergeapply: true
-    docontinueafterstop: true
+    docontinueafterstop: false
 
 analysis:
   type: MBvspt

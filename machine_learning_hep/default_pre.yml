@@ -1,17 +1,17 @@
-case: BsITS3
+case: BsITS3_new
 download:
   alice:
     activate: false
 conversion:
   mc:
-    activate: true
+    activate: false
   data:
-    activate: true
+    activate: false
 skimming:
   mc:
-    activate: true
+    activate: false
   data:
-    activate: true
+    activate: false
 merging:
   mc:
     activate: true
