@@ -26,7 +26,7 @@ from ROOT import TH2F, TFile, TH1, TH3F
 from ROOT import TPad, TCanvas, TLegend, kBlack, kGreen, kRed, kBlue, kWhite
 from ROOT import gStyle, gROOT
 
-from machine_learning_hep.logger import get_logger
+from logger import get_logger
 
 
 def buildarray(listnumber):

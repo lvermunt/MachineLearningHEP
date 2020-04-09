@@ -25,8 +25,8 @@ import numpy as np
 # pylint: disable=import-error, no-name-in-module
 from ROOT import TGraphAsymmErrors
 
-from machine_learning_hep.utilities import parse_yaml, dump_yaml_from_dict
-from machine_learning_hep.logger import get_logger
+from utilities import parse_yaml, dump_yaml_from_dict
+from logger import get_logger
 
 
 # pylint: disable=too-many-branches

@@ -30,7 +30,7 @@ import pandas as pd
 import yaml
 from ROOT import TNtuple, TFile  # pylint: disable=import-error,no-name-in-module
 
-from machine_learning_hep.logger import get_logger
+from logger import get_logger
 
 
 def parallelizer(function, argument_list, maxperchunk, max_n_procs=2):

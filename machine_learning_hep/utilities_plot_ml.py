@@ -33,9 +33,9 @@ from sklearn.metrics import roc_curve, auc, confusion_matrix, precision_recall_c
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import cross_val_score, cross_val_predict, train_test_split
 
-from machine_learning_hep.utilities import parse_yaml
-from machine_learning_hep.logger import get_logger
-from machine_learning_hep.utilities import openfile
+from utilities import parse_yaml
+from logger import get_logger
+from utilities import openfile
 
 def importanceplotall(mylistvariables_, names_, trainedmodels_, suffix_, folder):
 

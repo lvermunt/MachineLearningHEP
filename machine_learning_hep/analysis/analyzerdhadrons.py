@@ -21,7 +21,7 @@ from ROOT import AliHFInvMassFitter, AliVertexingHFUtils
 from ROOT import TLegend
 from ROOT import gROOT
 # HF specific imports
-from machine_learning_hep.analysis.analyzer import Analyzer
+from analysis.analyzer import Analyzer
 
 #TODO, fix this class. analyzerdhadrons_mult is most recent
 

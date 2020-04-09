@@ -21,10 +21,10 @@ import pandas as pd
 from sklearn.metrics import make_scorer, roc_auc_score, accuracy_score
 from sklearn.model_selection import GridSearchCV
 
-from machine_learning_hep.utilities import print_dict, dump_yaml_from_dict
-from machine_learning_hep.logger import get_logger
-from machine_learning_hep.ml_functions import savemodels
-from machine_learning_hep.utilities import openfile
+from utilities import print_dict, dump_yaml_from_dict
+from logger import get_logger
+from ml_functions import savemodels
+from utilities import openfile
 
 def get_scorers(score_names):
     """Construct dictionary of scorers

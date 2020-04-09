@@ -28,7 +28,7 @@ from ROOT import AliHFInvMassFitter, AliVertexingHFUtils, AliHFInvMassMultiTrial
 from ROOT import TFile, TH1F, TH1D, TF1, TPaveText, TLine, TLegend, Double, TLatex
 from ROOT import kBlue, kRed, kGreen, kMagenta, kOrange, kPink, kCyan, kYellow, kBlack
 
-from machine_learning_hep.logger import get_logger
+from logger import get_logger
 
 
 # pylint: disable=too-many-instance-attributes

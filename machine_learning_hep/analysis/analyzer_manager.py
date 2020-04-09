@@ -12,7 +12,7 @@
 ##   along with this program. if not, see <https://www.gnu.org/licenses/>. ##
 #############################################################################
 
-from machine_learning_hep.logger import get_logger
+from logger import get_logger
 
 # pylint: disable=too-many-instance-attributes
 class AnalyzerManager:

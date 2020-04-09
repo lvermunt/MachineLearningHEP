@@ -27,24 +27,24 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from ROOT import TFile, TCanvas, TH1F, TF1, gROOT  # pylint: disable=import-error,no-name-in-module
 
-from machine_learning_hep.logger import get_logger
-from machine_learning_hep.ml_gridsearch import do_gridsearch
-from machine_learning_hep.ml_functions import set_num_trees, fit, savemodels, test, apply
-from machine_learning_hep.ml_functions import getclf_scikit, getclf_xgboost, getclf_keras
-from machine_learning_hep.ml_significance import calc_bkg, calc_signif, calc_eff, calc_sigeff_steps
-from machine_learning_hep.utilities import checkdirlist, checkmakedirlist, write_tree
-from machine_learning_hep.utilities import createstringselection
-from machine_learning_hep.utilities import openfile
-from machine_learning_hep.utilities_plot_ml import importanceplotall, decisionboundaries
-from machine_learning_hep.utilities_plot_ml import perform_plot_gridsearch
-from machine_learning_hep.utilities_plot_ml import plot_cross_validation_mse
-from machine_learning_hep.utilities_plot_ml import plot_learning_curves, precision_recall
-from machine_learning_hep.utilities_plot_ml import roc_train_test, plot_overtraining
-from machine_learning_hep.utilities_plot_ml import vardistplot, scatterplot, correlationmatrix
-from machine_learning_hep.utilities_plot_ml import vardistplot_probscan, efficiency_cutscan
-from machine_learning_hep.utilities_selection import seldf_singlevar
-from machine_learning_hep.utilities_selection import selectdfquery
-from machine_learning_hep.utilities_selection import split_df_sigbkg
+from logger import get_logger
+from ml_gridsearch import do_gridsearch
+from ml_functions import set_num_trees, fit, savemodels, test, apply
+from ml_functions import getclf_scikit, getclf_xgboost, getclf_keras
+from ml_significance import calc_bkg, calc_signif, calc_eff, calc_sigeff_steps
+from utilities import checkdirlist, checkmakedirlist, write_tree
+from utilities import createstringselection
+from utilities import openfile
+from utilities_plot_ml import importanceplotall, decisionboundaries
+from utilities_plot_ml import perform_plot_gridsearch
+from utilities_plot_ml import plot_cross_validation_mse
+from utilities_plot_ml import plot_learning_curves, precision_recall
+from utilities_plot_ml import roc_train_test, plot_overtraining
+from utilities_plot_ml import vardistplot, scatterplot, correlationmatrix
+from utilities_plot_ml import vardistplot_probscan, efficiency_cutscan
+from utilities_selection import seldf_singlevar
+from utilities_selection import selectdfquery
+from utilities_selection import split_df_sigbkg
 
 
 # pylint: disable=too-many-instance-attributes, too-many-statements

@@ -25,13 +25,13 @@ import pandas as pd
 from root_numpy import fill_hist, evaluate  # pylint: disable=import-error, no-name-in-module
 from ROOT import TFile, TH1F  # pylint: disable=import-error, no-name-in-module
 
-from machine_learning_hep.processer import Processer
-from machine_learning_hep.utilities import create_folder_struc, openfile
-from machine_learning_hep.utilities import get_timestamp_string
-from machine_learning_hep.utilities import mergerootfiles
-from machine_learning_hep.utilities_selection import filter_bit_df, tag_bit_df
-from machine_learning_hep.utilities_selection import seldf_singlevar_inclusive
-from machine_learning_hep.utilities_selection import selectdfrunlist, seldf_singlevar
+from processer import Processer
+from utilities import create_folder_struc, openfile
+from utilities import get_timestamp_string
+from utilities import mergerootfiles
+from utilities_selection import filter_bit_df, tag_bit_df
+from utilities_selection import seldf_singlevar_inclusive
+from utilities_selection import selectdfrunlist, seldf_singlevar
 
 
 class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-attributes, invalid-name

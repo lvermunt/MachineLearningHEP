@@ -18,7 +18,7 @@ Methods to: utility methods to conpute efficiency and study expected significanc
 import numpy as np
 from ROOT import TH1F, TFile  # pylint: disable=import-error,no-name-in-module
 
-from machine_learning_hep.logger import get_logger
+from logger import get_logger
 
 
 def calc_bkg(df_bkg, name, num_steps, fit_region, bkg_func, bin_width, sig_region, save_fit,

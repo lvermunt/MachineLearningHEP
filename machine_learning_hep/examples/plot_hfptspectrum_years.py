@@ -21,7 +21,7 @@ import os
 import yaml
 from ROOT import gROOT, TFile
 
-from machine_learning_hep.utilities_plot_root import plot_histograms
+from utilities_plot_root import plot_histograms
 
 FILES_NOT_FOUND = []
 

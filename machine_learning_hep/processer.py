@@ -25,14 +25,14 @@ import numpy as np
 import pandas as pd
 import uproot
 
-from machine_learning_hep.ml_functions import apply  # pylint: disable=import-error
-from machine_learning_hep.utilities import create_folder_struc, openfile
-from machine_learning_hep.utilities import get_timestamp_string
-from machine_learning_hep.utilities import list_folders, createlist, appendmainfoldertolist
-from machine_learning_hep.utilities import merge_method
-from machine_learning_hep.utilities import mergerootfiles
-from machine_learning_hep.utilities_selection import filter_bit_df, tag_bit_df
-from machine_learning_hep.utilities_selection import selectfidacc, selectdfquery, seldf_singlevar
+from ml_functions import apply  # pylint: disable=import-error
+from utilities import create_folder_struc, openfile
+from utilities import get_timestamp_string
+from utilities import list_folders, createlist, appendmainfoldertolist
+from utilities import merge_method
+from utilities import mergerootfiles
+from utilities_selection import filter_bit_df, tag_bit_df
+from utilities_selection import selectfidacc, selectdfquery, seldf_singlevar
 
 
 class Processer: # pylint: disable=too-many-instance-attributes

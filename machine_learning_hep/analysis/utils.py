@@ -14,8 +14,8 @@
 
 from os.path import join
 
-from machine_learning_hep.logger import get_logger
-from machine_learning_hep.utilities import mergerootfiles, get_timestamp_string
+from logger import get_logger
+from utilities import mergerootfiles, get_timestamp_string
 
 
 def multi_preparenorm(database, case, typean, doperiodbyperiod):

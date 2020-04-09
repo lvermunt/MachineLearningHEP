@@ -22,10 +22,10 @@ import pandas as pd
 from keras.wrappers.scikit_learn import KerasClassifier
 import xgboost as xgb
 
-import machine_learning_hep.templates.templates_keras as templates_keras
-import machine_learning_hep.templates.templates_scikit as templates_scikit
-import machine_learning_hep.templates.templates_xgboost as templates_xgboost
-from machine_learning_hep.logger import get_logger
+import templates.templates_keras as templates_keras
+import templates.templates_scikit as templates_scikit
+import templates.templates_xgboost as templates_xgboost
+from logger import get_logger
 
 pd.options.mode.chained_assignment = None
 

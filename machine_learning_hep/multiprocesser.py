@@ -17,7 +17,7 @@ main script for doing data processing, machine learning and analysis
 """
 import os
 
-from machine_learning_hep.utilities import merge_method, mergerootfiles, get_timestamp_string
+from utilities import merge_method, mergerootfiles, get_timestamp_string
 
 
 class MultiProcesser: # pylint: disable=too-many-instance-attributes, too-many-statements

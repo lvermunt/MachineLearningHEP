@@ -26,8 +26,8 @@ from ROOT import TFile, TH1F, TCanvas
 from ROOT import TLegend
 from ROOT import gROOT, kRed, kGreen, kBlack, kBlue, kOrange, kViolet, kAzure
 
-from machine_learning_hep.utilities import make_file_path
-from machine_learning_hep.utilities_plot_root import load_root_style
+from utilities import make_file_path
+from utilities_plot_root import load_root_style
 
 
 # pylint: disable=import-error, no-name-in-module, unused-import

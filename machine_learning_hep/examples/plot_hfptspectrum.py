@@ -27,7 +27,7 @@ from ROOT import TLegend, TLatex
 from ROOT import gPad
 from ROOT import gROOT, kRed, kGreen, kBlack, kBlue, kOrange, kViolet, kAzure
 
-from machine_learning_hep.utilities_plot_root import plot_histograms, load_root_style
+from utilities_plot_root import plot_histograms, load_root_style
 
 FILES_NOT_FOUND = []
 # One single particle ratio

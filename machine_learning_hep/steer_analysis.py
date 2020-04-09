@@ -25,19 +25,19 @@ from pkg_resources import resource_stream
 # To set batch mode immediately
 from ROOT import gROOT  # pylint: disable=import-error, no-name-in-module
 
-from machine_learning_hep.analysis.analyzer import Analyzer
-from machine_learning_hep.analysis.analyzerdhadrons import AnalyzerDhadrons
-from machine_learning_hep.analysis.analyzer_manager import AnalyzerManager
-from machine_learning_hep.analysis.analyzerdhadrons_mult import AnalyzerDhadrons_mult
-from machine_learning_hep.analysis.systematics import Systematics
-from machine_learning_hep.logger import configure_logger, get_logger
-from machine_learning_hep.multiprocesser import MultiProcesser
-from machine_learning_hep.optimiser import Optimiser
-from machine_learning_hep.processer import Processer
-from machine_learning_hep.processerdhadrons import ProcesserDhadrons
-from machine_learning_hep.processerdhadrons_mult import ProcesserDhadrons_mult
-from machine_learning_hep.utilities import checkdirlist, checkdir
-from machine_learning_hep.utilities import checkmakedirlist, checkmakedir
+from analysis.analyzer import Analyzer
+from analysis.analyzerdhadrons import AnalyzerDhadrons
+from analysis.analyzer_manager import AnalyzerManager
+from analysis.analyzerdhadrons_mult import AnalyzerDhadrons_mult
+from analysis.systematics import Systematics
+from logger import configure_logger, get_logger
+from multiprocesser import MultiProcesser
+from optimiser import Optimiser
+from processer import Processer
+from processerdhadrons import ProcesserDhadrons
+from processerdhadrons_mult import ProcesserDhadrons_mult
+from utilities import checkdirlist, checkdir
+from utilities import checkmakedirlist, checkmakedir
 
 try:
     import logging
@@ -447,8 +447,8 @@ def main():
     configure_logger(args.debug, args.log_file)
 
     # Extract which database and run config to be used
-    pkg_data = "machine_learning_hep.data"
-    pkg_data_run_config = "machine_learning_hep.submission"
+    pkg_data = "data"
+    pkg_data_run_config = "submission"
     run_config = load_config(args.run_config, (pkg_data_run_config, "default_complete.yml"))
     case = run_config["case"]
     if args.type_ana is not None:

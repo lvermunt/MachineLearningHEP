@@ -67,7 +67,7 @@ One use-case of the after-burner is for example the class `Systematics` in `syst
 Any analyzer or systematic class derived from `Analyzer`. That means, you start off like this
 
 ```python
-from machine_learning_hep.analysis.analyzer import Analyzer
+from analysis.analyzer import Analyzer
 
 class AwesomeAnalyzer(Analyzer):
     def __init__(self, datap, case, typean, period, few, more, arguments):

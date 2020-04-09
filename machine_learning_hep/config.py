@@ -21,8 +21,8 @@ import os.path
 import yaml
 from pkg_resources import resource_stream
 
-from machine_learning_hep.utilities import dump_yaml_from_dict, parse_yaml, print_dict
-from machine_learning_hep.logger import get_logger
+from utilities import dump_yaml_from_dict, parse_yaml, print_dict
+from logger import get_logger
 
 
 class Configuration:
@@ -51,7 +51,7 @@ class Configuration:
         """
         if which_config not in Configuration.config_paths:
             get_logger().critical("Unknown configuration %s. Cannot be loaded.", which_config)
-        stream = resource_stream("machine_learning_hep.data",
+        stream = resource_stream("data",
                                  Configuration.config_paths[which_config])
         return yaml.safe_load(stream)
 

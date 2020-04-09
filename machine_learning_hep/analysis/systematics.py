@@ -32,12 +32,12 @@ from ROOT import TFile, TH1F, TCanvas, TLegend
 from ROOT import gROOT, gPad
 from ROOT import kRed, kGreen, kBlack, kBlue, kOrange, kViolet, kAzure, kYellow
 
-from machine_learning_hep.analysis.analyzer import Analyzer, AnalyzerAfterBurner
-from machine_learning_hep.utilities import mergerootfiles, get_timestamp_string
-from machine_learning_hep.utilities import openfile, make_file_path
-from machine_learning_hep.utilities_plot_root import load_root_style_simple, load_root_style
-from machine_learning_hep.utilities_selection import seldf_singlevar
-from machine_learning_hep.utilities_selection import selectdfrunlist
+from analysis.analyzer import Analyzer, AnalyzerAfterBurner
+from utilities import mergerootfiles, get_timestamp_string
+from utilities import openfile, make_file_path
+from utilities_plot_root import load_root_style_simple, load_root_style
+from utilities_selection import seldf_singlevar
+from utilities_selection import selectdfrunlist
 
 
 class SystematicsAfterBurner(AnalyzerAfterBurner):

@@ -28,11 +28,11 @@ import xgboost as xgb
 from hipe4ml import plot_utils
 from hipe4ml.model_handler import ModelHandler
 
-from machine_learning_hep.logger import get_logger
-from machine_learning_hep.utilities import openfile
-from machine_learning_hep.utilities_selection import seldf_singlevar
-from machine_learning_hep.utilities_selection import selectdfquery
-from machine_learning_hep.utilities_selection import split_df_sigbkg
+from logger import get_logger
+from utilities import openfile
+from utilities_selection import seldf_singlevar
+from utilities_selection import selectdfquery
+from utilities_selection import split_df_sigbkg
 
 
 # pylint: disable=too-many-instance-attributes, too-many-statements

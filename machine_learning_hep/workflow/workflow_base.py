@@ -18,7 +18,7 @@ from os.path import join
 from ROOT import gStyle
 
 # HF specific imports
-from machine_learning_hep.logger import get_logger
+from logger import get_logger
 
 
 # pylint: disable=too-few-public-methods

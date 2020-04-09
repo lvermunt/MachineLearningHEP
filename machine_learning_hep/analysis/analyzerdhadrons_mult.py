@@ -25,10 +25,10 @@ from ROOT import TFile, TH1F, TCanvas
 from ROOT import TLegend
 from ROOT import gROOT
 
-from machine_learning_hep.analysis.analyzer import Analyzer
+from analysis.analyzer import Analyzer
 # HF specific imports
-from machine_learning_hep.fitting.helpers import MLFitter
-from machine_learning_hep.logger import get_logger
+from fitting.helpers import MLFitter
+from logger import get_logger
 
 
 # pylint: disable=too-few-public-methods, too-many-instance-attributes, too-many-statements, fixme

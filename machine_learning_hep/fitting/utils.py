@@ -26,8 +26,8 @@ import inspect
 # pylint: disable=import-error, no-name-in-module, unused-import
 from ROOT import TFile
 
-from machine_learning_hep.utilities import parse_yaml, dump_yaml_from_dict, checkdir
-from machine_learning_hep.logger import get_logger
+from utilities import parse_yaml, dump_yaml_from_dict, checkdir
+from logger import get_logger
 
 
 def save_fit(fit, save_dir, annotations=None):
@@ -71,7 +71,7 @@ def load_fit(save_dir):
     yaml_path = os.path.join(save_dir, "init_pars.yaml")
 
     #pylint: disable=import-outside-toplevel
-    import machine_learning_hep.fitting.fitters as search_module
+    import fitting.fitters as search_module
     #pylint: enable=import-outside-toplevel
     fit_classes = {f[0]: getattr(search_module, f[0]) \
             for f in inspect.getmembers(search_module, inspect.isclass) \

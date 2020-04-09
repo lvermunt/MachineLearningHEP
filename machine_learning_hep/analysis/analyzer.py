@@ -13,7 +13,7 @@
 #############################################################################
 
 # HF specific imports
-from machine_learning_hep.workflow.workflow_base import WorkflowBase
+from workflow.workflow_base import WorkflowBase
 
 
 class Analyzer(WorkflowBase):
