@@ -20,10 +20,10 @@ from machine_learning_hep.utilities_plot import (load_root_style,
                                                  buildhisto)
 
 
-def main(input_trg="/data/DerivedResults/D0kAnywithJets/vAN-20200304_ROOT6-1/pp_2018_data/"
-         "376_20200304-2028/resultsSPDvspt_ntrkl_trigger/masshisto.root",  # pylint: disable=too-many-statements
-         input_mb="/data/DerivedResults/D0kAnywithJets/vAN-20200304_ROOT6-1/pp_2018_data/" \
-                  "376_20200304-2028/resultsMBvspt_ntrkl_trigger/masshisto.root",
+def main(input_trg="/data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/"
+         "504_20200911-2312/resultsSPDvspt_ntrkl_trigger/masshisto.root",  # pylint: disable=too-many-statements
+         input_mb="/data/DerivedResults/D0kAnywithJets/vAN-20200910_ROOT6-1/pp_data/" \
+                  "504_20200911-2312/resultsMBvspt_ntrkl_trigger/masshisto.root",
          output_path="../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/data_2018/",
          min_draw_range=0, max_draw_range=150,
          min_fit_range=40., max_fit_range=100.,
@@ -44,6 +44,8 @@ def main(input_trg="/data/DerivedResults/D0kAnywithJets/vAN-20200304_ROOT6-1/pp_
     filedatamb = TFile.Open(input_mb, "READ")
     hden = filedatamb.Get("hn_tracklets_corr")
     hnum = filedatatrg.Get("hn_tracklets_corr")
+    hden.Sumw2()
+    hnum.Sumw2()
     if rebin_histo:
         hden_rebin = buildhisto(hden.GetName() + "_den_rebin",
                                 hden.GetTitle(), re_binning)
@@ -54,6 +56,8 @@ def main(input_trg="/data/DerivedResults/D0kAnywithJets/vAN-20200304_ROOT6-1/pp_
     hratio = hnum.Clone("hratio")
     hdend = filedatamb.Get("hn_tracklets_corr_withd")
     hnumd = filedatatrg.Get("hn_tracklets_corr_withd")
+    hdend.Sumw2()
+    hnumd.Sumw2()
     if rebin_histo:
         hdend_rebin = buildhisto(hdend.GetName() + "_dend_rebin",
                                  hdend.GetTitle(), re_binning)
@@ -62,8 +66,8 @@ def main(input_trg="/data/DerivedResults/D0kAnywithJets/vAN-20200304_ROOT6-1/pp_
                                  hnumd.GetTitle(), re_binning)
         hnumd = rebin_histogram(hnumd, hnumd_rebin)
     hratiod = hnumd.Clone("hratiod")
-    hratio.Divide(hden)
-    hratiod.Divide(hdend)
+    hratio.Divide(hratio,hden,1.0,1.0,"B")
+    hratiod.Divide(hratiod,hdend,1.0,1.0,"B")
 
     # Prepare the canvas
     ctrigger = TCanvas('ctrigger', 'The Fit Canvas')
@@ -172,6 +176,47 @@ def main(input_trg="/data/DerivedResults/D0kAnywithJets/vAN-20200304_ROOT6-1/pp_
     funcd.SetName("funcdSPDvspt_ntrkl")
     funcd.Write()
     funcnormd.Write()
+
+    hratio.Sumw2()
+    hratio_normopt1 = hratio.Clone("histSPDvspt_ntrkl_norm")
+    func_normopt1 = TF1("func_normopt1", "pol0", *[74.5, 75.5])
+    hratio_normopt1.Fit(func_normopt1, "R0")
+    hratio_normopt1.Scale(1./hratio_normopt1.GetBinContent(hratio_normopt1.FindBin(70)))
+    hratio_normopt2 = hratio.Clone("histSPDvspt_ntrkl_6580fit_norm")
+    func_normopt2 = TF1("func_normopt2", "pol0", *[65, 80])
+    hratio_normopt2.Fit(func_normopt2, "R0")
+    hratio_normopt2.Scale(1./func_normopt2.GetParameter(0))
+    hratio_normopt3 = hratio.Clone("histSPDvspt_ntrkl_65eq_norm")
+    func_normopt3 = TF1("func_normopt3", "pol0", *[65, 100])
+    hratio_normopt3.Fit(func_normopt3, "R0")
+    hratio_normopt3.Scale(1./func_normopt3.GetParameter(0))
+    hratio_normopt1.SetMaximum(3)
+    hratio_normopt2.SetMaximum(3)
+    hratio_normopt3.SetMaximum(3)
+    hratio_normopt1.Write()
+    hratio_normopt2.Write()
+    hratio_normopt3.Write()
+
+    hratiod.Sumw2()
+    hratiod_normopt1 = hratiod.Clone("histwithdSPDvspt_ntrkl_norm")
+    funcd_normopt1 = TF1("funcd_normopt1", "pol0", *[74.5, 75.5])
+    hratiod_normopt1.Fit(funcd_normopt1, "R0")
+    hratiod_normopt1.Scale(1./hratiod_normopt1.GetBinContent(hratiod_normopt1.FindBin(70)))
+    hratiod_normopt2 = hratiod.Clone("histwithdSPDvspt_ntrkl_6580fit_norm")
+    funcd_normopt2 = TF1("funcd_normopt2", "pol0", *[65, 80])
+    hratiod_normopt2.Fit(funcd_normopt2, "R0")
+    hratiod_normopt2.Scale(1./funcd_normopt2.GetParameter(0))
+    hratiod_normopt3 = hratiod.Clone("histwithdSPDvspt_ntrkl_65eq_norm")
+    funcd_normopt3 = TF1("funcd_normopt3", "pol0", *[65, 100])
+    hratiod_normopt3.Fit(funcd_normopt3, "R0")
+    hratiod_normopt3.Scale(1./funcd_normopt3.GetParameter(0))
+    hratiod_normopt1.SetMaximum(3)
+    hratiod_normopt2.SetMaximum(3)
+    hratiod_normopt3.SetMaximum(3)
+    hratiod_normopt1.Write()
+    hratiod_normopt2.Write()
+    hratiod_normopt3.Write()
+
     print("Press enter to continue")
     input()
     foutput.Close()

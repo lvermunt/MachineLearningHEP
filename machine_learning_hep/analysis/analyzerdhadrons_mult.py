@@ -169,7 +169,7 @@ class AnalyzerDhadrons_mult(Analyzer): # pylint: disable=invalid-name
         self.p_triggereffunc = datap["analysis"][self.typean].get("triggereffunc", [0] * 10)
 
         self.apply_weights = \
-                datap["analysis"][self.typean]["triggersel"].get("usetriggcorrfunc", None) \
+                datap["analysis"][self.typean]["triggersel"].get("weighttrigwithd", None) \
                 is not None
         self.root_objects = []
 

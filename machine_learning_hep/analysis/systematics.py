@@ -146,7 +146,7 @@ class Systematics(Analyzer):
         self.s_trigger_mc = datap["analysis"][self.typean]["triggersel"]["mc"]
         self.s_trigger_data = datap["analysis"][self.typean]["triggersel"]["data"]
         self.apply_weights = \
-                datap["analysis"][self.typean]["triggersel"].get("usetriggcorrfunc", None) \
+                datap["analysis"][self.typean]["triggersel"].get("weighttrigwithd", None) \
                 is not None
 
         #Build names for input pickle files (data, mc_reco, mc_gen)

@@ -41,7 +41,7 @@ class Processer: # pylint: disable=too-many-instance-attributes
     # Initializer / Instance Attributes
     # pylint: disable=too-many-statements, too-many-arguments
     def __init__(self, case, datap, run_param, mcordata, p_maxfiles,
-                 d_root, d_pkl, d_pklsk, d_pkl_ml, p_period,
+                 d_root, d_pkl, d_pklsk, d_pkl_ml, p_period, i_period,
                  p_chunksizeunp, p_chunksizeskim, p_maxprocess,
                  p_frac_merge, p_rd_merge, d_pkl_dec, d_pkl_decmerged,
                  d_results, typean, runlisttrigger, d_mcreweights):
@@ -63,6 +63,11 @@ class Processer: # pylint: disable=too-many-instance-attributes
         self.p_frac_merge = p_frac_merge
         self.p_rd_merge = p_rd_merge
         self.period = p_period
+        self.select_children = datap["multi"][mcordata].get("select_children", None)
+        if self.select_children:
+            # Make sure we have "<child>/" instead if <child> only. Cause in the latter case
+            # "child_1" might select further children like "child_11"
+            self.select_children = [f"{child}/" for child in self.select_children[i_period]]
         self.run_param = run_param
         self.p_maxfiles = p_maxfiles
         self.p_chunksizeunp = p_chunksizeunp
@@ -124,9 +129,11 @@ class Processer: # pylint: disable=too-many-instance-attributes
         #list of files names
         self.l_path = None
         if os.path.isdir(self.d_root):
-            self.l_path = list_folders(self.d_root, self.n_root, self.p_maxfiles)
+            self.l_path = list_folders(self.d_root, self.n_root, self.p_maxfiles,
+                                       self.select_children)
         else:
-            self.l_path = list_folders(self.d_pkl, self.n_reco, self.p_maxfiles)
+            self.l_path = list_folders(self.d_pkl, self.n_reco, self.p_maxfiles,
+                                       self.select_children)
 
         self.l_root = createlist(self.d_root, self.l_path, self.n_root)
         self.l_reco = createlist(self.d_pkl, self.l_path, self.n_reco)
@@ -152,13 +159,16 @@ class Processer: # pylint: disable=too-many-instance-attributes
         self.p_nptfinbins = len(self.lpt_finbinmin)
         self.lpt_model = datap["mlapplication"]["modelsperptbin"]
         self.dirmodel = datap["ml"]["mlout"]
+        self.mltype = datap["ml"]["mltype"]
+        self.multiclass_labels = datap["ml"].get("multiclass_labels", None)
         self.lpt_model = appendmainfoldertolist(self.dirmodel, self.lpt_model)
 
         self.lpt_probcutpre = datap["mlapplication"]["probcutpresel"][self.mcordata]
         self.lpt_probcutfin = datap["mlapplication"]["probcutoptimal"]
 
-        if self.lpt_probcutfin < self.lpt_probcutpre:
-            print("FATAL error: probability cut final must be tighter!")
+        if not isinstance(self.lpt_probcutpre[0], list):
+            if self.lpt_probcutfin < self.lpt_probcutpre:
+                print("FATAL error: probability cut final must be tighter!")
 
         self.d_pkl_dec = d_pkl_dec
         self.mptfiles_recosk = []
@@ -183,9 +193,15 @@ class Processer: # pylint: disable=too-many-instance-attributes
         self.f_evtorig_ml = os.path.join(self.d_pkl_ml, self.n_evtorig)
         self.lpt_recodec = None
         if self.doml is True:
-            self.lpt_recodec = [self.n_reco.replace(".pkl", "%d_%d_%.2f.pkl" % \
-                               (self.lpt_anbinmin[i], self.lpt_anbinmax[i], \
-                                self.lpt_probcutpre[i])) for i in range(self.p_nptbins)]
+            if not isinstance(self.lpt_probcutpre[0], list):
+                self.lpt_recodec = [self.n_reco.replace(".pkl", "%d_%d_%.2f.pkl" % \
+                                   (self.lpt_anbinmin[i], self.lpt_anbinmax[i], \
+                                    self.lpt_probcutpre[i])) for i in range(self.p_nptbins)]
+            else:
+                self.lpt_recodec = [self.n_reco.replace(".pkl", "%d_%d_%.2f%.2f.pkl" % \
+                                   (self.lpt_anbinmin[i], self.lpt_anbinmax[i], \
+                                    self.lpt_probcutpre[i][0], self.lpt_probcutpre[i][1])) \
+                                    for i in range(self.p_nptbins)]
         else:
             self.lpt_recodec = [self.n_reco.replace(".pkl", "%d_%d_std.pkl" % \
                                (self.lpt_anbinmin[i], self.lpt_anbinmax[i])) \
@@ -330,10 +346,23 @@ class Processer: # pylint: disable=too-many-instance-attributes
                 if os.path.isfile(self.lpt_model[ipt]) is False:
                     print("Model file not present in bin %d" % ipt)
                 mod = pickle.load(openfile(self.lpt_model[ipt], 'rb'))
-                dfrecoskml = apply("BinaryClassification", [self.p_modelname], [mod],
-                                   dfrecosk, self.v_train[ipt])
-                probvar = "y_test_prob" + self.p_modelname
-                dfrecoskml = dfrecoskml.loc[dfrecoskml[probvar] > self.lpt_probcutpre[ipt]]
+                if self.mltype is "BinaryClassification":
+                    dfrecoskml = apply(self.mltype, [self.p_modelname], [mod],
+                                       dfrecosk, self.v_train[ipt])
+                    probvar = "y_test_prob" + self.p_modelname
+                    dfrecoskml = dfrecoskml.loc[dfrecoskml[probvar] > self.lpt_probcutpre[ipt]]
+                if self.mltype is "MultiClassification":
+                    dfrecoskml = apply(self.mltype, [self.p_modelname], [mod],
+                                       dfrecosk, self.v_train[ipt], self.multiclass_labels)
+                    probvar0 = 'y_test_prob' + self.p_modelname + self.multiclass_labels[0]
+                    probvar1 = 'y_test_prob' + self.p_modelname + self.multiclass_labels[1]
+                    dfrecoskml = dfrecoskml.loc[(dfrecoskml[probvar0] <= self.lpt_probcutpre[ipt][0]) &
+                                                (dfrecoskml[probvar1] >= self.lpt_probcutpre[ipt][1])]
+                else:
+                    dfrecoskml = apply("BinaryClassification", [self.p_modelname], [mod],
+                                       dfrecosk, self.v_train[ipt])
+                    probvar = "y_test_prob" + self.p_modelname
+                    dfrecoskml = dfrecoskml.loc[dfrecoskml[probvar] > self.lpt_probcutpre[ipt]]
             else:
                 dfrecoskml = dfrecosk.query("isstd == 1")
             pickle.dump(dfrecoskml, openfile(self.mptfiles_recoskmldec[ipt][file_index], "wb"),

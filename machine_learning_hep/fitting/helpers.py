@@ -117,7 +117,7 @@ class MLFitParsFactory:
         self.include_reflections = ana_config.get("include_reflection", False)
 
         # Is this a trigger weighted histogram?
-        self.apply_weights = ana_config["triggersel"].get("usetriggcorrfunc", None) is not None
+        self.apply_weights = ana_config["triggersel"].get("weighttrigwithd", None) is not None
 
         # Systematics
         self.syst_pars = ana_config.get("systematics", {})
@@ -252,11 +252,18 @@ class MLFitParsFactory:
             Suffix string
         """
         bin_id_match = self.bin_matching[ibin1]
-        return "%s%d_%d_%.2f%s_%.2f_%.2f" % \
-               (self.bin1_name, self.bins1_edges_low[ibin1],
-                self.bins1_edges_up[ibin1], self.prob_cut_fin[bin_id_match],
-                self.bin2_name, self.bins2_edges_low[ibin2],
-                self.bins2_edges_up[ibin2])
+        if not isinstance(self.prob_cut_fin[0], list):
+            return "%s%d_%d_%.2f%s_%.2f_%.2f" % \
+                   (self.bin1_name, self.bins1_edges_low[ibin1],
+                    self.bins1_edges_up[ibin1], self.prob_cut_fin[bin_id_match],
+                    self.bin2_name, self.bins2_edges_low[ibin2],
+                    self.bins2_edges_up[ibin2])
+        else:
+            return "%s%d_%d_%.2f%.2f%s_%.2f_%.2f" % \
+                   (self.bin1_name, self.bins1_edges_low[ibin1],
+                    self.bins1_edges_up[ibin1], self.prob_cut_fin[bin_id_match][0], self.prob_cut_fin[bin_id_match][1],
+                    self.bin2_name, self.bins2_edges_low[ibin2],
+                    self.bins2_edges_up[ibin2])
 
 
     def get_histograms(self, ibin1, ibin2, get_data=True, get_mc=False, get_reflections=False):
@@ -434,6 +441,12 @@ class MLFitter:
                     histo_reflections=pars["histograms"]["reflections"])
             self.init_central_fits_from[(ibin1, ibin2)] = pars["init_from"]
             self.lock_override_init[(ibin1, ibin2)] = pars["lock_override_init"]
+
+        #Weights only make sense in HM bin, not in mult. integrated where we initialise.
+        #If weights are used, the initialised with doesn't make sense anymore
+        apply_weights_temp = self.pars_factory.apply_weights
+        self.pars_factory.apply_weights = False
+        for ibin1, ibin2, pars in self.pars_factory.yield_fit_pars():
             if ibin1 in pre_fits_bins1:
                 continue
 
@@ -446,6 +459,7 @@ class MLFitter:
                     histo=pars["histograms"]["data"], \
                     histo_mc=pars["histograms"]["mc"], \
                     histo_reflections=pars["histograms"]["reflections"])
+        self.pars_factory.apply_weights = apply_weights_temp
         self.is_initialized_fits = True
 
 
@@ -709,9 +723,15 @@ class MLFitter:
             bin_id_match = self.pars_factory.bin_matching[ibin1]
 
             # Some variables set for drawing
-            title = f"{self.pars_factory.bins1_edges_low[ibin1]:.1f} < #it{{p}}_{{T}} < " \
-                    f"{self.pars_factory.bins1_edges_up[ibin1]:.1f}" \
-                    f"(prob > {self.pars_factory.prob_cut_fin[bin_id_match]:.2f})"
+            if not isinstance(self.pars_factory.prob_cut_fin[0], list):
+                title = f"{self.pars_factory.bins1_edges_low[ibin1]:.1f} < #it{{p}}_{{T}} < " \
+                        f"{self.pars_factory.bins1_edges_up[ibin1]:.1f}" \
+                        f"(prob > {self.pars_factory.prob_cut_fin[bin_id_match]:.2f})"
+            else:
+                title = f"{self.pars_factory.bins1_edges_low[ibin1]:.1f} < #it{{p}}_{{T}} < " \
+                        f"{self.pars_factory.bins1_edges_up[ibin1]:.1f}" \
+                        f"(prob0 <= {self.pars_factory.prob_cut_fin[bin_id_match][0]:.2f} &" \
+                        f"prob1 >= {self.pars_factory.prob_cut_fin[bin_id_match][1]:.2f})"
 
             x_axis_label = "#it{M}_{inv} (GeV/#it{c}^{2})"
             n_sigma_signal = self.pars_factory.n_sigma_signal
@@ -903,9 +923,15 @@ class MLFitter:
             bin_id_match = self.pars_factory.bin_matching[ibin1]
 
             # Some variables set for drawing
-            title = f"{self.pars_factory.bins1_edges_low[ibin1]:.1f} < #it{{p}}_{{T}} < " \
-                    f"{self.pars_factory.bins1_edges_up[ibin1]:.1f}" \
-                    f"(prob > {self.pars_factory.prob_cut_fin[bin_id_match]:.2f})"
+            if not isinstance(self.pars_factory.prob_cut_fin[0], list):
+                title = f"{self.pars_factory.bins1_edges_low[ibin1]:.1f} < #it{{p}}_{{T}} < " \
+                        f"{self.pars_factory.bins1_edges_up[ibin1]:.1f}" \
+                        f"(prob > {self.pars_factory.prob_cut_fin[bin_id_match]:.2f})"
+            else:
+                title = f"{self.pars_factory.bins1_edges_low[ibin1]:.1f} < #it{{p}}_{{T}} < " \
+                        f"{self.pars_factory.bins1_edges_up[ibin1]:.1f}" \
+                        f"(prob0 <= {self.pars_factory.prob_cut_fin[bin_id_match][0]:.2f} &" \
+                        f"prob1 >= {self.pars_factory.prob_cut_fin[bin_id_match][1]:.2f})"
 
             suffix_write = self.pars_factory.make_suffix(ibin1, ibin2)
 

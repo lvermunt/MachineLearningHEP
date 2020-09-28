@@ -47,7 +47,7 @@ class MultiProcesser: # pylint: disable=too-many-instance-attributes, too-many-s
         self.d_pklml_mergedallp = datap["multi"][self.mcordata]["pkl_skimmed_merge_for_ml_all"]
         self.d_pklevt_mergedallp = datap["multi"][self.mcordata]["pkl_evtcounter_all"]
 
-        self.dlper_mcreweights = datap["multi"][self.mcordata]["mcreweights"]
+        self.dlper_mcreweights = datap["multi"][self.mcordata]["weights"]
 
         #namefiles pkl
         self.v_var_binning = datap["var_binning"]
@@ -102,7 +102,7 @@ class MultiProcesser: # pylint: disable=too-many-instance-attributes, too-many-s
                                    self.p_maxfiles[indexp], self.dlper_root[indexp],
                                    self.dlper_pkl[indexp], self.dlper_pklsk[indexp],
                                    self.dlper_pklml[indexp],
-                                   self.p_period[indexp], self.p_chunksizeunp[indexp],
+                                   self.p_period[indexp], indexp, self.p_chunksizeunp[indexp],
                                    self.p_chunksizeskim[indexp], self.p_nparall,
                                    self.p_fracmerge[indexp], self.p_seedmerge[indexp],
                                    self.dlper_reco_modapp[indexp],

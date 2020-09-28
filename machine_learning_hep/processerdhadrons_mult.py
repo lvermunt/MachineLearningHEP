@@ -43,22 +43,33 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
     # Initializer / Instance Attributes
     # pylint: disable=too-many-statements, too-many-arguments
     def __init__(self, case, datap, run_param, mcordata, p_maxfiles,
-                 d_root, d_pkl, d_pklsk, d_pkl_ml, p_period,
+                 d_root, d_pkl, d_pklsk, d_pkl_ml, p_period, i_period,
                  p_chunksizeunp, p_chunksizeskim, p_maxprocess,
                  p_frac_merge, p_rd_merge, d_pkl_dec, d_pkl_decmerged,
                  d_results, typean, runlisttrigger, d_mcreweights):
         super().__init__(case, datap, run_param, mcordata, p_maxfiles,
-                         d_root, d_pkl, d_pklsk, d_pkl_ml, p_period,
+                         d_root, d_pkl, d_pklsk, d_pkl_ml, p_period, i_period,
                          p_chunksizeunp, p_chunksizeskim, p_maxprocess,
                          p_frac_merge, p_rd_merge, d_pkl_dec, d_pkl_decmerged,
                          d_results, typean, runlisttrigger, d_mcreweights)
+
+        self.multiclass_labels = datap["ml"].get("multiclass_labels", None)
+        self.mltype = datap["ml"]["mltype"]
 
         self.p_mass_fit_lim = datap["analysis"][self.typean]['mass_fit_lim']
         self.p_bin_width = datap["analysis"][self.typean]['bin_width']
         self.p_num_bins = int(round((self.p_mass_fit_lim[1] - self.p_mass_fit_lim[0]) / \
                                     self.p_bin_width))
-        self.l_selml = ["y_test_prob%s>%s" % (self.p_modelname, self.lpt_probcutfin[ipt]) \
-                       for ipt in range(self.p_nptbins)]
+        if self.mltype == "MultiClassification":
+            self.l_selml = []
+            for ipt in range(self.p_nptbins):
+                mlsel_multi0 = 'y_test_prob' + self.p_modelname + self.multiclass_labels[0] + ' <= ' + str(self.lpt_probcutfin[ipt][0])
+                mlsel_multi1 = 'y_test_prob' + self.p_modelname + self.multiclass_labels[1] + ' >= ' + str(self.lpt_probcutfin[ipt][1])
+                mlsel_multi = mlsel_multi0 + ' and ' + mlsel_multi1
+                self.l_selml.append(mlsel_multi)
+        else:
+            self.l_selml = ["y_test_prob%s>%s" % (self.p_modelname, self.lpt_probcutfin[ipt]) \
+                           for ipt in range(self.p_nptbins)]
         self.s_presel_gen_eff = datap["analysis"][self.typean]['presel_gen_eff']
         self.lvar2_binmin = datap["analysis"][self.typean]["sel_binmin2"]
         self.lvar2_binmax = datap["analysis"][self.typean]["sel_binmax2"]
@@ -75,16 +86,25 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
         self.event_cand_validation = datap["analysis"][self.typean].get("event_cand_validation", "")
         if "event_cand_validation" not in datap["analysis"][self.typean]:
             self.event_cand_validation = False
+        self.weighttrigwithd = \
+                datap["analysis"][self.typean]["triggersel"].get("weighttrigwithd", None)
         self.usetriggcorrfunc = \
-                datap["analysis"][self.typean]["triggersel"].get("usetriggcorrfunc", None)
+                datap["analysis"][self.typean]["triggersel"].get("usetriggcorrfunc", False)
+        self.histogramname = \
+                datap["analysis"][self.typean]["triggersel"].get("histogramname", "_norm")
         self.weightfunc = None
         self.weighthist = None
-        if self.usetriggcorrfunc is not None and self.mcordata == "data":
+        if self.weighttrigwithd is not None and self.mcordata == "data":
             filename = os.path.join(self.d_mcreweights, "trigger%s.root" % self.typean)
             if os.path.exists(filename):
                 weight_file = TFile.Open(filename, "read")
-                self.weightfunc = weight_file.Get("func%s_norm" % self.typean)
-                self.weighthist = weight_file.Get("hist%s_norm" % self.typean)
+                funcname = "func%s_norm" % self.typean
+                histname = "hist%s%s" % (self.typean, self.histogramname)
+                if self.weighttrigwithd is True:
+                    funcname = "funcd%s_norm" % self.typean
+                    histname = "histwithd%s%s" % (self.typean, self.histogramname)
+                self.weightfunc = weight_file.Get(funcname)
+                self.weighthist = weight_file.Get(histname)
                 self.weighthist.SetDirectory(0)
                 weight_file.Close()
             else:
@@ -204,7 +224,7 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
             self.gethistonormforselevt_mult(dfevtorig, dfevtevtsel, \
                                        labeltrigger, self.v_var2_binning_gen)
 
-        if self.usetriggcorrfunc is not None and self.mcordata == "data":
+        if self.weighttrigwithd is not None and self.mcordata == "data":
             hselweight, hnovtxmultweight, hvtxoutmultweight = \
                 self.gethistonormforselevt_mult(dfevtorig, dfevtevtsel, \
                     labeltrigger, self.v_var2_binning_gen, self.usetriggcorrfunc)
@@ -238,15 +258,25 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
                 df = self.apply_cuts_ptbin(df, ipt)
 
             for ibin2 in range(len(self.lvar2_binmin)):
-                suffix = "%s%d_%d_%.2f%s_%.2f_%.2f" % \
-                         (self.v_var_binning, self.lpt_finbinmin[ipt],
-                          self.lpt_finbinmax[ipt], self.lpt_probcutfin[bin_id],
-                          self.v_var2_binning, self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2])
+                if not isinstance(self.lpt_probcutfin[0], list):
+                    suffix = "%s%d_%d_%.2f%s_%.2f_%.2f" % \
+                             (self.v_var_binning, self.lpt_finbinmin[ipt],
+                              self.lpt_finbinmax[ipt], self.lpt_probcutfin[bin_id],
+                              self.v_var2_binning, self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2])
+                    meta_info = create_meta_info(self.v_var_binning, self.lpt_finbinmin[ipt],
+                                                 self.lpt_finbinmax[ipt], self.v_var2_binning,
+                                                 self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2],
+                                                 self.lpt_probcutfin[bin_id])
+                else:
+                    suffix = "%s%d_%d_%.2f%.2f%s_%.2f_%.2f" % \
+                             (self.v_var_binning, self.lpt_finbinmin[ipt],
+                              self.lpt_finbinmax[ipt], self.lpt_probcutfin[bin_id][0], self.lpt_probcutfin[bin_id][1],
+                              self.v_var2_binning, self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2])
+                    meta_info = create_meta_info(self.v_var_binning, self.lpt_finbinmin[ipt],
+                                                 self.lpt_finbinmax[ipt], self.v_var2_binning,
+                                                 self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2],
+                                                 1000 * self.lpt_probcutfin[bin_id][0] + self.lpt_probcutfin[bin_id][1])
                 curr_dir = myfile.mkdir(f"bin1_{ipt}_bin2_{ibin2}")
-                meta_info = create_meta_info(self.v_var_binning, self.lpt_finbinmin[ipt],
-                                             self.lpt_finbinmax[ipt], self.v_var2_binning,
-                                             self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2],
-                                             self.lpt_probcutfin[bin_id])
                 write_meta_info(curr_dir, meta_info)
                 h_invmass = TH1F("hmass" + suffix, "", self.p_num_bins,
                                  self.p_mass_fit_lim[0], self.p_mass_fit_lim[1])
@@ -255,7 +285,7 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
                 df_bin = seldf_singlevar_inclusive(df, self.v_var2_binning, \
                                          self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2])
                 fill_hist(h_invmass, df_bin.inv_mass)
-                if self.usetriggcorrfunc is not None and self.mcordata == "data":
+                if self.weighttrigwithd is not None and self.mcordata == "data":
                     weights = self.make_weights(df_bin[self.v_var2_binning_gen], self.weightfunc,
                                                 self.weighthist, self.usetriggcorrfunc)
 
