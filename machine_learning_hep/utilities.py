@@ -893,3 +893,21 @@ def tg_sys(central, variations):
                            shapebins_widths_up_array, shapebins_error_down_array,
                            shapebins_error_up_array)
     return tg
+
+def derive(df, derive_func, merge=False, **kwargs):
+
+    if not merge:
+        return derive_func(df, **kwargs)
+
+    # This gives us only the column names to be expected
+    columns_in = set(df.columns)
+    columns_derived = derive_func()
+
+    columns_intersect = list(columns_in & columns_derived)
+
+    if columns_intersect:
+        # Now we have a duplication of
+        print(f"ERROR: There are columns with the same name: {columns_intersect}")
+        sys.exit(1)
+
+    return pd.concat([df, derive_func(df, **kwargs)], axis=1)

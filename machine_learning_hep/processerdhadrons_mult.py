@@ -236,6 +236,7 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
         hnovtxmult.Write()
         hvtxoutmult.Write()
 
+        list_df_prefdtrig = []
         list_df_recodtrig = []
 
         for ipt in range(self.p_nptfinbins): # pylint: disable=too-many-nested-blocks
@@ -248,14 +249,15 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
             if self.runlistrigger is not None:
                 df = selectdfrunlist(df, \
                     self.run_param[self.runlistrigger], "run_number")
-            if self.doml is True:
-                df = df.query(self.l_selml[bin_id])
-            list_df_recodtrig.append(df)
             df = seldf_singlevar(df, self.v_var_binning, \
                                  self.lpt_finbinmin[ipt], self.lpt_finbinmax[ipt])
 
+            list_df_prefdtrig.append(df)
+            if self.doml is True:
+                df = df.query(self.l_selml[bin_id])
             if self.do_custom_analysis_cuts:
                 df = self.apply_cuts_ptbin(df, ipt)
+            list_df_recodtrig.append(df)
 
             for ibin2 in range(len(self.lvar2_binmin)):
                 if not isinstance(self.lpt_probcutfin[0], list):
@@ -309,6 +311,61 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
                     myfile.cd()
                     h_invmass_sig.Write()
                     h_invmass_refl.Write()
+
+
+        #For multiplicity weights. To be moved inside if statement after testing
+        dfpref_forweights = pd.concat(list_df_prefdtrig)
+        dfpref_forweights = dfpref_forweights.drop_duplicates(self.v_evtmatch)
+        dfprefwd_forweights = dfpref_forweights.query("inv_mass>%f and inv_mass<%f" % \
+                                                      (self.mass - 0.20, self.mass + 0.20))
+        label = "hPrefWithCand_n_tracklets_%s" % self.period
+        histoprefwc_forweights = TH1F(label, label, self.nbinshisto,
+                                      self.minvaluehisto, self.maxvaluehisto)
+        fill_hist(histoprefwc_forweights, dfpref_forweights.n_tracklets)
+        label = "hPrefWithD_n_tracklets_%s" % self.period
+        histoprefwd_forweights = TH1F(label, label, self.nbinshisto,
+                                      self.minvaluehisto, self.maxvaluehisto)
+        fill_hist(histoprefwd_forweights, dfprefwd_forweights.n_tracklets)
+        histoprefwc_forweights.Write()
+        histoprefwd_forweights.Write()
+        if self.v_var2_binning_gen == "n_tracklets_corr":
+            label = "hPrefWithCand_n_tracklets_corr_%s" % self.period
+            histoprefcorrwc_forweights = TH1F(label, label, self.nbinshisto,
+                                              self.minvaluehisto, self.maxvaluehisto)
+            fill_hist(histoprefcorrwc_forweights, dfpref_forweights.n_tracklets_corr)
+            label = "hPrefWithD_n_tracklets_corr_%s" % self.period
+            histoprefcorrwd_forweights = TH1F(label, label, self.nbinshisto,
+                                              self.minvaluehisto, self.maxvaluehisto)
+            fill_hist(histoprefcorrwd_forweights, dfprefwd_forweights.n_tracklets_corr)
+            histoprefcorrwc_forweights.Write()
+            histoprefcorrwd_forweights.Write()
+
+        df_forweights = pd.concat(list_df_recodtrig)
+        df_forweights = df_forweights.drop_duplicates(self.v_evtmatch)
+        dfwd_forweights = df_forweights.query("inv_mass>%f and inv_mass<%f" % \
+                                              (self.mass - 0.20, self.mass + 0.20))
+        label = "hWithCand_n_tracklets_%s" % self.period
+        histowc_forweights = TH1F(label, label, self.nbinshisto,
+                                  self.minvaluehisto, self.maxvaluehisto)
+        fill_hist(histowc_forweights, df_forweights.n_tracklets)
+        label = "hWithD_n_tracklets_%s" % self.period
+        histowd_forweights = TH1F(label, label, self.nbinshisto,
+                                  self.minvaluehisto, self.maxvaluehisto)
+        fill_hist(histowd_forweights, dfwd_forweights.n_tracklets)
+        histowc_forweights.Write()
+        histowd_forweights.Write()
+        if self.v_var2_binning_gen == "n_tracklets_corr":
+            label = "hWithCand_n_tracklets_corr_%s" % self.period
+            histocorrwc_forweights = TH1F(label, label, self.nbinshisto,
+                                          self.minvaluehisto, self.maxvaluehisto)
+            fill_hist(histocorrwc_forweights, df_forweights.n_tracklets_corr)
+            label = "hWithD_n_tracklets_corr_%s" % self.period
+            histocorrwd_forweights = TH1F(label, label, self.nbinshisto,
+                                          self.minvaluehisto, self.maxvaluehisto)
+            fill_hist(histocorrwd_forweights, dfwd_forweights.n_tracklets_corr)
+            histocorrwc_forweights.Write()
+            histocorrwd_forweights.Write()
+
 
         if self.event_cand_validation is True:
             df_recodtrig = pd.concat(list_df_recodtrig)
