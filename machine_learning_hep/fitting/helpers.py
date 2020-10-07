@@ -690,6 +690,10 @@ class MLFitter:
                 n_bins1, array("d", bins1_ranges)) for ibin2 in bins2}
         sigmas_histos = {ibin2: TH1F("hsigmas%d" % (ibin2), "", \
                 n_bins1, array("d", bins1_ranges)) for ibin2 in bins2}
+        signif_histos = {ibin2: TH1F("hsignf%d" % (ibin2), "", \
+                n_bins1, array("d", bins1_ranges)) for ibin2 in bins2}
+        bkgyield_histos = {ibin2: TH1F("hbkgyield%d" % (ibin2), "", \
+                n_bins1, array("d", bins1_ranges)) for ibin2 in bins2}
         have_summary_pt_bins = []
         means_init_mc_histos = TH1F("hmeans_init_mc", "", n_bins1, array("d", bins1_ranges))
         sigmas_init_mc_histos = TH1F("hsigmas_init_mc", "", n_bins1, array("d", bins1_ranges))
@@ -767,6 +771,18 @@ class MLFitter:
 
                 sigmas_histos[ibin2].SetBinContent(ibin1 + 1, kernel.GetSigma())
                 sigmas_histos[ibin2].SetBinError(ibin1 + 1, kernel.GetSigmaUncertainty())
+
+                signif = Double()
+                errsignif = Double()
+                kernel.Significance(3,signif,errsignif)
+                signif_histos[ibin2].SetBinContent(ibin1 + 1, signif)
+                signif_histos[ibin2].SetBinError(ibin1 + 1, errsignif)
+
+                bkgyield = Double()
+                errbkgyield = Double()
+                kernel.Background(3,bkgyield,errbkgyield)
+                bkgyield_histos[ibin2].SetBinContent(ibin1 + 1, bkgyield)
+                bkgyield_histos[ibin2].SetBinError(ibin1 + 1, errbkgyield)
 
                 # Residual plot
                 c_res = TCanvas('cRes', 'The Fit Canvas', 800, 800)
@@ -855,6 +871,8 @@ class MLFitter:
                 yieldshistos[ibin2].Write()
                 means_histos[ibin2].Write()
                 sigmas_histos[ibin2].Write()
+                signif_histos[ibin2].Write()
+                bkgyield_histos[ibin2].Write()
             #canvas_data[ibin2].Close()
 
 
