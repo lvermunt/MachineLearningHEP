@@ -266,10 +266,16 @@ def do_entire_analysis(data_config: dict, data_param: dict, data_param_overwrite
 
     if docontinueapplymc is False:
         if doapplymc is True:
-            checkmakedirlist(dirpklskdecmc)
+            if dirpklskdecmc[0] == dirpklskdecmc[-1]:
+                checkmakedir(dirpklskdecmc[0])
+            else:
+                checkmakedirlist(dirpklskdecmc)
 
         if domergeapplymc is True:
-            checkmakedirlist(dirpklskdec_mergedmc)
+            if dirpklskdec_mergedmc[0] == dirpklskdec_mergedmc[-1]:
+                checkmakedir(dirpklskdec_mergedmc[0])
+            else:
+                checkmakedirlist(dirpklskdec_mergedmc)
 
     if docontinueapplydata is False:
         if doapplydata is True:
