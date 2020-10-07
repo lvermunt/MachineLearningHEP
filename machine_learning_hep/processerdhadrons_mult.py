@@ -76,6 +76,7 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
         self.v_var2_binning = datap["analysis"][self.typean]["var_binning2"]
         self.v_var2_binning_gen = datap["analysis"][self.typean]["var_binning2_gen"]
         self.corr_eff_mult = datap["analysis"][self.typean]["corrEffMult"]
+        self.mc_cut_on_binning2 = datap["analysis"][self.typean].get("mc_cut_on_binning2", True)
 
         self.bin_matching = datap["analysis"][self.typean]["binning_matching"]
         #self.sel_final_fineptbins = datap["analysis"][self.typean]["sel_final_fineptbins"]
@@ -184,6 +185,7 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
             fill_hist(hVtxOutMult, df_bit_zvtx_gr10[var])
 
         return hSelMult, hNoVtxMult, hVtxOutMult
+
     # pylint: disable=too-many-branches, too-many-locals
     def process_histomass_single(self, index):
         myfile = TFile.Open(self.l_histomass[index], "recreate")
@@ -370,7 +372,8 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
         if self.event_cand_validation is True:
             df_recodtrig = pd.concat(list_df_recodtrig)
             df_recodtrig = df_recodtrig.query("inv_mass>%f and inv_mass<%f" % \
-                                              (self.mass - 0.15, self.mass + 0.15))
+                                              (self.mass - 0.2, self.mass + 0.2))
+#                                              (self.mass - 0.15, self.mass + 0.15))
             dfevtwithd = pd.merge(dfevtevtsel, df_recodtrig, on=self.v_evtmatch)
             label = "h%s" % self.v_var2_binning_gen
             histomult = TH1F(label, label, self.nbinshisto,
@@ -412,7 +415,7 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
             return val, math.sqrt(val)
 
         event_weighting_mc = {}
-        if self.event_weighting_mc and ibin is not None and len(self.event_weighting_mc) < ibin:
+        if self.event_weighting_mc and ibin is not None and len(self.event_weighting_mc) > ibin:
             # Check is there is a dictionary with desired info
             event_weighting_mc = self.event_weighting_mc[ibin]
 
@@ -506,10 +509,12 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
                                      self.lpt_finbinmin[ipt], self.lpt_finbinmax[ipt])
                 df_mc_gen = seldf_singlevar(df_mc_gen, self.v_var_binning, \
                                      self.lpt_finbinmin[ipt], self.lpt_finbinmax[ipt])
-                df_mc_reco = seldf_singlevar_inclusive(df_mc_reco, self.v_var2_binning_gen, \
-                                             self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2])
-                df_mc_gen = seldf_singlevar_inclusive(df_mc_gen, self.v_var2_binning_gen, \
-                                            self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2])
+                # Whether or not to cut on the 2nd binning variable
+                if self.mc_cut_on_binning2:
+                    df_mc_reco = seldf_singlevar_inclusive(df_mc_reco, self.v_var2_binning_gen, \
+                                                 self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2])
+                    df_mc_gen = seldf_singlevar_inclusive(df_mc_gen, self.v_var2_binning_gen, \
+                                                self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2])
                 df_gen_sel_pr = df_mc_gen[df_mc_gen.ismcprompt == 1]
                 df_reco_presel_pr = df_mc_reco[df_mc_reco.ismcprompt == 1]
                 df_reco_sel_pr = None

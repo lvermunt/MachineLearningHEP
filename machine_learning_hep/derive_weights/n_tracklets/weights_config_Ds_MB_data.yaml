@@ -1,0 +1,19 @@
+
+database: /home/lvermunt/MachineLearningHEP_Ds/MachineLearningHEP/machine_learning_hep/data/database_ml_parameters_DsppD2H_years.yml
+
+data_or_mc: data
+
+query_all: "is_ev_rej == 0"
+#use_mass_window: false
+#use_ml_selection: false
+
+analysis: MBvspt_ntrkl
+
+distribution: n_tracklets
+
+x_range:
+    - 150
+    - -0.5
+    - 149.5
+
+out_file: n_tracklets_MB_Ds_data.root
