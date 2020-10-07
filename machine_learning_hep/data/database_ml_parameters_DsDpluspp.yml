@@ -12,7 +12,7 @@
 ##   along with this program. if not, see <https://www.gnu.org/licenses/>. ##
 #############################################################################
 
-Dspp_years:
+DsDpluspp:
   nprongs: 3
   prongformultsub: [1,1,1]
   doml: true
@@ -106,64 +106,36 @@ Dspp_years:
     crossfilename: "cross_section_tot.root"
 
   multi:
-    #IMPORTANT, USING SAME FOLDERS HERE (pp_data) FOR EACH YEAR. NOT SURE IT THIS WORKS IN MLHEP
-    #IT WAS PROCESSED WITH A DIFFERENT SCRIPT, MERGING '16 '17 '18.  DON'T WANT TO DO IT AGAIN
-    #SO USING THIS SHORTCUT. KEEP IN MIND FOR NEXT PRODUCTIONS TO CHANGE TO pp_2016_data ETC
     data:
       nprocessesparallel: 50
-      maxfiles: [-1,-1,-1] #list of periods
-      chunksizeunp:  [100,100,100] #list of periods
-      chunksizeskim: [100,100,100] #list of periods
-      fracmerge: [0.002,0.002,0.002] #list of periods
-      seedmerge: [12,12,12] #list of periods
-      period: [LHC16pp,LHC17pp,LHC18pp] #list of periods
-      select_children: [["child_1", "child_2", "child_3", "child_4", "child_5", "child_6", "child_7", "child_8", "child_9"], ["child_12", "child_13", "child_14", "child_15", "child_16", "child_17", "child_18", "child_19", "child_20", "child_21"], ["child_22", "child_23", "child_24", "child_25", "child_26", "child_27", "child_28", "child_29", "child_30", "child_31", "child_32", "child_33", "child_34", "child_35"]] # select children explicitly
-      unmerged_tree_dir: [/mnt/temp/OngoingAnalysis_D2HvsMult/TTree/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/504_20200911-2312/merged,
-                          /mnt/temp/OngoingAnalysis_D2HvsMult/TTree/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/504_20200911-2312/merged,
-                          /mnt/temp/OngoingAnalysis_D2HvsMult/TTree/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/504_20200911-2312/merged] #list of periods
-      pkl: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/504_20200911-2312/pkl,
-            /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/504_20200911-2312/pkl,
-            /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/504_20200911-2312/pkl] #list of periods
-      pkl_skimmed: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/504_20200911-2312/pklsk,
-                    /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/504_20200911-2312/pklsk,
-                    /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/504_20200911-2312/pklsk] #list of periods
-      pkl_skimmed_merge_for_ml: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/504_20200911-2312/pklskml,
-                                 /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/504_20200911-2312/pklskml,
-                                 /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/504_20200911-2312/pklskml] #list of periods
-      pkl_skimmed_merge_for_ml_all: /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/pp_data_mltot
-      pkl_evtcounter_all: /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/pp_data_evttot
-      weights: [../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/data_2016_train504,
-                ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/data_2017_train504,
-                ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/data_2018_train504] #list of periods
-    #IMPORTANT, USING SAME FOLDERS HERE (pp_sim_Ds) FOR EACH YEAR. NOT SURE IT THIS WORKS IN MLHEP
-    #IT WAS PROCESSED WITH A DIFFERENT SCRIPT, MERGING '16 '17 '18.  DON'T WANT TO DO IT AGAIN
-    #SO USING THIS SHORTCUT. KEEP IN MIND FOR NEXT PRODUCTIONS TO CHANGE TO pp_2016_sim_Ds ETC
+      maxfiles: [-1] #list of periods
+      chunksizeunp:  [100] #list of periods
+      chunksizeskim: [100] #list of periods
+      fracmerge: [0.002] #list of periods
+      seedmerge: [12] #list of periods
+      period: [LHC161718pp_Ds] #list of periods
+      unmerged_tree_dir: [/mnt/temp/OngoingAnalysis_D2HvsMult/TTree/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/510_20200928-1513/merged]
+      pkl: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim2/510_20200928-1513/pkl]
+      pkl_skimmed: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim2/510_20200928-1513/pklsk]
+      pkl_skimmed_merge_for_ml: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim2/510_20200928-1513/pklskml]
+      pkl_skimmed_merge_for_ml_all: /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim2/pp_mc_prodD2H_mltot
+      pkl_evtcounter_all: /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim2/pp_mrc_prodD2H_evttot
+      weights: [../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/data]
     mc:
       nprocessesparallel: 50
-      maxfiles: [-1,-1,-1] #list of periods
-      chunksizeunp: [100,100,100] #list of periods
-      chunksizeskim: [1000,1000,1000] #list of periods
-      fracmerge: [1.0,1.0,1.0] #list of periods
-      seedmerge: [12,12,12] #list of periods
-      period: [LHC16pp_Ds, LHC17pp_Ds, LHC18pp_Ds] #list of periods
-      select_children: [["child_11"], ["child_12"], ["child_13"]] # select children explicitly
-      unmerged_tree_dir: [/data/TTree/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/505_20200911-2319/merged,
-                          /data/TTree/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/505_20200911-2319/merged,
-                          /data/TTree/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/505_20200911-2319/merged] #list of periods
-      pkl: [/data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_Ds/505_20200911-2319/pkl,
-            /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_Ds/505_20200911-2319/pkl,
-            /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_Ds/505_20200911-2319/pkl] #list of periods
-      pkl_skimmed: [/data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_Ds/505_20200911-2319/pklsk,
-                    /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_Ds/505_20200911-2319/pklsk,
-                    /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_Ds/505_20200911-2319/pklsk] #list of periods
-      pkl_skimmed_merge_for_ml: [/data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_Ds/505_20200911-2319/pklskml,
-                                 /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_Ds/505_20200911-2319/pklskml,
-                                 /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_Ds/505_20200911-2319/pklskml] #list of periods
-      pkl_skimmed_merge_for_ml_all: /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_Ds/pp_mc_prodD2H_mltot
-      pkl_evtcounter_all: /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_Ds/pp_mrc_prodD2H_evttot
-      weights: [../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodDs_2016_train505,
-                ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodDs_2017_train505,
-                ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodDs_2018_train505]
+      maxfiles: [-1] #list of periods
+      chunksizeunp: [100] #list of periods
+      chunksizeskim: [1000] #list of periods
+      fracmerge: [1.0] #list of periods
+      seedmerge: [12] #list of periods
+      period: [LHC161718pp_Ds] #list of periods
+      unmerged_tree_dir: [/mnt/temp/OngoingAnalysis_D2HvsMult/TTree/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/510_20200928-1513/merged]
+      pkl: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/510_20200928-1513/pkl]
+      pkl_skimmed: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/510_20200928-1513/pklsk]
+      pkl_skimmed_merge_for_ml: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/510_20200928-1513/pklskml]
+      pkl_skimmed_merge_for_ml_all: /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/pp_mc_prodD2H_mltot
+      pkl_evtcounter_all: /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/pp_mrc_prodD2H_evttot
+      weights: [../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodDs_2016_train505]
 
   ml:
     evtsel: is_ev_rej==0
@@ -191,7 +163,7 @@ Dspp_years:
     mlout: /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/mlout
     opt:
       isFONLLfromROOT: true
-      filename_fonll: 'data/fonll/DmesonLcPredictions_13TeV_y05_FFee_BRpythia8.root' # file with FONLL predictions
+      filename_fonll: 'InputAnalyses/Analysis_D2HvsMult//fonll/DmesonLcPredictions_13TeV_y05_FFee_BRpythia8.root' # file with FONLL predictions
       fonll_particle: 'hDsPhipitoKkpi'
       fonll_pred: 'max' # edge of the FONLL prediction
       FF: 0.1281 # fragmentation fraction
@@ -208,19 +180,11 @@ Dspp_years:
 
   mlapplication:
     data:
-      pkl_skimmed_dec: [/data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2016_data/504_20200911-2312/skpkldec,
-                        /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2017_data/504_20200911-2312/skpkldec,
-                        /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2018_data/504_20200911-2312/skpkldec] #list of periods
-      pkl_skimmed_decmerged: [/data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2016_data/504_20200911-2312/skpkldecmerged,
-                              /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2017_data/504_20200911-2312/skpkldecmerged,
-                              /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2018_data/504_20200911-2312/skpkldecmerged] #list of periods
+      pkl_skimmed_dec: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim2/510_20200928-1513/skpkldec]
+      pkl_skimmed_decmerged: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim2/510_20200928-1513/skpkldecmerged]
     mc:
-      pkl_skimmed_dec: [/data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2016_sim_Ds/505_20200911-2319/skpkldec,
-                        /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2017_sim_Ds/505_20200911-2319/skpkldec,
-                        /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2018_sim_Ds/505_20200911-2319/skpkldec] #list of periods
-      pkl_skimmed_decmerged: [/data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2016_sim_Ds/505_20200911-2319/skpkldecmerged,
-                              /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2017_sim_Ds/505_20200911-2319/skpkldecmerged,
-                              /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2018_sim_Ds/505_20200911-2319/skpkldecmerged] #list of periods
+      pkl_skimmed_dec: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/510_20200928-1513/skpkldec]
+      pkl_skimmed_decmerged: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/510_20200928-1513/skpkldecmerged]
     modelname: xgboost
     modelsperptbin: [Model_pT_1_2.model,
                      Model_pT_2_4.model,
@@ -233,21 +197,7 @@ Dspp_years:
       mc: [[0.2, 0.0], [0.2, 0.0], [0.2, 0.0], [0.4, 0.0], [0.4, 0.0], [0.6, 0.0]] #list of nbins
     #probcutoptimal: [[0.025, 0.2], [0.022, 0.2], [0.025, 0.15], [0.1, 0.2], [0.04, 0.2], [0.15, 0.15]] #list of nbins
     #probcutoptimal: [[0.0245, 0.15], [0.0195, 0.122], [0.0225, 0.2], [0.078, 0.12], [0.03, 0.15], [0.165, 0.1]] #list of nbins
-    #probcutoptimal: [[0.018, 0.13], [0.0195, 0.122], [0.0225, 0.2], [0.078, 0.12], [0.045, 0.1], [0.19, 0.06]] #list of nbins
-
-    #probcutoptimal: [[0.018, 0.13], [0.0195, 0.122], [0.0225, 0.2], [0.078, 0.12], [0.045, 0.1], [0.19, 0.06]]  #Opti [1-2], trial 1
-    #probcutoptimal: [[0.04, 0.05], [0.0195, 0.122], [0.0225, 0.2], [0.078, 0.12], [0.045, 0.1], [0.19, 0.06]]  #Opti [1-2], trial 2
-    #probcutoptimal: [[0.04, 0.08], [0.0195, 0.122], [0.0225, 0.2], [0.078, 0.12], [0.045, 0.1], [0.19, 0.06]]  #Opti [1-2], trial 3
-    #probcutoptimal: [[0.06, 0.05], [0.0195, 0.122], [0.0225, 0.2], [0.078, 0.12], [0.045, 0.1], [0.19, 0.06]]  #Opti [1-2], trial 4
-    #probcutoptimal: [[0.015, 0.13], [0.0195, 0.122], [0.0225, 0.2], [0.078, 0.12], [0.045, 0.1], [0.19, 0.06]]  #Opti [1-2], trial 5
-    #probcutoptimal: [[0.010, 0.13], [0.0195, 0.122], [0.0225, 0.2], [0.078, 0.12], [0.045, 0.1], [0.19, 0.06]]  #Opti [1-2], trial 6
-    #probcutoptimal: [[0.012, 0.10], [0.0195, 0.122], [0.0225, 0.2], [0.078, 0.12], [0.045, 0.1], [0.19, 0.06]]  #Opti [1-2], trial 7
-    #probcutoptimal: [[0.012, 0.05], [0.0195, 0.122], [0.0225, 0.2], [0.078, 0.12], [0.045, 0.1], [0.19, 0.06]]  #Opti [1-2], trial 8
-    #probcutoptimal: [[0.012, 0.08], [0.0195, 0.122], [0.0225, 0.2], [0.078, 0.12], [0.045, 0.1], [0.19, 0.06]]  #Opti [1-2], trial 9
-    #probcutoptimal: [[0.010, 0.08], [0.0195, 0.122], [0.0225, 0.2], [0.078, 0.12], [0.045, 0.1], [0.19, 0.06]]  #Opti [1-2], trial 10
-    #probcutoptimal: [[0.007, 0.05], [0.0195, 0.122], [0.0225, 0.2], [0.078, 0.12], [0.045, 0.1], [0.19, 0.06]]  #Opti [1-2], trial 11
-
-    probcutoptimal: [[0.010, 0.13], [0.0195, 0.122], [0.0225, 0.2], [0.078, 0.12], [0.045, 0.1], [0.19, 0.06]]  #Opti [1-2], trial 6
+    probcutoptimal: [[0.018, 0.13], [0.0195, 0.122], [0.0225, 0.2], [0.078, 0.12], [0.045, 0.1], [0.19, 0.06]] #list of nbins
 
   analysis:
     indexhptspectrum: 3 #kD0Kpi=0, kDplusKpipi=1, kDstarD0pi=2, kDsKKpi=3, kLctopKpi=4, kLcK0Sp=5
@@ -269,8 +219,7 @@ Dspp_years:
       usesinglebineff: null
       fprompt_from_mb: true
       corresp_mb_typean: null
-      #corrEffMult: [false,false,true,true,true,true]
-      corrEffMult: [false, false, false, false, false, false]
+      corrEffMult: [false,false,true,true,true,true]
       sel_binmin2: [0,1,1,10,30,60] #list of var2 splittng nbins
       sel_binmax2: [9999,9999,9,29,59,99] #list of var2 splitting nbins
       var_binning2: n_tracklets_corr_sub
@@ -283,7 +232,7 @@ Dspp_years:
       triggerbit: INT7
       event_cand_validation: False
       sel_an_binmin: [1,2,4,6,8,12] #list of pt nbins
-      sel_an_binmax:[2,4,6,8,12,24] #list of pt nbins
+      sel_an_binmax: [2,4,6,8,12,24] #list of pt nbins
       binning_matching: [0,1,2,3,4,5] #list of pt nbins
       include_reflection: False
       presel_gen_eff: "abs(y_cand) < 0.5 and abs(z_vtx_gen) < 10"
@@ -353,17 +302,13 @@ Dspp_years:
         mc: null
 
       data:
-        runselection: [null, null, null]
-        results: [/data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2016_data/504_20200911-2312/resultsMBvspt_ntrkl_final0610_scan12_11,
-                  /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2017_data/504_20200911-2312/resultsMBvspt_ntrkl_final0610_scan12_11,
-                  /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2018_data/504_20200911-2312/resultsMBvspt_ntrkl_final0610_scan12_11] #list of periods
-        resultsallp: /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/resultsMBvspt_ntrkl_final0610_scan12_11
+        runselection: [null]
+        results: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim2/510_20200928-1513/resultsMBvspt_ntrkl]
+        resultsallp: /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim2/resultsMBvspt_ntrkl
       mc:
-        runselection: [null, null, null]
-        results: [/data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2016_sim_Ds/505_20200911-2319/resultsMBvspt_ntrkl_final0610_scan12_11,
-                  /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2017_sim_Ds/505_20200911-2319/resultsMBvspt_ntrkl_final0610_scan12_11,
-                  /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2018_sim_Ds/505_20200911-2319/resultsMBvspt_ntrkl_final0610_scan12_11] #list of periods
-        resultsallp: /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_Ds/resultsMBvspt_ntrkl_final0610_scan12_11
+        runselection: [null]
+        results: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/510_20200928-1513/resultsMBvspt_ntrkl]
+        resultsallp: /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/resultsMBvspt_ntrkl
 
       # The global mass limits
       mass_fit_lim: [1.69, 2.21] # histogram range of the invariant mass distribution [GeV/c^2]
@@ -381,7 +326,7 @@ Dspp_years:
       masssecpeak: 1.869
       fix_masssecpeak: [[false, false, false, false, false, false],[false, false, false, false, false, false],[false, false, false, false, false, false],[false, false, false, false, false, false],[false, false, false, false, false, false],[false, false, false, false, false, false]]
       #Fraction Dplus/Ds (taken from pp5TeV as we don't store it in TTrees)
-      widthsecpeak: 0.91
+      widthsecpeak: 0.92
       fix_widthsecpeak: true
       # Fix mean and/or sigma
       FixedMean: False
@@ -411,11 +356,11 @@ Dspp_years:
         max_chisquare_ndf: 2.
         rebin: [-1,0,1]
         massmin: [1.69, 1.72, 1.75, 1.78, 1.81]
-        massmax: [2.09, 2.09, 2.12, 2.15, 2.18, 2.21]
+        massmax: [2.09,2.09, 2.12, 2.15, 2.18, 2.21]
         bincount_sigma: [3.,5.]
         bkg_funcs: [kExpo, Pol2]
         # Whether to include the free sigma option in the derivation of raw yield uncertainty in given pT bin
-        consider_free_sigma: [False, True, True, True, True, True]
+        consider_free_sigma: [True, True, True, True, True, True]
 
   systematics:
     probvariation:

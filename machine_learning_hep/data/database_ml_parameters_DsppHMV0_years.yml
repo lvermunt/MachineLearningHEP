@@ -12,7 +12,7 @@
 ##   along with this program. if not, see <https://www.gnu.org/licenses/>. ##
 #############################################################################
 
-DsppD2H_years:
+Dspp_years:
   nprongs: 3
   prongformultsub: [1,1,1]
   doml: true
@@ -132,8 +132,8 @@ DsppD2H_years:
                                  /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/504_20200911-2312/pklskml] #list of periods
       pkl_skimmed_merge_for_ml_all: /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/pp_data_mltot
       pkl_evtcounter_all: /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/pp_data_evttot
-      weights: [../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/data_2016_train504,
-                ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/data_2017_train504,
+      weights: [../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/data_2018_train504,
+                ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/data_2018_train504,
                 ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/data_2018_train504] #list of periods
     mc:
       nprocessesparallel: 50
@@ -142,25 +142,25 @@ DsppD2H_years:
       chunksizeskim: [1000,1000,1000] #list of periods
       fracmerge: [1.0,1.0,1.0] #list of periods
       seedmerge: [12,12,12] #list of periods
-      period: [LHC16pp_D2H,LHC17pp_D2H,LHC18pp_D2H] #list of periods
-      select_children: [["child_1", "child_2"], ["child_3"], ["child_4"]] # select children explicitly
-      unmerged_tree_dir: [/data/TTree/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/505_20200911-2319/merged,
-                          /data/TTree/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/505_20200911-2319/merged,
-                          /data/TTree/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/505_20200911-2319/merged] #list of periods
-      pkl: [/data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2H/505_20200911-2319/pkl,
-            /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2H/505_20200911-2319/pkl,
-            /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2H/505_20200911-2319/pkl] #list of periods
-      pkl_skimmed: [/data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2H/505_20200911-2319/pklsk,
-                    /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2H/505_20200911-2319/pklsk,
-                    /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2H/505_20200911-2319/pklsk] #list of periods
-      pkl_skimmed_merge_for_ml: [/data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2H/505_20200911-2319/pklskml,
-                                 /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2H/505_20200911-2319/pklskml,
-                                 /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2H/505_20200911-2319/pklskml] #list of periods
-      pkl_skimmed_merge_for_ml_all: /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2H/pp_mc_prodD2H_mltot
-      pkl_evtcounter_all: /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2H/pp_mrc_prodD2H_evttot
-      weights: [../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2016_train505,
-                ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2017_train505,
-                ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2018_train505]
+      period: [LHC16pp_DsHM, LHC17pp_DsHM, LHC18pp_DsHM] #list of periods
+      select_children: [["child_1"], ["child_2"], ["child_3"]] # select children explicitly
+      unmerged_tree_dir: [/mnt/temp/OngoingAnalysis_D2HvsMult/TTree/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/506_20200911-2319/merged,
+                          /mnt/temp/OngoingAnalysis_D2HvsMult/TTree/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/506_20200911-2319/merged,
+                          /mnt/temp/OngoingAnalysis_D2HvsMult/TTree/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim/506_20200911-2319/merged]
+      pkl: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2HHMV0/506_20200911-2319/pkl,
+            /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2HHMV0/506_20200911-2319/pkl,
+            /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2HHMV0/506_20200911-2319/pkl]
+      pkl_skimmed: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2HHMV0/506_20200911-2319/pklsk,
+                    /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2HHMV0/506_20200911-2319/pklsk,
+                    /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2HHMV0/506_20200911-2319/pklsk]
+      pkl_skimmed_merge_for_ml: [/mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2HHMV0/506_20200911-2319/pklskml,
+                                 /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2HHMV0/506_20200911-2319/pklskml,
+                                 /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2HHMV0/506_20200911-2319/pklskml]
+      pkl_skimmed_merge_for_ml_all: /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2HHMV0/pp_mc_prodD2H_mltot
+      pkl_evtcounter_all: /mnt/temp/OngoingAnalysis_D2HvsMult/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2HHMV0/pp_mrc_prodD2H_evttot
+      weights: [../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/prodDsHMV0_2016_train506,
+                ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/prodDsHMV0_2017_train506,
+                ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/prodDsHMV0_2018_train506]
 
   ml:
     evtsel: is_ev_rej==0
@@ -212,12 +212,12 @@ DsppD2H_years:
                               /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2017_data/504_20200911-2312/skpkldecmerged,
                               /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2018_data/504_20200911-2312/skpkldecmerged] #list of periods
     mc:
-      pkl_skimmed_dec: [/data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2016_sim_D2H/505_20200911-2319/skpkldec,
-                        /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2017_sim_D2H/505_20200911-2319/skpkldec,
-                        /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2018_sim_D2H/505_20200911-2319/skpkldec] #list of periods
-      pkl_skimmed_decmerged: [/data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2016_sim_D2H/505_20200911-2319/skpkldecmerged,
-                              /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2017_sim_D2H/505_20200911-2319/skpkldecmerged,
-                              /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2018_sim_D2H/505_20200911-2319/skpkldecmerged] #list of periods
+      pkl_skimmed_dec: [/data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2016_sim_D2HHMV0/506_20200911-2319/skpkldec,
+                        /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2017_sim_D2HHMV0/506_20200911-2319/skpkldec,
+                        /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2018_sim_D2HHMV0/506_20200911-2319/skpkldec]
+      pkl_skimmed_decmerged: [/data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2016_sim_D2HHMV0/506_20200911-2319/skpkldecmerged,
+                              /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2017_sim_D2HHMV0/506_20200911-2319/skpkldecmerged,
+                              /data/Derived/DsppvsMult/vAN-20200910_ROOT6-1/pp_2018_sim_D2HHMV0/506_20200911-2319/skpkldecmerged]
     modelname: xgboost
     modelsperptbin: [Model_pT_1_2.model,
                      Model_pT_2_4.model,
@@ -246,108 +246,84 @@ DsppD2H_years:
     # MULTIPLICITY ANALYSES #
     #                       #
     #########################
-    MBvspt_ntrkl:
+    V0vspt_perc_v0m:
       proc_type: Dhadrons_mult
-      useperiod: [1,1,1]
-      plotbin: [1,1,1,1,1,0]
+      useperiod: [1, 1, 1]
+      plotbin: [0,0,0,1]
       usesinglebineff: null
       fprompt_from_mb: true
-      corresp_mb_typean: null
-      #corrEffMult: [false,false,true,true,true,true]
-      corrEffMult: [false,false,false,false,false,false]
-      sel_binmin2: [0,1,1,10,30,60] #list of var2 splittng nbins
-      sel_binmax2: [9999,9999,9,29,59,99] #list of var2 splitting nbins
-      var_binning2: n_tracklets_corr_sub
-      var_binning2_gen: n_tracklets_corr
-      nbinshisto: 200
-      minvaluehisto: -0.5
-      maxvaluehisto: 199.5
-      triggereff: [1,0.92,0.862,1,1,1]
-      triggereffunc: [0,0.003,0.018,0,0,0]
-      triggerbit: INT7
-      event_cand_validation: False
-      sel_an_binmin: [1,2,4,6,8,12]  #list of pt nbins
-      sel_an_binmax: [2,4,6,8,12,24]  #list of pt nbins
-      binning_matching: [0,1,2,3,4,5]  #list of pt nbins
+      corresp_mb_typean: MBvspt_perc_v0m
+      #corrEffMult: [true, true, true, true]
+      corrEffMult: [false, false, false, false]
+      sel_binmin2:  [0,30,0.1,0] #list of var2 splittng nbins
+      sel_binmax2: [100,100,30,0.1] #list of var2 splitting nbins
+      var_binning2: perc_v0m
+      var_binning2_gen: perc_v0m
+      nbinshisto: 100000
+      minvaluehisto: -0.0005
+      maxvaluehisto: 99.9995
+      triggereff: [0.921,0.890,0.997,1]
+      triggereffunc: [0,0,0,0]    #To be added/checked if interesting
+      triggerbit: HighMultV0
+      isNbx2: False    #Estimate the feeddown systematic with Nb and Nbx2 method convolution
+      event_cand_validation: False #True, only False when need to speed up and weights already defined
+      sel_an_binmin: [1,2,4,6,8,12] #list of pt nbins
+      sel_an_binmax: [2,4,6,8,12,24] #list of pt nbins
+      binning_matching: [0,1,2,3,4,5] #list of pt nbins
       include_reflection: False
       presel_gen_eff: "abs(y_cand) < 0.5 and abs(z_vtx_gen) < 10"
       evtsel: is_ev_rej==0
+      mc_cut_on_binning2: False
 
+      #TO BE UPDATED
       event_weighting_mc:
-        LHC16pp_D2H:
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2016_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC16pp_weights
+        LHC16pp_D2HHM:
+          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2016_train505/weights_n_tracklets_1cand_mass_window_20MeV_data_D0_MB.root
+            histo_name: weights_int_int_LHC16pp
             according_to: n_tracklets
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2016_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC16pp_weights
+          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2016_train505/weights_n_tracklets_1cand_mass_window_20MeV_data_D0_MB.root
+            histo_name: weights_perc_v0m_01_30_LHC16pp
             according_to: n_tracklets
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2016_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC16pp_weights
+          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2016_train505/weights_n_tracklets_1cand_mass_window_20MeV_data_D0_MB.root
+            histo_name: weights_perc_v0m_30_100_LHC16pp
             according_to: n_tracklets
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2016_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC16pp_weights
+        LHC17pp_D2HHM:
+          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2016_train505/weights_n_tracklets_1cand_mass_window_20MeV_data_D0_MB.root
+            histo_name: weights_int_int_LHC17pp
             according_to: n_tracklets
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2016_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC16pp_weights
+          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2016_train505/weights_n_tracklets_1cand_mass_window_20MeV_data_D0_MB.root
+            histo_name: weights_perc_v0m_01_30_LHC17pp
             according_to: n_tracklets
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2016_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC16pp_weights
+          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2016_train505/weights_n_tracklets_1cand_mass_window_20MeV_data_D0_MB.root
+            histo_name: weights_perc_v0m_30_100_LHC17pp
             according_to: n_tracklets
-        LHC17pp_D2H:
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2017_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC17pp_weights
+        LHC18pp_D2HHM:
+          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2016_train505/weights_n_tracklets_1cand_mass_window_20MeV_data_D0_MB.root
+            histo_name: weights_int_int_LHC18pp
             according_to: n_tracklets
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2017_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC17pp_weights
+          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2016_train505/weights_n_tracklets_1cand_mass_window_20MeV_data_D0_MB.root
+            histo_name: weights_perc_v0m_01_30_LHC18pp
             according_to: n_tracklets
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2017_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC17pp_weights
-            according_to: n_tracklets
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2017_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC17pp_weights
-            according_to: n_tracklets
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2017_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC17pp_weights
-            according_to: n_tracklets
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2017_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC17pp_weights
-            according_to: n_tracklets
-        LHC18pp_D2H:
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2018_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC18pp_weights
-            according_to: n_tracklets
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2018_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC18pp_weights
-            according_to: n_tracklets
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2018_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC18pp_weights
-            according_to: n_tracklets
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2018_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC18pp_weights
-            according_to: n_tracklets
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2018_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC18pp_weights
-            according_to: n_tracklets
-          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2018_train505/weights_n_tracklets_MB_Ds_data.root
-            histo_name: n_tracklets_0_LHC18pp_weights
+          - filepath: ../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/production504/prodD2H_2016_train505/weights_n_tracklets_1cand_mass_window_20MeV_data_D0_MB.root
+            histo_name: weights_perc_v0m_30_100_LHC18pp
             according_to: n_tracklets
 
       triggersel:
-        data: "trigger_hasbit_INT7==1"
+        data: "trigger_hasbit_HighMultV0==1"
         mc: null
 
       data:
-        runselection: [null, null, null]
-        results: [/data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2016_data/504_20200911-2312/resultsMBvspt_ntrkl_final0610_noMultWeights,
-                  /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2017_data/504_20200911-2312/resultsMBvspt_ntrkl_final0610_noMultWeights,
-                  /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2018_data/504_20200911-2312/resultsMBvspt_ntrkl_final0610_noMultWeights] #list of periods
-        resultsallp: /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/resultsMBvspt_ntrkl_final0610_noMultWeights
+        runselection: [V0vspt_perc_v0m_2016, null, null]
+        results: [/data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2016_data/504_20200911-2312/resultsV0vspt_perc_v0m_final0610_noMultWeights,
+                  /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2017_data/504_20200911-2312/resultsV0vspt_perc_v0m_final0610_noMultWeights,
+                  /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2018_data/504_20200911-2312/resultsV0vspt_perc_v0m_final0610_noMultWeights] #list of periods
+        resultsallp: /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_data/resultsV0vspt_perc_v0m_final0610_noMultWeights
       mc:
-        runselection: [null, null, null]
-        results: [/data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2016_sim_D2H/505_20200911-2319/resultsMBvspt_ntrkl_final0610_noMultWeights,
-                  /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2017_sim_D2H/505_20200911-2319/resultsMBvspt_ntrkl_final0610_noMultWeights,
-                  /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2018_sim_D2H/505_20200911-2319/resultsMBvspt_ntrkl_final0610_noMultWeights] #list of periods
-        resultsallp: /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2H/resultsMBvspt_ntrkl_final0610_noMultWeights
+        runselection: [V0vspt_perc_v0m_2016, null, null]
+        results: [/data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2016_sim_D2HHM/506_20200911-2319/resultsV0vspt_perc_v0m_final0610_noMultWeights,
+                  /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2017_sim_D2HHM/506_20200911-2319/resultsV0vspt_perc_v0m_final0610_noMultWeights,
+                  /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_2018_sim_D2HHM/506_20200911-2319/resultsV0vspt_perc_v0m_final0610_noMultWeights] #list of periods
+        resultsallp: /data/DerivedResults/DsppvsMult/vAN-20200910_ROOT6-1/pp_sim_D2HHM/resultsV0vspt_perc_v0m_final0610_noMultWeights
 
       # The global mass limits
       mass_fit_lim: [1.69, 2.21] # histogram range of the invariant mass distribution [GeV/c^2]
@@ -395,11 +371,11 @@ DsppD2H_years:
         max_chisquare_ndf: 2.
         rebin: [-1,0,1]
         massmin: [1.69, 1.72, 1.75, 1.78, 1.81]
-        massmax: [2.09,2.09, 2.12, 2.15, 2.18, 2.21]
+        massmax: [2.09, 2.09, 2.12, 2.15, 2.18, 2.21]
         bincount_sigma: [3.,5.]
         bkg_funcs: [kExpo, Pol2]
         # Whether to include the free sigma option in the derivation of raw yield uncertainty in given pT bin
-        consider_free_sigma: [True, True, True, True, True, True]
+        consider_free_sigma: [False, True, True, True, True, True]
 
     MBvspt_perc_v0m:
       proc_type: Dhadrons_mult
@@ -408,8 +384,7 @@ DsppD2H_years:
       usesinglebineff: null
       fprompt_from_mb: true
       corresp_mb_typean: null
-      #corrEffMult: [true, true, true, true]
-      corrEffMult: [false, false, false, false]
+      corrEffMult: [true, true, true, true]
       sel_binmin2:  [0,30,0.1,0] #list of var2 splittng nbins
       sel_binmax2: [100,100,30,0.1] #list of var2 splitting nbins
       var_binning2: perc_v0m
