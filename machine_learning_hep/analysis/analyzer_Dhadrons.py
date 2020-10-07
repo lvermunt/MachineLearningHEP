@@ -23,7 +23,10 @@ import numpy as np
 # pylint: disable=import-error, no-name-in-module, unused-import
 from root_numpy import hist2array, array2hist
 from ROOT import TFile, TH1F, TH2F, TCanvas, TPad, TF1, TH1D
-from ROOT import AliHFInvMassFitter, AliVertexingHFUtils, AliHFInvMassMultiTrialFit
+try:
+    from ROOT import AliHFInvMassFitter, AliVertexingHFUtils, AliHFInvMassMultiTrialFit
+except ImportError:
+    print("\n\033[1mFutureWarning: not in AliPhysics environment. Analyzer will crash!\033[0m\n")
 from ROOT import gStyle, TLegend, TLine, TText, TPaveText, TArrow
 from ROOT import gROOT, TDirectory, TPaveLabel
 from ROOT import TStyle, kBlue, kGreen, kBlack, kRed, kOrange
