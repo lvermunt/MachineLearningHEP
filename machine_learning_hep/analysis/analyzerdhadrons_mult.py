@@ -58,6 +58,8 @@ class AnalyzerDhadrons_mult(Analyzer): # pylint: disable=invalid-name
         self.triggerbit = datap["analysis"][self.typean]["triggerbit"]
         self.p_nbin2 = len(self.lvar2_binmin)
 
+        self.s_evtsel_array = datap["analysis"][self.typean].get("evtsel_array", [None for _ in range(len(self.lvar2_binmin))])
+
         self.d_resultsallpmc = datap["analysis"][typean]["mc"]["results"][period] \
                 if period is not None else datap["analysis"][typean]["mc"]["resultsallp"]
         self.d_resultsallpdata = datap["analysis"][typean]["data"]["results"][period] \
@@ -497,6 +499,16 @@ class AnalyzerDhadrons_mult(Analyzer): # pylint: disable=invalid-name
             norm = self.calculate_norm(hsel, hnovtx, hvtxout,
                                        self.lvar2_binmin[imult],
                                        self.lvar2_binmax[imult])
+            if self.s_evtsel_array[imult] is not None:
+                labeltrigger_ibin2 = "hbit%svsn_tracklets_corr_ibin2_%d" % (self.triggerbit, imult)
+                #labeltrigger_ibin2 = "hbit%svsn_tracklets_ibin2_%d" % (self.triggerbit, imult)
+                if self.apply_weights is True:
+                    labeltrigger1 = labeltrigger1 + "_weight"
+                hsel_ibin2 = filemass.Get("sel_%s" % labeltrigger_ibin2)
+                hnovtx_ibin2 = filemass.Get("novtx_%s" % labeltrigger_ibin2)
+                hvtxout_ibin2 = filemass.Get("vtxout_%s" % labeltrigger_ibin2)
+                norm = self.calculate_norm(hsel_ibin2, hnovtx_ibin2, hvtxout_ibin2,
+                                           1, 999)
             histonorm.SetBinContent(imult + 1, norm)
             # pylint: disable=logging-not-lazy
             self.logger.warning("Number of events %d for mult bin %d" % (norm, imult))

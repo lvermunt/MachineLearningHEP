@@ -68,6 +68,7 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
         self.bin_matching = datap["analysis"][self.typean]["binning_matching"]
         #self.sel_final_fineptbins = datap["analysis"][self.typean]["sel_final_fineptbins"]
         self.s_evtsel = datap["analysis"][self.typean]["evtsel"]
+        self.s_evtsel_array = datap["analysis"][self.typean].get("evtsel_array", [None for _ in range(len(self.lvar2_binmin))])
         self.s_trigger = datap["analysis"][self.typean]["triggersel"][self.mcordata]
         self.triggerbit = datap["analysis"][self.typean]["triggerbit"]
         self.runlistrigger = runlisttrigger
@@ -215,6 +216,36 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
         hnovtxmult.Write()
         hvtxoutmult.Write()
 
+        for ibin2 in range(len(self.lvar2_binmin)):
+            if self.s_evtsel_array[ibin2] is not None:
+                print("SHOULDN'T BE HERE FOR SYSTEMATICS")
+                dfevtevtsel_ibin2 = seldf_singlevar_inclusive(dfevtevtsel, self.v_var2_binning_gen, \
+                    self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2])
+                dfevtorig_ibin2 = seldf_singlevar_inclusive(dfevtorig, self.v_var2_binning_gen, \
+                    self.lvar2_binmin[ibin2], self.lvar2_binmax[ibin2])
+                labeltrigger_ibin2 = "hbit%svsn_tracklets_corr_ibin2_%d" % (self.triggerbit, ibin2)
+                hsel_ibin2, hnovtxmult_ibin2, hvtxoutmult_ibin2 = \
+                    self.gethistonormforselevt_mult(dfevtorig_ibin2, dfevtevtsel_ibin2, \
+                                               labeltrigger_ibin2, "n_tracklets_corr")
+                #labeltrigger_ibin2 = "hbit%svsn_tracklets_ibin2_%d" % (self.triggerbit, ibin2)
+                #hsel_ibin2, hnovtxmult_ibin2, hvtxoutmult_ibin2 = \
+                #    self.gethistonormforselevt_mult(dfevtorig_ibin2, dfevtevtsel_ibin2, \
+                #                               labeltrigger_ibin2, "n_tracklets")
+                if self.usetriggcorrfunc is not None and self.mcordata == "data":
+                    hselweight_ibin2, hnovtxmultweight_ibin2, hvtxoutmultweight_ibin2 = \
+                        self.gethistonormforselevt_mult(dfevtorig_ibin2, dfevtevtsel_ibin2, \
+                            labeltrigger_ibin2, "n_tracklets_corr", self.usetriggcorrfunc)
+                    #hselweight_ibin2, hnovtxmultweight_ibin2, hvtxoutmultweight_ibin2 = \
+                    #    self.gethistonormforselevt_mult(dfevtorig_ibin2, dfevtevtsel_ibin2, \
+                    #        labeltrigger_ibin2, "n_tracklets", self.usetriggcorrfunc)
+                    hselweight_ibin2.Write()
+                    hnovtxmultweight_ibin2.Write()
+                    hvtxoutmultweight_ibin2.Write()
+
+                hsel_ibin2.Write()
+                hnovtxmult_ibin2.Write()
+                hvtxoutmult_ibin2.Write()
+
         list_df_recodtrig = []
 
         for ipt in range(self.p_nptfinbins): # pylint: disable=too-many-nested-blocks
@@ -236,7 +267,14 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
             if self.do_custom_analysis_cuts:
                 df = self.apply_cuts_ptbin(df, ipt)
 
+            df_temp = pd.DataFrame()
+            if self.s_evtsel_array[-1] is not None:
+                df_temp = df
             for ibin2 in range(len(self.lvar2_binmin)):
+                if self.s_evtsel_array[ibin2] is not None:
+                    df = df_temp
+                    df = df.query(self.s_evtsel_array[ibin2])
+
                 if self.mltype == "MultiClassification":
                     suffix = "%s%d_%d_%.2f%.2f%s_%.2f_%.2f" % \
                              (self.v_var_binning, self.lpt_finbinmin[ipt],
@@ -416,6 +454,8 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
                 df_mc_reco = pickle.load(openfile(self.mptfiles_recoskmldec[bin_id][index], "rb"))
                 if self.s_evtsel is not None:
                     df_mc_reco = df_mc_reco.query(self.s_evtsel)
+                if self.s_evtsel_array[ibin2] is not None:
+                    df_mc_reco = df_mc_reco.query(self.s_evtsel_array[ibin2])
                 if self.s_trigger is not None:
                     df_mc_reco = df_mc_reco.query(self.s_trigger)
                 if self.runlistrigger is not None:
@@ -423,6 +463,8 @@ class ProcesserDhadrons_mult(Processer): # pylint: disable=too-many-instance-att
                          self.run_param[self.runlistrigger], "run_number")
                 df_mc_gen = pickle.load(openfile(self.mptfiles_gensk[bin_id][index], "rb"))
                 df_mc_gen = df_mc_gen.query(self.s_presel_gen_eff)
+                if self.s_evtsel_array[ibin2] is not None:
+                    df_mc_gen = df_mc_gen.query(self.s_evtsel_array[ibin2])
                 if self.runlistrigger is not None:
                     df_mc_gen = selectdfrunlist(df_mc_gen, \
                              self.run_param[self.runlistrigger], "run_number")
