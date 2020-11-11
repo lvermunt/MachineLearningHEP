@@ -54,7 +54,7 @@ mlapplication:
     docontinueafterstop: false
 
 analysis:
-  type: YYYY
+  type: MBvspt
   # Do each period separately including merged (true)
   # Do only merged (false)
   doperperiod: true
@@ -63,7 +63,7 @@ analysis:
     dojetsystematics: false
   mc:
     histomass: true
-    efficiency: true # processer: process_efficiency
+    efficiency: false # processer: process_efficiency
     response: false # processer: process_response
     feeddown: false
     dounfolding: false
@@ -71,9 +71,9 @@ analysis:
   # Control the yield systematic uncertainty
   dosyst: false
   dojetstudies: false
-  doeff: true
-  docross: true
-  doplots: true
+  doeff: false
+  docross: false
+  doplots: false
   doplotsval: false # analyzer: plottervalidation
 
 systematics:

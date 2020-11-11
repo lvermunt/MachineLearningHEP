@@ -47,8 +47,9 @@ class Processer: # pylint: disable=too-many-instance-attributes
                  d_results, typean, runlisttrigger, d_mcreweights):
         #self.logger = get_logger()
         self.nprongs = datap["nprongs"]
-        self.prongformultsub = datap["prongformultsub"]
+        self.prongformultsub = datap.get("prongformultsub", [0] * self.nprongs)
         self.doml = datap["doml"]
+        self.appliedongrid = datap.get("appliedongrid", False)
         self.case = case
         self.typean = typean
         #directories
@@ -92,9 +93,9 @@ class Processer: # pylint: disable=too-many-instance-attributes
         self.n_evtorig = datap["files_names"]["namefile_evtorig"]
         self.n_gen = datap["files_names"]["namefile_gen"]
         self.n_filemass = datap["files_names"]["histofilename"]
-        self.n_fileeff = datap["files_names"]["efffilename"]
-        self.n_fileresp = datap["files_names"]["respfilename"]
-        self.n_mcreweights = datap["files_names"]["namefile_mcweights"]
+        self.n_fileeff = datap["files_names"].get("efffilename", "")
+        self.n_fileresp = datap["files_names"].get("respfilename", "")
+        self.n_mcreweights = datap["files_names"].get("namefile_mcweights", "")
 
         #selections
         self.s_reco_unp = datap["sel_reco_unp"]
@@ -192,8 +193,12 @@ class Processer: # pylint: disable=too-many-instance-attributes
                 self.l_selml.append(mlsel_multi)
 
         else:
-            self.l_selml = ["y_test_prob%s>%s" % (self.p_modelname, self.lpt_probcutfin[ipt]) \
-                           for ipt in range(self.p_nptfinbins)]
+            if self.appliedongrid is False:
+                self.l_selml = ["y_test_prob%s>%s" % (self.p_modelname, self.lpt_probcutfin[ipt]) \
+                                for ipt in range(self.p_nptbins)]
+            else:
+                self.l_selml = ["ml_prob>%s" % self.lpt_probcutfin[ipt] \
+                                for ipt in range(self.p_nptbins)]
 
         self.d_pkl_dec = d_pkl_dec
         self.mptfiles_recosk = []
@@ -243,7 +248,7 @@ class Processer: # pylint: disable=too-many-instance-attributes
                                     self.lpt_gensk[ipt]) for ipt in range(self.p_nptbins)]
             self.lpt_gendecmerged = [os.path.join(self.d_pkl_decmerged, self.lpt_gensk[ipt])
                                      for ipt in range(self.p_nptbins)]
-        self.triggerbit = datap["analysis"][self.typean]["triggerbit"]
+        self.triggerbit = datap["analysis"][self.typean].get("triggerbit", "")
         self.runlistrigger = runlisttrigger
 
  #       if os.path.exists(self.d_root) is False:
@@ -283,13 +288,8 @@ class Processer: # pylint: disable=too-many-instance-attributes
         dfreco = pd.merge(dfreco, dfevt, on=self.v_evtmatch)
         isselacc = selectfidacc(dfreco.pt_cand.values, dfreco.y_cand.values)
         dfreco = dfreco[np.array(isselacc, dtype=bool)]
+
         arraysub = [0 for ival in range(len(dfreco))]
-        n_tracklets = dfreco["n_tracklets"].values
-        n_tracklets_corr = dfreco["n_tracklets_corr"].values
-        n_tracklets_corr_shm = dfreco["n_tracklets_corr_shm"].values
-        n_tracklets_sub = None
-        n_tracklets_corr_sub = None
-        n_tracklets_corr_shm_sub = None
         for iprong in range(self.nprongs):
             if self.prongformultsub[iprong] == 0:
                 continue
@@ -298,13 +298,22 @@ class Processer: # pylint: disable=too-many-instance-attributes
             ntrackletsthisprong = [1 if spdhits_thisprong[index] == 3 else 0 \
                                    for index in range(len(dfreco))]
             arraysub = np.add(ntrackletsthisprong, arraysub)
-        n_tracklets_sub = np.subtract(n_tracklets, arraysub)
-        n_tracklets_corr_sub = np.subtract(n_tracklets_corr, arraysub)
-        n_tracklets_corr_shm_sub = np.subtract(n_tracklets_corr_shm, arraysub)
+        if "n_tracklets" in self.v_evt:
+            n_tracklets = dfreco["n_tracklets"].values
+            n_tracklets_sub = None
+            n_tracklets_sub = np.subtract(n_tracklets, arraysub)
+            dfreco["n_tracklets_sub"] = n_tracklets_sub
+        if "n_tracklets_corr" in self.v_evt:
+            n_tracklets_corr = dfreco["n_tracklets_corr"].values
+            n_tracklets_corr_sub = None
+            n_tracklets_corr_sub = np.subtract(n_tracklets_corr, arraysub)
+            dfreco["n_tracklets_corr_sub"] = n_tracklets_corr_sub
+        if "n_tracklets_corr_shm" in self.v_evt:
+            n_tracklets_corr_shm = dfreco["n_tracklets_corr_shm"].values
+            n_tracklets_corr_shm_sub = None
+            n_tracklets_corr_shm_sub = np.subtract(n_tracklets_corr_shm, arraysub)
+            dfreco["n_tracklets_corr_shm_sub"] = n_tracklets_corr_shm_sub
 
-        dfreco["n_tracklets_sub"] = n_tracklets_sub
-        dfreco["n_tracklets_corr_sub"] = n_tracklets_corr_sub
-        dfreco["n_tracklets_corr_shm_sub"] = n_tracklets_corr_shm_sub
         if self.b_trackcuts is not None:
             dfreco = filter_bit_df(dfreco, self.v_bitvar, self.b_trackcuts)
         dfreco[self.v_isstd] = np.array(tag_bit_df(dfreco, self.v_bitvar,

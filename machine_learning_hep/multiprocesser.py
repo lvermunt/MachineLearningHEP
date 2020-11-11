@@ -28,11 +28,11 @@ class MultiProcesser: # pylint: disable=too-many-instance-attributes, too-many-s
         self.mcordata = mcordata
         self.prodnumber = len(datap["multi"][self.mcordata]["unmerged_tree_dir"])
         self.p_period = datap["multi"][self.mcordata]["period"]
-        self.p_seedmerge = datap["multi"][self.mcordata]["seedmerge"]
+        self.p_seedmerge = datap["multi"][self.mcordata].get("seedmerge", [12 * self.prodnumber])
         self.p_fracmerge = datap["multi"][self.mcordata]["fracmerge"]
-        self.p_maxfiles = datap["multi"][self.mcordata]["maxfiles"]
-        self.p_chunksizeunp = datap["multi"][self.mcordata]["chunksizeunp"]
-        self.p_chunksizeskim = datap["multi"][self.mcordata]["chunksizeskim"]
+        self.p_maxfiles = datap["multi"][self.mcordata].get("maxfiles", [-1 * self.prodnumber])
+        self.p_chunksizeunp = datap["multi"][self.mcordata].get("chunksizeunp", [100 * self.prodnumber])
+        self.p_chunksizeskim = datap["multi"][self.mcordata].get("chunksizeskim", [100 * self.prodnumber])
         self.p_nparall = datap["multi"][self.mcordata]["nprocessesparallel"]
         self.lpt_anbinmin = datap["sel_skim_binmin"]
         self.lpt_anbinmax = datap["sel_skim_binmax"]
@@ -47,7 +47,7 @@ class MultiProcesser: # pylint: disable=too-many-instance-attributes, too-many-s
         self.d_pklml_mergedallp = datap["multi"][self.mcordata]["pkl_skimmed_merge_for_ml_all"]
         self.d_pklevt_mergedallp = datap["multi"][self.mcordata]["pkl_evtcounter_all"]
 
-        self.dlper_mcreweights = datap["multi"][self.mcordata]["mcreweights"]
+        self.dlper_mcreweights = datap["multi"][self.mcordata].get("mcreweights", ["" * self.prodnumber])
 
         #namefiles pkl
         self.v_var_binning = datap["var_binning"]
@@ -114,7 +114,7 @@ class MultiProcesser: # pylint: disable=too-many-instance-attributes, too-many-s
 
         self.n_filemass = datap["files_names"]["histofilename"]
         self.n_fileeff = datap["files_names"]["efffilename"]
-        self.n_fileresp = datap["files_names"]["respfilename"]
+        self.n_fileresp = datap["files_names"].get("respfilename", "")
         self.filemass_mergedall = os.path.join(self.d_resulsallp, self.n_filemass)
         self.fileeff_mergedall = os.path.join(self.d_resulsallp, self.n_fileeff)
         self.fileresp_mergedall = os.path.join(self.d_resulsallp, self.n_fileresp)
