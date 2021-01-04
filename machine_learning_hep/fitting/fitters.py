@@ -57,6 +57,7 @@ class FitBase: # pylint: disable=too-many-instance-attributes
                                   "sigma": None,
                                   "fix_sigma": False,
                                   "rebin": None,
+                                  "first_used_bin": -1,
                                   "fit_range_low": None,
                                   "fit_range_up": None,
                                   "likelihood": True,
@@ -289,6 +290,7 @@ class FitAliHF(FitROOT):
                                   "include_reflections": False,
                                   "fix_reflections_s_over_b": True,
                                   "rebin": None,
+                                  "first_used_bin": -1,
                                   "fit_range_low": None,
                                   "fit_range_up": None,
                                   "likelihood": True,
@@ -321,8 +323,9 @@ class FitAliHF(FitROOT):
         self.update_root_objects()
 
         rebin = construct_rebinning(self.histo, self.init_pars["rebin"])
+        first_used_bin = self.init_pars["first_used_bin"]
         if rebin:
-            histo_rebin_ = AliVertexingHFUtils.RebinHisto(self.histo, rebin, -1)
+            histo_rebin_ = AliVertexingHFUtils.RebinHisto(self.histo, rebin, first_used_bin)
             self.histo = TH1F()
             histo_rebin_.Copy(self.histo)
             self.histo.SetName(f"{self.histo.GetName()}_fit_histo")
@@ -572,6 +575,7 @@ class FitROOTGauss(FitROOT): # pylint: disable=too-many-instance-attributes
         self.type_gauss = type_gauss
 
         self.default_init_pars = {"rebin": None,
+                                  "first_used_bin": -1,
                                   "use_user_fit_range": False,
                                   "fit_range_low": None,
                                   "fit_range_up": None,
@@ -606,8 +610,9 @@ class FitROOTGauss(FitROOT): # pylint: disable=too-many-instance-attributes
         self.update_root_objects()
 
         rebin = construct_rebinning(self.histo, self.init_pars["rebin"])
+        first_used_bin = self.init_pars["first_used_bin"]
         if rebin:
-            histo_rebin_ = AliVertexingHFUtils.RebinHisto(self.histo, rebin, -1)
+            histo_rebin_ = AliVertexingHFUtils.RebinHisto(self.histo, rebin, first_used_bin)
             self.histo = TH1F()
             histo_rebin_.Copy(self.histo)
 
@@ -845,6 +850,7 @@ class FitSystAliHF(FitROOT): # pylint: disable=too-many-instance-attributes
                                   "chi2_ref": None,
                                   "signif_ref": None,
                                   "rebin": None,
+                                  "first_used_bin": -1,
                                   "fit_range_low": None,
                                   "fit_range_up": None,
                                   "likelihood": True,

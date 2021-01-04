@@ -49,12 +49,12 @@ mlapplication:
     domergeapply: true
     docontinueafterstop: false
   mc:
-    doapply: true
-    domergeapply: true
+    doapply: false
+    domergeapply: false
     docontinueafterstop: false
 
 analysis:
-  type: YYYY
+  type: MBvspt
   # Do each period separately including merged (true)
   # Do only merged (false)
   doperperiod: true

@@ -50,6 +50,7 @@ class Processer: # pylint: disable=too-many-instance-attributes
         self.prongformultsub = datap.get("prongformultsub", [0] * self.nprongs)
         self.doml = datap["doml"]
         self.appliedongrid = datap.get("appliedongrid", False)
+        self.mc_use_mlprob2 = datap.get("mc_uses_mlprob2", False)
         self.case = case
         self.typean = typean
         #directories
@@ -159,6 +160,23 @@ class Processer: # pylint: disable=too-many-instance-attributes
         self.lpt_finbinmin = datap["analysis"][self.typean]["sel_an_binmin"]
         self.lpt_finbinmax = datap["analysis"][self.typean]["sel_an_binmax"]
         self.p_nptfinbins = len(self.lpt_finbinmin)
+
+        self.lpt_probcut_scan = datap.get("prob_scan", None)
+        self.p_nmlscanbins = 0
+        self.do_probscan = False
+        if self.lpt_probcut_scan is not None:
+            self.do_probscan = datap["prob_scan"].get("activate", False)
+            self.lpt_probcut_scan = datap["prob_scan"].get("prob_sel", None)
+        if self.lpt_probcut_scan is not None:
+            self.p_nmlscanbins = len(self.lpt_probcut_scan)
+
+        self.lpt_mergebinmin = datap["analysis"][self.typean].get("sel_anmerge_binmin", None)
+        self.lpt_mergebinmax = datap["analysis"][self.typean].get("sel_anmerge_binmax", None)
+        self.do_binmerging = False
+        if self.lpt_mergebinmin and self.lpt_mergebinmax:
+            self.do_binmerging = True
+            self.p_nptfinbins = len(self.lpt_mergebinmin)
+
         self.lpt_model = datap["mlapplication"]["modelsperptbin"]
         self.dirmodel = datap["ml"]["mlout"]
         self.mltype = datap["ml"]["mltype"]
@@ -166,7 +184,7 @@ class Processer: # pylint: disable=too-many-instance-attributes
         self.lpt_model = appendmainfoldertolist(self.dirmodel, self.lpt_model)
 
         self.lpt_probcutpre = datap["mlapplication"]["probcutpresel"][self.mcordata]
-        self.lpt_probcutfin = datap["analysis"][self.typean].get("probcuts", None)
+        self.lpt_probcutfin = datap["mlapplication"]["probcutoptimal"] #datap["analysis"][self.typean].get("probcuts", None)
 
         # Make it backwards-compatible
         if not self.lpt_probcutfin:
@@ -181,6 +199,7 @@ class Processer: # pylint: disable=too-many-instance-attributes
             if self.lpt_probcutfin < self.lpt_probcutpre:
                 print("FATAL error: probability cut final must be tighter!")
 
+        self.l_selml_scan = []
         if self.mltype == "MultiClassification":
             self.l_selml = []
             for ipt in range(self.p_nptfinbins):
@@ -194,11 +213,27 @@ class Processer: # pylint: disable=too-many-instance-attributes
 
         else:
             if self.appliedongrid is False:
+                print(self.lpt_probcutfin)
+                print(self.p_nptbins)
                 self.l_selml = ["y_test_prob%s>%s" % (self.p_modelname, self.lpt_probcutfin[ipt]) \
                                 for ipt in range(self.p_nptbins)]
+                if self.lpt_probcut_scan is not None:
+                    self.l_selml_scan = ["y_test_prob%s>%s" % (self.p_modelname, self.lpt_probcut_scan[iscan]) \
+                                         for iscan in range(self.p_nmlscanbins)]
             else:
-                self.l_selml = ["ml_prob>%s" % self.lpt_probcutfin[ipt] \
-                                for ipt in range(self.p_nptbins)]
+                if self.mcordata == "mc" and self.mc_use_mlprob2:
+                    self.l_selml = ["ml_prob2>%s" % self.lpt_probcutfin[ipt] \
+                                    for ipt in range(self.p_nptbins)]
+                else:
+                    self.l_selml = ["ml_prob>%s" % self.lpt_probcutfin[ipt] \
+                                    for ipt in range(self.p_nptbins)]
+                if self.lpt_probcut_scan is not None:
+                    if self.mcordata == "mc" and self.mc_use_mlprob2:
+                        self.l_selml_scan = ["ml_prob2>%s" % self.lpt_probcut_scan[ipt] \
+                                             for ipt in range(self.p_nmlscanbins)]
+                    else:
+                        self.l_selml_scan = ["ml_prob>%s" % self.lpt_probcut_scan[ipt] \
+                                             for ipt in range(self.p_nmlscanbins)]
 
         self.d_pkl_dec = d_pkl_dec
         self.mptfiles_recosk = []
@@ -379,6 +414,7 @@ class Processer: # pylint: disable=too-many-instance-attributes
             if os.path.exists(self.mptfiles_recoskmldec[ipt][file_index]):
                 if os.stat(self.mptfiles_recoskmldec[ipt][file_index]).st_size != 0:
                     continue
+            print(self.mptfiles_recosk[ipt][file_index])
             dfrecosk = pickle.load(openfile(self.mptfiles_recosk[ipt][file_index], "rb"))
             if self.doml is True:
                 if os.path.isfile(self.lpt_model[ipt]) is False:
@@ -515,7 +551,14 @@ class Processer: # pylint: disable=too-many-instance-attributes
 
         create_folder_struc(self.d_results, self.l_path)
         arguments = [(i,) for i in range(len(self.l_root))]
-        self.parallelizer(self.process_histomass_single, arguments, self.p_chunksizeunp) # pylint: disable=no-member
+        if self.do_binmerging:
+            print("Merging analysis bins")
+            self.parallelizer(self.process_histomass_merge_single, arguments, self.p_chunksizeunp) # pylint: disable=no-member
+        elif self.do_probscan:
+            print("Scanning ML prob")
+            self.parallelizer(self.process_histomass_scan_single, arguments, self.p_chunksizeunp) # pylint: disable=no-member
+        else:
+            self.parallelizer(self.process_histomass_single, arguments, self.p_chunksizeunp) # pylint: disable=no-member
         tmp_merged = \
             f"/data/tmp/hadd/{self.case}_{self.typean}/mass_{self.period}/{get_timestamp_string()}/"
         mergerootfiles(self.l_histomass, self.n_filemass, tmp_merged)
@@ -533,6 +576,10 @@ class Processer: # pylint: disable=too-many-instance-attributes
 
         create_folder_struc(self.d_results, self.l_path)
         arguments = [(i,) for i in range(len(self.l_root))]
-        self.parallelizer(self.process_efficiency_single, arguments, self.p_chunksizeunp) # pylint: disable=no-member
+        if self.do_binmerging:
+            print("Merging analysis bins")
+            self.parallelizer(self.process_efficiency_merge_single, arguments, self.p_chunksizeunp) # pylint: disable=no-member
+        else:
+            self.parallelizer(self.process_efficiency_single, arguments, self.p_chunksizeunp) # pylint: disable=no-member
         tmp_merged = f"/data/tmp/hadd/{self.case}_{self.typean}/histoeff_{self.period}/{get_timestamp_string()}/" # pylint: disable=line-too-long
         mergerootfiles(self.l_histoeff, self.n_fileeff, tmp_merged)

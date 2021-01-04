@@ -79,12 +79,12 @@ class Optimiser:
         #variables
         self.v_all = data_param["variables"]["var_all"]
         self.v_train = training_var
-        self.v_bound = data_param["variables"]["var_boundaries"]
+        self.v_bound = None #data_param["variables"]["var_boundaries"]
         self.v_sig = data_param["variables"]["var_signal"]
         self.v_invmass = data_param["variables"]["var_inv_mass"]
-        self.v_cuts = data_param["variables"].get("var_cuts", [])
-        self.v_corrx = data_param["variables"]["var_correlation"][0]
-        self.v_corry = data_param["variables"]["var_correlation"][1]
+        self.v_cuts = None #data_param["variables"].get("var_cuts", [])
+        self.v_corrx = None #data_param["variables"]["var_correlation"][0]
+        self.v_corry = None #data_param["variables"]["var_correlation"][1]
         self.v_isstd = data_param["bitmap_sel"]["var_isstd"]
         self.v_ismcsignal = data_param["bitmap_sel"]["var_ismcsignal"]
         self.v_ismcprompt = data_param["bitmap_sel"]["var_ismcprompt"]

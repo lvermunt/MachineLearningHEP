@@ -49,6 +49,7 @@ class AnalyzerDhadrons(Analyzer): # pylint: disable=invalid-name
         self.bin_matching = datap["analysis"][self.typean]["binning_matching"]
         self.p_nptbins = len(self.lpt_finbinmin)
         self.lpt_probcutfin = datap["mlapplication"]["probcutoptimal"]
+        self.triggerbit = datap["analysis"][self.typean].get("triggerbit", "")
 
         self.d_resultsallpmc = datap["analysis"][typean]["mc"]["results"][period] \
                 if period is not None else datap["analysis"][typean]["mc"]["resultsallp"]
@@ -137,6 +138,18 @@ class AnalyzerDhadrons(Analyzer): # pylint: disable=invalid-name
         self.fitter = None
         self.p_performval = datap["analysis"].get("event_cand_validation", None)
 
+        # HFPtSpectrum
+        self.p_year = 7 #"k2018"
+        self.p_energy = 1 #"k5dot023"
+        self.p_raavsep = 0 #"kPhiIntegrated"
+        self.p_epresolfile = ""
+        self.p_pbpbeloss = True
+        self.p_rapslice = 0 #"kdefault"
+        self.p_partantipart = True
+        self.p_analysis = 0 #"kTopological"
+        self.p_ccestimator = 0 #"kV0M"
+        self.p_useptdepeffunc = True
+
     # pylint: disable=import-outside-toplevel
     def fit(self):
         # Enable ROOT batch mode and reset in the end
@@ -178,14 +191,142 @@ class AnalyzerDhadrons(Analyzer): # pylint: disable=invalid-name
         # Reset to former mode
         gROOT.SetBatch(tmp_is_root_batch)
 
-    #def efficiency(self):
+    def efficiency(self):
+        self.loadstyle()
+
+        lfileeff = TFile.Open(self.n_fileff)
+        fileouteff = TFile.Open("%s/efficiencies%s%s.root" % (self.d_resultsallpmc, \
+                                 self.case, self.typean), "recreate")
+        cEff = TCanvas('cEff', 'The Fit Canvas')
+        cEff.SetCanvasSize(1900, 1500)
+        cEff.SetWindowSize(500, 500)
+
+        legeff = TLegend(.5, .65, .7, .85)
+        legeff.SetBorderSize(0)
+        legeff.SetFillColor(0)
+        legeff.SetFillStyle(0)
+        legeff.SetTextFont(42)
+        legeff.SetTextSize(0.035)
+
+        h_gen_pr = lfileeff.Get("h_gen_pr")
+        h_sel_pr = lfileeff.Get("h_sel_pr")
+        h_sel_pr.Divide(h_sel_pr, h_gen_pr, 1.0, 1.0, "B")
+        h_sel_pr.Draw("same")
+        fileouteff.cd()
+        h_sel_pr.SetName("eff")
+        h_sel_pr.Write()
+        h_sel_pr.GetXaxis().SetTitle("#it{p}_{T} (GeV/#it{c})")
+        h_sel_pr.GetYaxis().SetTitle("Acc x efficiency (prompt) %s %s (1/GeV)" \
+                % (self.p_latexnhadron, self.typean))
+        h_sel_pr.SetMinimum(0.001)
+        h_sel_pr.SetMaximum(1.0)
+        gPad.SetLogy()
+        cEff.SaveAs("%s/Eff%s%s.eps" % (self.d_resultsallpmc,
+                                        self.case, self.typean))
+
+        cEffFD = TCanvas('cEffFD', 'The Fit Canvas')
+        cEffFD.SetCanvasSize(1900, 1500)
+        cEffFD.SetWindowSize(500, 500)
+
+        legeffFD = TLegend(.5, .65, .7, .85)
+        legeffFD.SetBorderSize(0)
+        legeffFD.SetFillColor(0)
+        legeffFD.SetFillStyle(0)
+        legeffFD.SetTextFont(42)
+        legeffFD.SetTextSize(0.035)
+
+        h_gen_fd = lfileeff.Get("h_gen_fd")
+        h_sel_fd = lfileeff.Get("h_sel_fd")
+        h_sel_fd.Divide(h_sel_fd, h_gen_fd, 1.0, 1.0, "B")
+        h_sel_fd.Draw("same")
+        fileouteff.cd()
+        h_sel_fd.SetName("eff_fd")
+        h_sel_fd.Write()
+        h_sel_fd.GetXaxis().SetTitle("#it{p}_{T} (GeV/#it{c})")
+        h_sel_fd.GetYaxis().SetTitle("Acc x efficiency feed-down %s %s (1/GeV)" \
+                % (self.p_latexnhadron, self.typean))
+        h_sel_fd.SetMinimum(0.001)
+        h_sel_fd.SetMaximum(1.)
+        gPad.SetLogy()
+        legeffFD.Draw()
+        cEffFD.SaveAs("%s/EffFD%s%s.eps" % (self.d_resultsallpmc,
+                                            self.case, self.typean))
+
 
     #def plotter(self):
 
-    #@staticmethod
-    #def calculate_norm(hsel, hnovt, hvtxout, multmin, multmax):
+    @staticmethod
+    def calculate_norm(hsel, hnovt, hvtxout):
+        if not hsel:
+            # pylint: disable=undefined-variable
+            self.logger.error("Missing hsel")
+        if not hnovt:
+            # pylint: disable=undefined-variable
+            self.logger.error("Missing hnovt")
+        if not hvtxout:
+            # pylint: disable=undefined-variable
+            self.logger.error("Missing hvtxout")
 
-    #def makenormyields(self): # pylint: disable=import-outside-toplevel, too-many-branches
+        n_sel = hsel.Integral()
+        n_novtx = hnovt.Integral()
+        n_vtxout = hvtxout.Integral()
+        norm = -1
+        if n_sel + n_vtxout > 0:
+            norm = (n_sel + n_novtx) - n_novtx * n_vtxout / (n_sel + n_vtxout)
+        return norm
+
+    def makenormyields(self): # pylint: disable=import-outside-toplevel, too-many-branches
+        gROOT.SetBatch(True)
+        self.loadstyle()
+
+        yield_filename = self.make_file_path(self.d_resultsallpdata, self.yields_filename, "root",
+                                             None, [self.case, self.typean])
+        if not os.path.exists(yield_filename):
+            self.logger.fatal("Yield file %s could not be found", yield_filename)
+
+        fileouteff = f"{self.d_resultsallpmc}/efficiencies{self.case}{self.typean}.root"
+        if not os.path.exists(fileouteff):
+            self.logger.fatal("Efficiency file %s could not be found", fileouteff)
+
+        fileoutcross = "%s/finalcross%s%s.root" % \
+            (self.d_resultsallpdata, self.case, self.typean)
+
+        namehistoeffprompt = "eff"
+        namehistoefffeed = "eff_fd"
+        nameyield = "hyields0"
+
+        gROOT.LoadMacro("HFPtSpectrum.C")
+        from ROOT import HFPtSpectrum
+        histonorm = TH1F("histonorm", "histonorm", 1, 0, 1)
+
+        filemass = TFile.Open(self.n_filemass)
+        labeltrigger = "hbit%s" % (self.triggerbit)
+        hsel = filemass.Get("sel_%s" % labeltrigger)
+        hnovtx = filemass.Get("novtx_%s" % labeltrigger)
+        hvtxout = filemass.Get("vtxout_%s" % labeltrigger)
+        norm = self.calculate_norm(hsel, hnovtx, hvtxout)
+        histonorm.SetBinContent(1, norm)
+        self.logger.warning("Number of events %d", norm)
+
+        HFPtSpectrum(self.p_indexhpt, self.p_inputfonllpred, \
+         fileouteff, namehistoeffprompt, namehistoefffeed, yield_filename, nameyield, \
+         fileoutcross, norm, self.p_sigmav0 * 1e12, self.p_fd_method, self.p_cctype, \
+         self.p_year, self.p_energy, self.p_raavsep, self.p_epresolfile, self.p_pbpbeloss, \
+         self.p_rapslice, self.p_partantipart, self.p_analysis, self.p_ccestimator, \
+         self.p_useptdepeffunc)
+
+        fileoutcrosstot = TFile.Open("%s/finalcross%s%stot.root" % \
+            (self.d_resultsallpdata, self.case, self.typean), "recreate")
+
+        fileoutcross = "%s/finalcross%s%s.root" % \
+            (self.d_resultsallpdata, self.case, self.typean)
+        f_fileoutcross = TFile.Open(fileoutcross)
+        if f_fileoutcross:
+            hcross = f_fileoutcross.Get("histoSigmaCorr")
+            fileoutcrosstot.cd()
+            hcross.Write()
+        histonorm.Write()
+        fileoutcrosstot.Close()
 
     #def plotternormyields(self):
 

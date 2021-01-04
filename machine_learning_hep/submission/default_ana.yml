@@ -57,13 +57,13 @@ analysis:
   type: MBvspt
   # Do each period separately including merged (true)
   # Do only merged (false)
-  doperperiod: true
+  doperperiod: false
   data:
-    histomass: true
+    histomass: false
     dojetsystematics: false
   mc:
     histomass: true
-    efficiency: false # processer: process_efficiency
+    efficiency: true # processer: process_efficiency
     response: false # processer: process_response
     feeddown: false
     dounfolding: false
@@ -71,8 +71,8 @@ analysis:
   # Control the yield systematic uncertainty
   dosyst: false
   dojetstudies: false
-  doeff: false
-  docross: false
+  doeff: true
+  docross: true
   doplots: false
   doplotsval: false # analyzer: plottervalidation
 

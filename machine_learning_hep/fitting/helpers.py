@@ -113,6 +113,16 @@ class MLFitParsFactory: # pylint: disable=too-many-instance-attributes, too-many
         except TypeError:
             self.mean = [self.mean] * self.n_bins2
 
+        self.first_used_bin = ana_config.get("first_used_bin", -1)
+        try:
+            iter(self.first_used_bin)
+        except TypeError:
+            self.first_used_bin = [self.first_used_bin] * self.n_bins1
+        try:
+            iter(self.first_used_bin[0])
+        except TypeError:
+            self.first_used_bin = [self.first_used_bin] * self.n_bins2
+
         self.fix_mean = ana_config["FixedMean"]
         self.use_user_mean = ana_config["SetInitialGaussianMean"]
         self.sigma = ana_config["sigmaarray"]
@@ -196,6 +206,7 @@ class MLFitParsFactory: # pylint: disable=too-many-instance-attributes, too-many
                     "bkg_func_name": MLFitParsFactory.BKG_FUNC_MAP[self.bkg_func_name[ibin1]],
                     "likelihood": self.likelihood,
                     "rebin": self.rebin[ibin2][ibin1],
+                    "first_used_bin": self.first_used_bin[ibin2][ibin1],
                     "fit_range_low": self.fit_range_low[ibin1],
                     "fit_range_up": self.fit_range_up[ibin1],
                     "n_sigma_sideband": self.n_sigma_sideband,
@@ -235,6 +246,7 @@ class MLFitParsFactory: # pylint: disable=too-many-instance-attributes, too-many
         fit_pars = {"mean": None,
                     "sigma": None,
                     "rebin": self.rebin[ibin2][ibin1],
+                    "first_used_bin": self.first_used_bin[ibin2][ibin1],
                     "fit_range_low": self.fit_range_low[ibin1],
                     "fit_range_up": self.fit_range_up[ibin1],
                     "likelihood": self.likelihood,

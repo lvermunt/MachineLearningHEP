@@ -25,21 +25,22 @@ mergingperiods:
 ml_study:
   activate: true
   dopca: false
-  docorrelation: true
+  docorrelation: false
   dotraining: true
   dotesting: true
-  doapplytodatamc: true
-  docrossvalidation: true
-  dolearningcurve: true
-  doroc: true
-  doroctraintest: true
+  doapplytodatamc: false
+  docrossvalidation: false
+  dolearningcurve: false
+  doroc: false
+  doroctraintest: false
   doplotdistr: false
-  doimportance: true
+  doimportance: false
+  doimportanceshap: false
   dogridsearch: false
   dobayesianopt: false
   doboundary: false
-  doefficiency: true
-  dosignifopt: true
+  doefficiency: false
+  dosignifopt: false
   doscancuts: false
 
 mlapplication:
@@ -53,7 +54,7 @@ mlapplication:
     docontinueafterstop: false
 
 analysis:
-  type: YYYY
+  type: MBvspt
   # Do each period separately including merged (true)
   # Do only merged (false)
   doperperiod: true

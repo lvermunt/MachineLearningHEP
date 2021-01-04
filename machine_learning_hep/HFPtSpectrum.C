@@ -945,7 +945,7 @@ void HFPtSpectrum ( Int_t decayChan=kDplusKpipi,
   
   // Draw the PbPb Eloss hypothesis histograms
   if(PbPbEloss){
-    AliHFPtSpectrum *CalcBins=NULL;
+    AliHFPtSpectrum *CalcBins = new AliHFPtSpectrum(); //=NULL;
     gStyle->SetPalette(1);
     TCanvas *canvasfcRcb = new TCanvas("canvasfcRcb","fc vs pt vs Rcb");
     //    histofcRcb->Draw("cont4z");

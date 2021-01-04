@@ -14,6 +14,10 @@
 
 LcpK0s3050_2018:
 
+  prob_scan:
+    activate: false
+    prob_sel: [0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+
   maskmissingvalues:
     activate: true
     tomask:
@@ -26,12 +30,13 @@ LcpK0s3050_2018:
   sel_reco_unp: "pt_cand>1"
   sel_reco_singletrac_unp: null
   sel_gen_unp: "pt_cand>1 and abs(z_vtx_gen)<10"
+  #sel_cen_unp: ["centrality > 30 and centrality <= 50", null]
   sel_cen_unp: "centrality > 30 and centrality <= 50"
   sel_good_evt_unp: "is_ev_rej == 0"
-  sel_reco_skim: [null, null, null, null, null] #sel_skim_binmin bins
-  sel_gen_skim: [null, null, null, null, null] #sel_skim_binmin bins
-  sel_skim_binmin: [2,4,6,8,12] #list of nbins
-  sel_skim_binmax: [4,6,8,12,24] #list of nbins
+  sel_reco_skim: [null, null, null, null, null, null] #sel_skim_binmin bins
+  sel_gen_skim: [null, null, null, null, null, null] #sel_skim_binmin bins
+  sel_skim_binmin: [1,2,4,6,8,12] #list of nbins
+  sel_skim_binmax: [2,4,6,8,12,24] #list of nbins
   var_binning: pt_cand
   dofullevtmerge: false
   bitmap_sel:
@@ -54,7 +59,8 @@ LcpK0s3050_2018:
               cos_t_star, inv_mass, pt_cand, phi_cand, eta_cand, y_cand, cand_type,
               dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s, inv_mass_K0s, pt_K0s,
               signd0,
-              nsigTPC_Pr_0, nsigTOF_Pr_0,
+              nsigTPC_Pr_0, nsigTOF_Pr_0, 
+              nsigComb_Pr_0,
               pt_prong0, pt_prong1, pt_prong2,
               imp_par_prong0, imp_par_prong1, imp_par_prong2,
               spdhits_prong0, spdhits_prong1, spdhits_prong2,
@@ -75,11 +81,31 @@ LcpK0s3050_2018:
     #pp vs mult analysis
     #var_training: [dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,
     #               imp_par_prong0, imp_par_prong1, imp_par_prong2, inv_mass_K0s, nsigTPC_Pr_0, nsigTOF_Pr_0]
-    #Binary models <20/11
+    #Lc PbPb trains 515-516
     #var_training: [cos_t_star, dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,
     #               imp_par_prong0, nsigTPC_Pr_0, nsigTOF_Pr_0]
-    var_training: [dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,
-                   imp_par_prong0, nsigTPC_Pr_0, nsigTOF_Pr_0]
+    #Lc PbPb trains >528 (before apply@GRID)
+    #nsigComb to not have issue with masking for application @GRID
+    #var_training: [dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,
+    #               imp_par_prong0, nsigComb_Pr_0]#, signd0, inv_mass_K0s] #, nsigTPC_Pr_0, nsigTOF_Pr_0] #, nsigComb_Pr_0]
+    ##Pre apply variables, w/o PID and Lc variables
+    ##var_training: [dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s]
+    ##2nd training after GRID application
+    #var_training: [dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,
+    #               imp_par_prong0, nsigTPC_Pr_0, nsigTOF_Pr_0] #signd0, inv_mass_K0s, cos_t_star
+    ##Trainings are merged:
+    var_training: [[dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,
+                   imp_par_prong0, nsigTPC_Pr_0, nsigTOF_Pr_0],
+                   [dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,
+                   imp_par_prong0, nsigTPC_Pr_0, nsigTOF_Pr_0],                                 
+                   [dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,
+                   imp_par_prong0, nsigTPC_Pr_0, nsigTOF_Pr_0, cos_t_star],
+                   [dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,
+                   imp_par_prong0, nsigTPC_Pr_0, nsigTOF_Pr_0, cos_t_star],
+                   [dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,
+                   imp_par_prong0, nsigTPC_Pr_0, nsigTOF_Pr_0, cos_t_star],
+                   [dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,
+                   imp_par_prong0, nsigTPC_Pr_0, nsigTOF_Pr_0, cos_t_star]]
     var_signal: signal
     var_inv_mass: inv_mass
 
@@ -105,48 +131,36 @@ LcpK0s3050_2018:
     max_ncand_merge: 1000000 # if < 0, use default merging. Otherwise process_mergeforml_max (with merge_method_max2)
     data:
       #lowered for day time
-      nprocessesparallel: 50 #25
-      #chunksizeunp: [50] #list of periods
-      #chunksizeskim: [50] #list of periods
-      fracmerge: [[0.0015, 0.0015, 0.01, 0.01, 0.3]] #list of pT bin in list of periods. Only used in default merging, with process_mergeforml (with merge_method)
-                        #if max_ncand_merge > 0, this will only be used for significance calculation
-      max_frac_merge: [0.01, 0.05, 0.1, 0.2, 0.5] #list of pT bins
-      period: [LHC18qr] #list of periods
-      unmerged_tree_dir: [/mnt/temp/OngoingAnalysis_LcPbPb/TTree/LcPbPb/vAN-20201106_ROOT6-1/PbPb_data/516_20201107-0052/merged] #list of periods
-      pkl: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_data_3050/516_20201107-0052/pkl] #list of periods
-      pkl_skimmed: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_data_3050/516_20201107-0052/pklsk_fix] #list of periods
-      pkl_skimmed_merge_for_ml: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_data_3050/516_20201107-0052/pklskml] #list of periods
-      pkl_skimmed_merge_for_ml_all: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_data_3050/pp_data_mltot
-      pkl_evtcounter_all: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_data_3050/pp_data_evttot
-      #mcreweights: [../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/data_161718] #list of periods
-    mc_pK0s_pass1:
       nprocessesparallel: 50
-      chunksizeskim: [1000] #list of periods
-      fracmerge : [[1.0, 1.0, 1.0, 1.0, 1.0]] #list of pT bin in list of periods.
-      max_frac_merge: [1.0, 1.0, 1.0, 1.0, 1.0] #list of pT bins
-      period: [PbPb_sim_pK0s_pass1] #list of periods
-      select_children: [["child_2", "child_4", "child_6", "child_8"]] # select children explicitly
-      unmerged_tree_dir: [/mnt/temp/OngoingAnalysis_LcPbPb/TTree/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim/517_20201106-2357/merged]
-      pkl: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_3050/517_20201106-2357/pkl] #list of periods
-      pkl_skimmed: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_3050/517_20201106-2357/pklsk_fix] #list of periods
-      pkl_skimmed_merge_for_ml: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_3050/517_20201106-2357/pklskml] #list of periods
-      pkl_skimmed_merge_for_ml_all: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_3050/pp_mc_prodD2H_mltot
-      pkl_evtcounter_all: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_3050/pp_mrc_prodD2H_evttot
-      #mcreweights: [../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/prodD2H_161718]
-    mc: #mc_D2H_pass3_oldcut:
+      chunksizeunp: [100] #list of periods
+      chunksizeskim: [100] #list of periods
+      fracmerge: [[0.01, 0.01, 0.01, 0.05, 0.1, 0.3]] #list of pT bin in list of periods. Only used in default merging, with process_mergeforml (with merge_method)
+                        #if max_ncand_merge > 0, this will only be used for significance calculation
+      max_frac_merge: [0.01, 0.01, 0.01, 0.05, 0.1, 0.3] #list of pT bins
+      period: [LHC18qr] #list of periods
+      unmerged_tree_dir: [/mnt/temp/OngoingAnalysis_LcPbPb/TTree/LcPbPb/vAN-20201123_ROOT6-1/PbPb_data/533_20201124-0804/merged] #list of periods
+      pkl: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201123_ROOT6-1/PbPb_data_3050/533_20201124-0804/pkl] #list of periods
+      pkl_skimmed: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201123_ROOT6-1/PbPb_data_3050/533_20201124-0804/pklsk] #list of periods
+      pkl_skimmed_merge_for_ml: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201123_ROOT6-1/PbPb_data_3050/533_20201124-0804/pklskml] #list of periods
+      pkl_skimmed_merge_for_ml_all: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201123_ROOT6-1/533_20201124-0804/pp_data_mltot
+      pkl_evtcounter_all: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201123_ROOT6-1/PbPb_data_3050/pp_data_evttot
+      #mcreweights: [../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/data_161718] #list of periods
+    mc:
       nprocessesparallel: 50
       chunksizeskim: [1000] #list of periods
       fracmerge : [[1.0, 1.0, 1.0, 1.0, 1.0, 1.0]] #list of pT bin in list of periods.
       max_frac_merge: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0] #list of pT bins
-      period: [PbPb_sim_D2H_pass3] #list of periods
-      select_children: [["child_2"]] # select children explicitly
-      unmerged_tree_dir: [/mnt/temp/OngoingAnalysis_LcPbPb/TTree/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim/518_20201107-0020/merged]
-      pkl: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_D2H_3050/518_20201107-0020/pkl]
-      pkl_skimmed: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_D2H_3050/518_20201107-0020/pklsk] #pre-apply
-      #pkl_skimmed: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_D2H_3050/518_20201107-0020/mlprob_applied/pklsk] #applied to ml_prob
-      pkl_skimmed_merge_for_ml: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_D2H_3050/518_20201107-0020/pklskml]
-      pkl_skimmed_merge_for_ml_all: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_D2H_3050/pp_mc_prodD2H_mltot
-      pkl_evtcounter_all: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_D2H_3050/pp_mrc_prodD2H_evttot
+      #period: [PbPb_sim_pK0s_pass3] #list of periods
+      #select_children: [["child_2"]] # select children explicitly
+      #531_20201120-1844   ->   529_20201120-1842
+      period: [PbPb_sim_pK0s_pass1] #list of periods
+      select_children: [["child_2", "child_4", "child_6", "child_8"]] # select children explicitly
+      unmerged_tree_dir: [/mnt/temp/OngoingAnalysis_LcPbPb/TTree/LcPbPb/vAN-20201119_ROOT6-1/PbPb_sim/529_20201120-1842/merged]
+      pkl: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201119_ROOT6-1/PbPb_sim_3050/529_20201120-1842/pkl] #list of periods
+      pkl_skimmed: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201119_ROOT6-1/PbPb_sim_3050/529_20201120-1842/mlprob2_applied/pklsk] #list of periods
+      pkl_skimmed_merge_for_ml: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201119_ROOT6-1/PbPb_sim_3050/529_20201120-1842/mlprob2_applied/pklskml] #list of periods
+      pkl_skimmed_merge_for_ml_all: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201119_ROOT6-1/PbPb_sim_3050/mlprob2_applied/pp_mc_prodD2H_mltot
+      pkl_evtcounter_all: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201119_ROOT6-1/PbPb_sim_3050/mlprob2_applied/pp_mrc_prodD2H_evttot
       #mcreweights: [../Analyses/ALICE_D2H_vs_mult_pp13/reweighting/prodD2H_161718]
 
   ml:
@@ -154,8 +168,11 @@ LcpK0s3050_2018:
     triggersel:
       data: null
       mc: null
-    nbkg: 200000
-    nsig: 200000
+    candsel:
+      data: null
+      mc: null
+    nbkg: 50000
+    nsig: 50000
     fracbkgoversig: 2
     sampletagforsignal: 1
     sampletagforbkg: 0
@@ -165,12 +182,12 @@ LcpK0s3050_2018:
     rnd_shuffle: 12
     rnd_splt: 12
     test_frac: 0.2
-    binmin: [2,4,6,8,12] #list of nbins sel_skim_binmin bins
-    binmax: [4,6,8,12,24] #list of nbins sel_skim_binmin bins
+    binmin: [1,2,4,6,8,12] #list of nbins sel_skim_binmin bins
+    binmax: [2,4,6,8,12,24] #list of nbins sel_skim_binmin bins
     mltype: BinaryClassification
     ncorescrossval: 10
-    mlplot: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/ml_final/mlplot_binary_3050_201120 # to be removed
-    mlout: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/ml_final/mlout_binary_3050_201120 # to be removed
+    mlplot: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201119_ROOT6-1/ml_final/mlplot_merged # to be removed
+    mlout: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201119_ROOT6-1/ml_final/mlout_merged # to be removed
     opt:
       isFONLLfromROOT: true
       filename_fonll: 'InputAnalyses/Analysis_LcPbPb/fonll/DmesonLcPredictions_502TeV_y05_FFptDepLHCb_BRpythia8.root' # file with FONLL predictions
@@ -185,68 +202,54 @@ LcpK0s3050_2018:
       num_steps: 111 # number of steps used in efficiency and signif. estimation
       bkg_function: pol1 # fit function for bkg (among TH1 predefined fit functions, e.g. expo, pol1, pol2, ...)
       save_fit: True # save bkg fits with the various cuts on ML output
-      raahp: [1,1,1,1,1] #list of nbins
+      raahp: [1,1,1,1,1,1] #list of nbins
       presel_gen_eff: "abs(y_cand) < 0.5 and abs(z_vtx_gen) < 10"
       mass_fit_lim: [2.14, 2.48] # region for the fit of the invariant mass distribution [GeV/c^2]
       bin_width: 0.001 # bin width of the invariant mass histogram
 
   mlapplication:
     data:
-      #pkl_skimmed_dec: [/data/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_data_3050/516_20201107-0052/model_binary_201120/skpkldec] #list of periods
-      #pkl_skimmed_decmerged: [/data/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_data_3050/516_20201107-0052/model_binary_201120/skpkldecmerged] #list of periods
-      pkl_skimmed_dec: [/data/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_data_3050/516_20201107-0052/model_binary_121120/skpkldec] #list of periods
-      pkl_skimmed_decmerged: [/data/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_data_3050/516_20201107-0052/model_binary_121120/skpkldecmerged] #list of periods
-    mc_pK0s_pass1:
-      pkl_skimmed_dec: [/data/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_3050/517_20201106-2357/model_binary_201120/skpkldec] #list of periods
-      pkl_skimmed_decmerged: [/data/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_3050/517_20201106-2357/model_binary_201120/skpkldecmerged] #list of periods
-    mc: #mc_D2H_pass3_oldcut:
-      pkl_skimmed_dec: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_3050/518_20201107-0020/model_binary_121120/skpkldec] #list of periods
-      pkl_skimmed_decmerged: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_3050/518_20201107-0020/model_binary_121120/skpkldecmerged] #list of periods
+      pkl_skimmed_dec: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201123_ROOT6-1/PbPb_data_3050/533_20201124-0804/model_binary_applied_261120_merged/skpkldec] #list of periods
+      pkl_skimmed_decmerged: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201123_ROOT6-1/PbPb_data_3050/533_20201124-0804/model_binary_applied_261120_merged/skpkldecmerged] #list of periods
+    mc:
+      pkl_skimmed_dec: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201119_ROOT6-1/PbPb_sim_3050/529_20201120-1842/model_binary_applied_261120_merged/skpkldec] #list of periods
+      pkl_skimmed_decmerged: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201119_ROOT6-1/PbPb_sim_3050/529_20201120-1842/model_binary_applied_261120_merged/skpkldecmerged] #list of periods
     modelname: xgboost
-    modelsperptbin: [Model_pT_2_4.model,
+    modelsperptbin: [Model_pT_1_2.model,
+                     Model_pT_2_4.model,
                      Model_pT_4_6.model,
                      Model_pT_6_8.model,
                      Model_pT_8_12.model,
                      Model_pT_12_24.model]
-    modelsperptbin_hipe4ml: [ModelHandler_pT_2_4.pkl,
-                             ModelHandler_pT_4_6.pkl,
-                             ModelHandler_pT_6_8.pkl,
-                             ModelHandler_pT_8_12.pkl,
+    modelsperptbin_hipe4ml: [ModelHandler_pT_1_2.pkl,
+                             ModelHandler_pT_2_4.pkl,
+                             ModelHandler_pT_4_6.pkl, 
+                             ModelHandler_pT_6_8.pkl, 
+                             ModelHandler_pT_8_12.pkl, 
                              ModelHandler_pT_12_24.pkl]
     ml_prefilter_probcut: [0.2, 0.2, 0.2, 0.2, 0.2, 0.2]
     probcutpresel:
-      #data: [0.4, 0.3, 0.3, 0.3, 0.3] #[0.7, 0.6, 0.6, 0.5, 0.5]
-      #mc: [0.4, 0.3, 0.3, 0.3, 0.3] #[0.7, 0.6, 0.6, 0.5, 0.5]
-      data: [0.7, 0.6, 0.6, 0.5, 0.5]
-      mc: [0.7, 0.6, 0.6, 0.5, 0.5]
-    #probcutoptimal: [0.8, 0.8, 0.8, 0.8, 0.9] #From expected signf plots
-    #probcutoptimal: [0.7, 0.8, 0.8, 0.95, 0.95] #Central for cos_t_star model
-    #probcutoptimal: [0.5, 0.5, 0.5, 0.5, 0.5] #Super loose
-    #probcutoptimal: [0.4, 0.3, 0.3, 0.3, 0.3] #ML filtering cuts
-    #probcutoptimal: [0.6, 0.7, 0.7, 0.7, 0.7] #Loose cuts
-    #probcutoptimal: [0.7, 0.6, 0.65, 0.75, 0.8] #Final trial 1
-    #probcutoptimal: [0.75, 0.75, 0.85, 0.9, 0.92] #Final trial 2
-    #probcutoptimal: [0.7, 0.75, 0.9, 0.92, 0.93] #Final trial 3
-
-    probcutoptimal: [0.7, 0.8, 0.8, 0.95, 0.95] #Final trial 3
+      data: [0.3, 0.3, 0.2, 0.0, 0.0, 0.0]
+      mc: [0.3, 0.3, 0.2, 0.0, 0.0, 0.0]
+    probcutoptimal: [0.6, 0.55, 0.55, 0.65, 0.90, 0.96] #Merged training - opti after looking at scan
 
   analysis:
     indexhptspectrum: 5 #kD0Kpi=0, kDplusKpipi=1, kDstarD0pi=2, kDsKKpi=3, kLctopKpi=4, kLcK0Sp=5
     fd_method: 2 #knone=0, kfc=1, kNb=2
-    cctype: 14 #k3050
+    cctype: 1 #kpp7
     #TO CHECK IF THERE ARE NO ROUNDING ISSUES HERE
     sigmav0: 1.e-12 #NB: multiplied by 1e12 before giving to HFPtSpectrum!
-    inputfonllpred: data/fonll/DmesonLcPredictions_502TeV_y05_FFptDepLHCb_BRpythia8.root
-    dir_general_plots: /data/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_data_3050/516_20201107-0052/model_binary_201120/analysis_plots
+    inputfonllpred: InputAnalyses/Analysis_LcPbPb/fonll/DmesonLcPredictions_502TeV_y05_FFptDepLHCb_BRpythia8.root
+    dir_general_plots: /data/Derived/LcPbPb/vAN-20201123_ROOT6-1/PbPb_data_3050/533_20201124-0804/model_binary_applied_261120/analysis_plots
 
     MBvspt:
       proc_type: Dhadrons
       useperiod: [1]
       plotbin: [1]
       #triggerbit: INT7
-      sel_an_binmin: [2,4,6,8,12] #[2,3,4,5,6,7,8,10,12,16] #[2,4,6,8,12] #list of pt nbins
-      sel_an_binmax: [4,6,8,12,24] #[3,4,5,6,7,8,10,12,16,24] #[4,6,8,12,24] #list of pt nbins
-      binning_matching: [0,1,2,3,4] #[0,0,1,1,2,2,3,3,4,4] #[0,1,2,3,4] #list of pt nbins
+      sel_an_binmin: [1,2,4,6,8,12] #list of pt nbins
+      sel_an_binmax: [2,4,6,8,12,24] #list of pt nbins
+      binning_matching: [0,1,2,3,4,5] #list of pt nbins
       presel_gen_eff: "abs(y_cand) < 0.5 and abs(z_vtx_gen) < 10"
       evtsel: is_ev_rej==0
       triggersel:
@@ -256,45 +259,36 @@ LcpK0s3050_2018:
       #eff_vs_cent_binmin: [ 0, 10, 20, 30, 40, 50, 60, 70]
       #eff_vs_cent_binmax: [10, 20, 30, 40, 50, 60, 70, 80]
 
-      use_cuts: True
+      use_cuts: False
       cuts:
-        #- "inv_mass_K0s > 0.489614 and inv_mass_K0s < 0.505614 and (spdhits_prong0 == 1 or spdhits_prong0 == 3)"
-        # and (spdhits_prong0 == 1 or spdhits_prong0 == 3)"
-        - "inv_mass_K0s > 0.489614 and inv_mass_K0s < 0.505614 and (spdhits_prong0 == 1 or spdhits_prong0 == 3)"
-        - "inv_mass_K0s > 0.489614 and inv_mass_K0s < 0.505614 and (spdhits_prong0 == 1 or spdhits_prong0 == 3)"
-        - "inv_mass_K0s > 0.487614 and inv_mass_K0s < 0.507614"
-        - "inv_mass_K0s > 0.487614 and inv_mass_K0s < 0.507614"
-        - "inv_mass_K0s > 0.487614 and inv_mass_K0s < 0.507614"
+        - Null
+        - Null        
+        - Null        
+        - Null        
+        - Null        
+        - Null        
 
       data:
         runselection: [null]
-        results: [/mnt/temp/OngoingAnalysis_LcPbPb/DerivedResults/LcPbPb/vAN-20201106_ROOT6-1/PbPb_data_3050/516_20201107-0052/model_binary_121120/resultsMBvspt_testCY] #list of periods
-        resultsallp: /mnt/temp/OngoingAnalysis_LcPbPb/DerivedResults/LcPbPb/vAN-20201106_ROOT6-1/PbPb_data_3050/model_binary_121120/resultsMBvspt_testCY
+        results: [/mnt/temp/OngoingAnalysis_LcPbPb/DerivedResults/LcPbPb/vAN-20201123_ROOT6-1/PbPb_data_3050/533_20201124-0804/model_binary_applied_261120_merged/resultsMBvspt_1] #list of periods
+        resultsallp: /mnt/temp/OngoingAnalysis_LcPbPb/DerivedResults/LcPbPb/vAN-20201123_ROOT6-1/PbPb_data_3050/model_binary_applied_261120_merged/resultsMBvspt_1
       mc:
         runselection: [null]
-        results: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_D2H_3050/518_20201107-0020/model_binary_121120/resultsMBvspt_MC_testCY] #list of periods
-        resultsallp: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_D2H_3050/model_binary_121120/resultsMBvspt_MC_testCY
-      ##data:
-      ##  runselection: [null]
-      ##  results: [/data/DerivedResults/LcPbPb/vAN-20201106_ROOT6-1/PbPb_data_3050/516_20201107-0052/model_binary_201120/resultsMBvspt_8v2] #list of periods
-      ##  resultsallp: /data/DerivedResults/LcPbPb/vAN-20201106_ROOT6-1/PbPb_data_3050/model_binary_201120/resultsMBvspt_8v2
-      ##mc:
-      ##  runselection: [null]
-      ##  results: [/data/DerivedResults/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_3050/517_20201106-2357/model_binary_201120/resultsMBvspt_MC_8v2] #list of periods
-      ##  resultsallp: /data/DerivedResults/LcPbPb/vAN-20201106_ROOT6-1/PbPb_sim_3050/model_binary_201120/resultsMBvspt_MC_8v2
+        results: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201119_ROOT6-1/PbPb_sim_3050/529_20201120-1842/model_binary_applied_261120_merged/resultsMBvspt_MC_1] #list of periods
+        resultsallp: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20201119_ROOT6-1/PbPb_sim_3050/model_binary_applied_261120_merged/resultsMBvspt_MC_1
 
       # The global mass limits
       mass_fit_lim: [2.14, 2.48]  # region for the fit of the invariant mass distribution [GeV/c^2]
       bin_width: 0.001 # bin width of the invariant mass histogram
       # To initialize the individual fits in pT bins
       # Decide whether to take the sigma from MC or data for individual fits
-      init_fits_from: [mc,mc,mc,mc,mc,mc,mc,mc,mc,mc] # data or mc
-      sgnfunc: [kGaus,kGaus,kGaus,kGaus,kGaus,kGaus,kGaus,kGaus,kGaus,kGaus]
-      bkgfunc: [Pol2,Pol2,Pol2,Pol2,Pol2,Pol2,Pol2,Pol2,Pol2,Pol2]
+      init_fits_from: [mc,mc,mc,mc,mc,mc] # data or mc
+      sgnfunc: [kGaus,kGaus,kGaus,kGaus,kGaus,kGaus]
+      bkgfunc: [Pol2,Pol2,Pol2,Pol2,Pol2,Pol2]
       masspeak: 2.2864
-      massmin: [2.14,2.14,2.14,2.14,2.14,2.14,2.14,2.14,2.14,2.14]
-      massmax: [2.436,2.436,2.436,2.436,2.436,2.436,2.436,2.436,2.436,2.436]
-      rebin: [4,6,8,10,12] #[4,4,6,6,8,8,10,10,12,12] #[4,6,8,10,12]
+      massmin: [2.14,2.14,2.14,2.14,2.14,2.14]
+      massmax: [2.436,2.436,2.436,2.436,2.436,2.436]
+      rebin: [4,4,6,8,10,12] #[4,4,6,6,8,8,10,10,12,12] #[4,6,8,10,12]
       # Fix mean and/or sigma
       FixedMean: False
       SetFixGaussianSigma: [true,true,true,true,true,true,true,true,true,true]
@@ -310,7 +304,7 @@ LcpK0s3050_2018:
       # Sigma around mean where signal is integrated after total fit has been done
       nsigma_signal: 3
       dolikelihood: true
-      sigmaarray: [0.0079,0.0089,0.0104,0.01171,0.01522]
+      sigmaarray: [0.008,0.0083,0.0095,0.0108,0.0126,0.0161]
       FixedSigma: false
       fitcase: Lc
       latexnamehadron: "#Lambda_{c}^{pK0s}"
